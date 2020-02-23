@@ -6,6 +6,6 @@ public class CLICommandExecutorInit implements CLICommandExecutor {
 
     @Override
     public void execute(String[] params, GraphService graphService) {
-        graphService.LoadCode(params[0]);
+        graphService.loadCode(params[0]);
     }
 }

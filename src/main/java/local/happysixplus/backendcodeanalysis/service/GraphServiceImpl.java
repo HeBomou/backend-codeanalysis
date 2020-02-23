@@ -43,11 +43,11 @@ public class GraphServiceImpl implements GraphService {
 
     // 顶点集合
     Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+    List<String> caller = new ArrayList<>();
+    List<String> callee = new ArrayList<>();
 
     @Override
-    public void LoadCode(String path) {
-        List<String> caller = new ArrayList<>();
-        List<String> callee = new ArrayList<>();
+    public void loadCode(String path) {
         // 从文件中读取函数依赖关系
         File file = new File(path);
         BufferedReader bf = null;
@@ -78,40 +78,39 @@ public class GraphServiceImpl implements GraphService {
             Edge tmpEdge = new Edge(begin,end);
             vertexMap.get(caller.get(i)).addEdge(tmpEdge);
         }
-        return;
     }
 
     @Override
-    public int GetVertexNum() {
+    public int getVertexNum() {
+        return vertexMap.size();
+    }
+
+    @Override
+    public int getEdgeNum() {
+        return caller.size();
+    }
+
+    @Override
+    public int getConnectiveDomainNum() {
         return -1;
     }
 
     @Override
-    public int GetEdgeNum() {
-        return -1;
-    }
-
-    @Override
-    public int GetConnectiveDomainNum() {
-        return -1;
-    }
-
-    @Override
-    public List<ConnectiveDomainVo> GetConnectiveDomains() {
+    public List<ConnectiveDomainVo> getConnectiveDomains() {
         return null;
     }
 
     @Override
-    public void SetClosenessMin(double closeness) {
+    public void setClosenessMin(double closeness) {
     }
 
     @Override
-    public List<ConnectiveDomainVo> GetConnectiveDomainsWithClosenessMin() {
+    public List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin() {
         return null;
     }
 
     @Override
-    public PathVo GetShortestPath(VertexVo start, VertexVo end) {
+    public PathVo getShortestPath(VertexVo start, VertexVo end) {
         return null;
     }
 }

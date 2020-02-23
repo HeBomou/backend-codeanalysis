@@ -6,6 +6,6 @@ public class CLICommandExecutorSetClosenessMin implements CLICommandExecutor {
 
     @Override
     public void execute(String[] params, GraphService graphService) {
-        graphService.SetClosenessMin(Double.valueOf(params[0]));
+        graphService.setClosenessMin(Double.valueOf(params[0]));
     }
 }

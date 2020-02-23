@@ -7,9 +7,9 @@ public class CLICommandExecutorBasicAttribute implements CLICommandExecutor {
 
     @Override
     public void execute(String[] params, GraphService graphService) {
-        var edgeNum = graphService.GetEdgeNum();
-        var vertexNum = graphService.GetVertexNum();
-        var connectiveDomainNum = graphService.GetConnectiveDomainNum();
+        var edgeNum = graphService.getEdgeNum();
+        var vertexNum = graphService.getVertexNum();
+        var connectiveDomainNum = graphService.getConnectiveDomainNum();
         System.out.println("Edge: " + edgeNum);
         System.out.println("Vertex: " + vertexNum);
         System.out.println("ConnectiveDomain: " + connectiveDomainNum);

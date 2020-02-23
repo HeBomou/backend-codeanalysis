@@ -13,40 +13,40 @@ public interface GraphService {
      * 
      * @param path 项目代码文件夹的路径
      */
-    void LoadCode(String path);
+    void loadCode(String path);
 
     /**
      * 获取图的点数
      */
-    int GetVertexNum();
+    int getVertexNum();
 
     /**
      * 获取图的边数
      */
-    int GetEdgeNum();
+    int getEdgeNum();
 
     /**
      * 获取图的联通域数
      */
-    int GetConnectiveDomainNum();
+    int getConnectiveDomainNum();
 
     /**
      * 获取图的所有联通域
      */
-    List<ConnectiveDomainVo> GetConnectiveDomains();
+    List<ConnectiveDomainVo> getConnectiveDomains();
 
     /**
      * 设置最小紧密度阈值。预处理得到删除紧密度低于阈值的边后的图及其基本信息
      */
-    void SetClosenessMin(double closeness);
+    void setClosenessMin(double closeness);
 
     /**
      * 获取删除紧密度低于阈值的边之后图的联通域。联通域按照顶点数降序排序
      */
-    List<ConnectiveDomainVo> GetConnectiveDomainsWithClosenessMin();
+    List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin();
 
     /**
      * 获取图中从start出发到end的最短路
      */
-    PathVo GetShortestPath(VertexVo start, VertexVo end);
+    PathVo getShortestPath(VertexVo start, VertexVo end);
 }

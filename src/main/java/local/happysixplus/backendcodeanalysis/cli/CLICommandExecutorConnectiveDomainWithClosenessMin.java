@@ -7,7 +7,7 @@ public class CLICommandExecutorConnectiveDomainWithClosenessMin implements CLICo
 
     @Override
     public void execute(String[] params, GraphService graphService) {
-        var domains = graphService.GetConnectiveDomainsWithClosenessMin();
+        var domains = graphService.getConnectiveDomainsWithClosenessMin();
         for (var domain : domains) {
             System.out.println(domain.getVertexNum());
         }

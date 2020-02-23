@@ -13,7 +13,11 @@ class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
-		graphService.LoadCode("/Users/macbook/Desktop/call_dependencies.txt");
+		graphService.loadCode("/Users/macbook/Desktop/call_dependencies.txt");
 	}
-
+	@Test
+	void getVerNum(){
+		graphService.loadCode("/Users/macbook/Desktop/call_dependencies.txt");
+		System.out.println(graphService.getVertexNum());
+	}
 }
