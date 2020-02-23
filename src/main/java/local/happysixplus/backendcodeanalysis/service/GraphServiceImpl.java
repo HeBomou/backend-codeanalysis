@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Collections;
 import java.io.*;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class GraphServiceImpl implements GraphService {
     // 内部顶点类,包括顶点函数名称和从该点出发的边
     public class Vertex {
         String functionName;
-        List<Edge> edges=new ArrayList<>();
+        List<Edge> edges = new ArrayList<>();
 
         Vertex(String name) {
             functionName = name;
@@ -39,10 +40,46 @@ public class GraphServiceImpl implements GraphService {
             from = begin;
             to = end;
         }
+
+        void setCloseness(Double num) {
+            closeness = num;
+        }
     }
 
-    // 顶点集合
-    Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+    // 内部有向图类
+    public class Graph {
+        Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+        Double closenessMin = Double.NEGATIVE_INFINITY;
+
+        Graph(List<String> caller, List<String> callee) {
+            // 去重得到所有顶点集合
+            List<String> verStr = new ArrayList<>();
+            verStr.addAll(caller);
+            verStr.addAll(callee);
+            verStr = new ArrayList<String>(new HashSet<>(verStr));
+            for (String each : verStr) {
+                vertexMap.put(each, new Vertex(each));
+            }
+            // 为每个顶点添加边集
+            for (int i = 0; i < caller.size(); i++) {
+                String startStr = caller.get(i);
+                String endStr = callee.get(i);
+                Double closeness = 2.0
+                        / (Collections.frequency(caller, startStr) + Collections.frequency(callee, endStr));
+                if (closeness < closenessMin)
+                    continue;
+                Vertex begin = vertexMap.get(caller.get(i));
+                Vertex end = vertexMap.get(callee.get(i));
+                Edge tmpEdge = new Edge(begin, end);
+                tmpEdge.setCloseness(closeness);
+                vertexMap.get(caller.get(i)).addEdge(tmpEdge);
+            }
+        }
+    }
+
+    // 完整有向图
+    Graph graph;
+    // 输入边集对应顶点
     List<String> caller = new ArrayList<>();
     List<String> callee = new ArrayList<>();
 
@@ -63,26 +100,12 @@ public class GraphServiceImpl implements GraphService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // 去重得到所有顶点集合
-        List<String> verStr = new ArrayList<>();
-        verStr.addAll(caller);
-        verStr.addAll(callee);
-        verStr = new ArrayList<String>(new HashSet<>(verStr));
-        for (String each : verStr) {
-            vertexMap.put(each, new Vertex(each));
-        }
-        // 为每个顶点添加边集
-        for (int i = 0; i < caller.size(); i++) {
-            Vertex begin=vertexMap.get(caller.get(i));
-            Vertex end=vertexMap.get(callee.get(i));
-            Edge tmpEdge = new Edge(begin,end);
-            vertexMap.get(caller.get(i)).addEdge(tmpEdge);
-        }
+        graph = new Graph(caller, callee);
     }
 
     @Override
     public int getVertexNum() {
-        return vertexMap.size();
+        return graph.vertexMap.size();
     }
 
     @Override
