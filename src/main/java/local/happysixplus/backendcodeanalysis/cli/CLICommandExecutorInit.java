@@ -5,7 +5,7 @@ import local.happysixplus.backendcodeanalysis.service.GraphService;
 public class CLICommandExecutorInit implements CLICommandExecutor {
 
     @Override
-    public void Execute(String[] params, GraphService graphService) {
+    public void execute(String[] params, GraphService graphService) {
         graphService.LoadCode(params[0]);
     }
 }

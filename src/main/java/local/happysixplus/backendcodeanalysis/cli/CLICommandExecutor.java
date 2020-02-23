@@ -4,5 +4,5 @@ import local.happysixplus.backendcodeanalysis.service.GraphService;
 
 public interface CLICommandExecutor {
 
-    void Execute(String[] params, GraphService graphService);
+    void execute(String[] params, GraphService graphService);
 }
