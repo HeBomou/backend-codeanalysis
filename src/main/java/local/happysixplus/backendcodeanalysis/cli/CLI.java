@@ -11,7 +11,12 @@ public class CLI {
     Map<String, CLICommandExecutor> executorMap = new HashMap<>();
 
     public CLI() {
+        executorMap.put("basic-attribute", new CLICommandExecutorBasicAttribute());
+        executorMap.put("connective-domain", new CLICommandExecutorConnectiveDomain());
+        executorMap.put("connective-domain-with-closeness-min", new CLICommandExecutorConnectiveDomainWithClosenessMin());
         executorMap.put("echo", new CLICommandExecutorEcho());
+        executorMap.put("init", new CLICommandExecutorInit());
+        executorMap.put("set-closeness-min", new CLICommandExecutorSetClosenessMin());
     }
 
     public void Deal(String cmd) {
