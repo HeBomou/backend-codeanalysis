@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class EdgeVo {
+    VertexVo from;
     VertexVo to;
     Double closeness;
 }
