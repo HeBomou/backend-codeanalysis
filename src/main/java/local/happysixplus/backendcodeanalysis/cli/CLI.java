@@ -4,14 +4,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import local.happysixplus.backendcodeanalysis.service.GraphService;
+import local.happysixplus.backendcodeanalysis.service.GraphServiceImpl;
 import lombok.var;
 
 public class CLI {
-    @Autowired
-    GraphService graphService;
+    GraphService graphService = new GraphServiceImpl();
 
     Map<String, CLICommandExecutor> executorMap = new HashMap<>();
 
