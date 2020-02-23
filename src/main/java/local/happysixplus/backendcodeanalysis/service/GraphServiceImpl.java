@@ -36,7 +36,7 @@ public class GraphServiceImpl implements GraphService {
     }
 
     @Override
-    public void SetClosenessMin() {
+    public void SetClosenessMin(double closeness) {
     }
 
     @Override

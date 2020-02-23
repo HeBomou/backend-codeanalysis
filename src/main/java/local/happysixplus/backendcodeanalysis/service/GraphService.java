@@ -38,7 +38,7 @@ public interface GraphService {
     /**
      * 设置最小紧密度阈值。预处理得到删除紧密度低于阈值的边后的图及其基本信息
      */
-    void SetClosenessMin();
+    void SetClosenessMin(double closeness);
 
     /**
      * 获取删除紧密度低于阈值的边之后图的联通域。联通域按照顶点数降序排序
