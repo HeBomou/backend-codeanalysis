@@ -19,7 +19,7 @@ public class MainApplication {
 		while(true) {
 			try {
 				var cmd = br.readLine();
-				cli.Deal(cmd);
+				cli.Deal(cmd.split(" "));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

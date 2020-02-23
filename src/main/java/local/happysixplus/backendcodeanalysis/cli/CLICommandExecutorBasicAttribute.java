@@ -1,16 +1,12 @@
 package local.happysixplus.backendcodeanalysis.cli;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import local.happysixplus.backendcodeanalysis.service.GraphService;
 import lombok.var;
 
 public class CLICommandExecutorBasicAttribute implements CLICommandExecutor {
-    @Autowired
-    GraphService graphService;
 
     @Override
-    public void Execute(String[] params) {
+    public void Execute(String[] params, GraphService graphService) {
         var edgeNum = graphService.GetEdgeNum();
         var vertexNum = graphService.GetVertexNum();
         var connectiveDomainNum = graphService.GetConnectiveDomainNum();
