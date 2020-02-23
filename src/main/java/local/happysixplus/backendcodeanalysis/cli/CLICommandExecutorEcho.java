@@ -6,7 +6,7 @@ import lombok.var;
 public class CLICommandExecutorEcho implements CLICommandExecutor {
 
     @Override
-    public void Execute(String[] params, GraphService graphService) {
+    public void execute(String[] params, GraphService graphService) {
         for (var string : params) {
             System.out.print(string);
             System.out.print(" ");

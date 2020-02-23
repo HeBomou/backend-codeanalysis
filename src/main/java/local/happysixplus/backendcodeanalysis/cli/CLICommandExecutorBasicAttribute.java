@@ -6,7 +6,7 @@ import lombok.var;
 public class CLICommandExecutorBasicAttribute implements CLICommandExecutor {
 
     @Override
-    public void Execute(String[] params, GraphService graphService) {
+    public void execute(String[] params, GraphService graphService) {
         var edgeNum = graphService.GetEdgeNum();
         var vertexNum = graphService.GetVertexNum();
         var connectiveDomainNum = graphService.GetConnectiveDomainNum();

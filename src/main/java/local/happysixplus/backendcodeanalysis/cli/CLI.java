@@ -23,11 +23,11 @@ public class CLI {
         executorMap.put("set-closeness-min", new CLICommandExecutorSetClosenessMin());
     }
 
-    public void Deal(String[] args) {
+    public void deal(String[] args) {
         if (args.length == 0)
             return;
         var cmdType = args[0];
         String[] params = Arrays.copyOfRange(args, 1, args.length);
-        executorMap.get(cmdType).Execute(params, graphService);
+        executorMap.get(cmdType).execute(params, graphService);
     }
 }
