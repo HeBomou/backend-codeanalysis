@@ -18,6 +18,7 @@ public class MainApplication {
 		while(true) {
 			try {
 				var cmd = br.readLine();
+				if(cmd.equals("quit")) break;
 				cli.Deal(cmd.split(" "));
 			} catch (Exception e) {
 				e.printStackTrace();
