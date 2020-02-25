@@ -80,7 +80,7 @@ public class GraphServiceImpl implements GraphService {
         ConnectiveDomainVo getConnectiveDomainVo() {
             List<EdgeVo> edgeVo = new ArrayList<>();
             for (int i = 0; i < vertexNum; i++) {
-                for (int j = 0; j < vertexs.get(i).outDegree; j++) {
+                for (int j = 0; j < vertexs.get(i).edges.size(); j++) {
                     Edge e = vertexs.get(i).edges.get(j);
                     edgeVo.add(new EdgeVo(e.from.getVertexVo(), e.to.getVertexVo(), e.closeness));
                 }
@@ -132,7 +132,11 @@ public class GraphServiceImpl implements GraphService {
                     connectiveDomain.add(new ConnectiveDomain(tmpDomain));
             }
             // 按连通域点的个数排序
-
+            Collections.sort(connectiveDomain, new Comparator<ConnectiveDomain>() {
+                public int compare(ConnectiveDomain o1, ConnectiveDomain o2) {
+                    return o2.vertexNum - o1.vertexNum;
+                }
+            });
         }
 
         void DFS(Vertex vertex, Map<String, Boolean> isChecked, List<Vertex> tmpDomain) {
@@ -202,7 +206,8 @@ public class GraphServiceImpl implements GraphService {
     public List<ConnectiveDomainVo> getConnectiveDomains() {
         List<ConnectiveDomainVo> resVo = new ArrayList<>();
         for (int i = 0; i < graph.connectiveDomain.size(); i++) {
-            resVo.add(graph.connectiveDomain.get(i).getConnectiveDomainVo());
+            if (graph.connectiveDomain.get(i).vertexNum > 1)
+                resVo.add(graph.connectiveDomain.get(i).getConnectiveDomainVo());
         }
         return resVo;
     }
@@ -217,7 +222,8 @@ public class GraphServiceImpl implements GraphService {
     public List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin() {
         List<ConnectiveDomainVo> resVo = new ArrayList<>();
         for (int i = 0; i < limitedGraph.connectiveDomain.size(); i++) {
-            resVo.add(limitedGraph.connectiveDomain.get(i).getConnectiveDomainVo());
+            if (limitedGraph.connectiveDomain.get(i).vertexNum > 1)
+                resVo.add(limitedGraph.connectiveDomain.get(i).getConnectiveDomainVo());
         }
         return resVo;
     }

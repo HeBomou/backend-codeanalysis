@@ -44,4 +44,11 @@ class DemoApplicationTests {
 		graphService.loadCode("call_dependencies.txt");
 		graphService.setClosenessMin(0.05);
 	}
+
+	@Test
+    void getConnectiveDomainsWithClosenessMin() {
+		graphService.loadCode("call_dependencies.txt");
+		graphService.setClosenessMin(0.05);
+		graphService.getConnectiveDomainsWithClosenessMin();
+	}
 }
