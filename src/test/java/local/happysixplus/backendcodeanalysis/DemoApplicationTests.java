@@ -26,4 +26,22 @@ class DemoApplicationTests {
 		graphService.loadCode("call_dependencies.txt");
 		System.out.println(graphService.getEdgeNum());
 	}
+
+	@Test
+	void getConnectiveDomainNum() {
+		graphService.loadCode("call_dependencies.txt");
+        System.out.println(graphService.getConnectiveDomainNum());
+	}
+	
+	@Test
+	void getConnectiveDomains(){
+		graphService.loadCode("call_dependencies.txt");
+		System.out.println(graphService.getConnectiveDomains().size());
+	}
+
+	@Test
+	void setClosenessMin(){
+		graphService.loadCode("call_dependencies.txt");
+		graphService.setClosenessMin(0.05);
+	}
 }

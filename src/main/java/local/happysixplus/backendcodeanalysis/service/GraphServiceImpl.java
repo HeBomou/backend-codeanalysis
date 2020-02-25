@@ -1,16 +1,20 @@
 package local.happysixplus.backendcodeanalysis.service;
 
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Collections;
+import java.util.Comparator;
 import java.io.*;
 
 import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
+import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 
@@ -19,7 +23,12 @@ public class GraphServiceImpl implements GraphService {
     // 内部顶点类,包括顶点函数名称和从该点出发的边
     public class Vertex {
         String functionName;
+        int inDegree;
+        int outDegree;
+        // 有向图的边：从该点出发的边
         List<Edge> edges = new ArrayList<>();
+        // 无向图的边
+        List<Edge> undirectedEdge = new ArrayList<>();
 
         Vertex(String name) {
             functionName = name;
@@ -27,6 +36,14 @@ public class GraphServiceImpl implements GraphService {
 
         void addEdge(Edge e) {
             edges.add(e);
+        }
+
+        void addUndirectedEdge(Edge e) {
+            undirectedEdge.add(e);
+        }
+
+        VertexVo getVertexVo() {
+            return new VertexVo(functionName);
         }
     }
 
@@ -44,47 +61,102 @@ public class GraphServiceImpl implements GraphService {
         void setCloseness(Double num) {
             closeness = num;
         }
+
+        EdgeVo getEdgeVo() {
+            return new EdgeVo(from.getVertexVo(), to.getVertexVo(), closeness);
+        }
+    }
+
+    // 内部连通域类
+    public class ConnectiveDomain {
+        int vertexNum;
+        List<Vertex> vertexs = new ArrayList<>();
+
+        ConnectiveDomain(List<Vertex> v) {
+            vertexs = v;
+            vertexNum = v.size();
+        }
+
+        ConnectiveDomainVo getConnectiveDomainVo() {
+            List<EdgeVo> edgeVo = new ArrayList<>();
+            for (int i = 0; i < vertexNum; i++) {
+                for (int j = 0; j < vertexs.get(i).outDegree; j++) {
+                    Edge e = vertexs.get(i).edges.get(j);
+                    edgeVo.add(new EdgeVo(e.from.getVertexVo(), e.to.getVertexVo(), e.closeness));
+                }
+            }
+            return new ConnectiveDomainVo(vertexNum, edgeVo);
+        }
     }
 
     // 内部有向图类
     public class Graph {
         Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
-        Double closenessMin = Double.NEGATIVE_INFINITY;
+        Double closenessMin;
+        List<ConnectiveDomain> connectiveDomain = new ArrayList<>();
 
-        Graph(List<String> caller, List<String> callee) {
+        Graph(List<String> caller, List<String> callee, Double clo) {
+            closenessMin = clo;
+            Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
             // 去重得到所有顶点集合
-            List<String> verStr = new ArrayList<>();
-            verStr.addAll(caller);
-            verStr.addAll(callee);
-            verStr = new ArrayList<String>(new HashSet<>(verStr));
-            for (String each : verStr) {
-                vertexMap.put(each, new Vertex(each));
+            List<String> vertexName = new ArrayList<>();
+            vertexName.addAll(caller);
+            vertexName.addAll(callee);
+            vertexName = new ArrayList<String>(new HashSet<>(vertexName));
+            for (String vertex : vertexName) {
+                Vertex newVertex = new Vertex(vertex);
+                newVertex.outDegree = Collections.frequency(caller, vertex);
+                newVertex.inDegree = Collections.frequency(callee, vertex);
+                vertexMap.put(vertex, newVertex);
+                isChecked.put(vertex, false);
             }
             // 为每个顶点添加边集
             for (int i = 0; i < caller.size(); i++) {
-                String startStr = caller.get(i);
-                String endStr = callee.get(i);
-                Double closeness = 2.0
-                        / (Collections.frequency(caller, startStr) + Collections.frequency(callee, endStr));
-                if (closeness < closenessMin)
-                    continue;
                 Vertex begin = vertexMap.get(caller.get(i));
                 Vertex end = vertexMap.get(callee.get(i));
+                Double closeness = 2.0 / (begin.outDegree + end.inDegree);
+                // 控制紧密度
+                if (closeness < closenessMin)
+                    continue;
                 Edge tmpEdge = new Edge(begin, end);
                 tmpEdge.setCloseness(closeness);
-                vertexMap.get(caller.get(i)).addEdge(tmpEdge);
+                begin.addEdge(tmpEdge);
+                begin.addUndirectedEdge(tmpEdge);
+                end.addUndirectedEdge(tmpEdge);
+            }
+            // 计算连通域
+            for (String vertex : vertexMap.keySet()) {
+                List<Vertex> tmpDomain = new ArrayList<>();
+                DFS(vertexMap.get(vertex), isChecked, tmpDomain);
+                if (tmpDomain.size() > 0)
+                    connectiveDomain.add(new ConnectiveDomain(tmpDomain));
+            }
+            // 按连通域点的个数排序
+
+        }
+
+        void DFS(Vertex vertex, Map<String, Boolean> isChecked, List<Vertex> tmpDomain) {
+            if (isChecked.get(vertex.functionName))
+                return;
+            isChecked.put(vertex.functionName, true);
+            tmpDomain.add(vertex);
+            for (Edge e : vertex.undirectedEdge) {
+                Vertex anotherVertex = (e.from == vertex) ? e.to : e.from;
+                DFS(anotherVertex, isChecked, tmpDomain);
             }
         }
     }
 
-    // 完整有向图
-    Graph graph;
     // 输入边集对应顶点
     List<String> caller = new ArrayList<>();
     List<String> callee = new ArrayList<>();
+    // 完整有向图
+    Graph graph = new Graph(caller, callee, -1.0);
+    Graph limitedGraph = new Graph(caller, callee, -1.0);
 
     @Override
     public void loadCode(String path) {
+        List<List<String>> edgePair = new ArrayList<List<String>>();
         // 从文件中读取函数依赖关系
         File file = new File(path);
         BufferedReader bf = null;
@@ -92,15 +164,23 @@ public class GraphServiceImpl implements GraphService {
             bf = new BufferedReader(new FileReader(file));
             String line = null;
             while ((line = bf.readLine()) != null) {
+                List<String> tempList = new ArrayList<>();
                 String[] temp = line.split(" ");
-                caller.add(temp[0].substring(2));
-                callee.add(temp[1].substring(3));
+                tempList.add(temp[0].substring(2));
+                tempList.add(temp[1].substring(3));
+                if (!edgePair.contains(tempList)) {
+                    edgePair.add(tempList);
+                    caller.add(tempList.get(0));
+                    callee.add(tempList.get(1));
+                }
             }
             bf.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        graph = new Graph(caller, callee);
+        graph = new Graph(caller, callee, -1.0);
+        limitedGraph = new Graph(caller, callee, -1.0);
+        return;
     }
 
     @Override
@@ -115,21 +195,31 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public int getConnectiveDomainNum() {
-        return -1;
+        return limitedGraph.connectiveDomain.size();
     }
 
     @Override
     public List<ConnectiveDomainVo> getConnectiveDomains() {
-        return null;
+        List<ConnectiveDomainVo> resVo = new ArrayList<>();
+        for (int i = 0; i < graph.connectiveDomain.size(); i++) {
+            resVo.add(graph.connectiveDomain.get(i).getConnectiveDomainVo());
+        }
+        return resVo;
     }
 
     @Override
     public void setClosenessMin(double closeness) {
+        limitedGraph = new Graph(caller, callee, closeness);
+        return;
     }
 
     @Override
     public List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin() {
-        return null;
+        List<ConnectiveDomainVo> resVo = new ArrayList<>();
+        for (int i = 0; i < limitedGraph.connectiveDomain.size(); i++) {
+            resVo.add(limitedGraph.connectiveDomain.get(i).getConnectiveDomainVo());
+        }
+        return resVo;
     }
 
     @Override
