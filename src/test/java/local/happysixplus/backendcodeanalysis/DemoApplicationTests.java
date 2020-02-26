@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import local.happysixplus.backendcodeanalysis.service.GraphService;
+import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 
 @SpringBootTest
 class DemoApplicationTests {
@@ -15,14 +16,15 @@ class DemoApplicationTests {
 	void contextLoads() {
 		graphService.loadCode("call_dependencies.txt");
 	}
+
 	@Test
-	void getVertexNum(){
+	void getVertexNum() {
 		graphService.loadCode("call_dependencies.txt");
 		System.out.println(graphService.getVertexNum());
 	}
 
 	@Test
-	void getEdgeNum(){
+	void getEdgeNum() {
 		graphService.loadCode("call_dependencies.txt");
 		System.out.println(graphService.getEdgeNum());
 	}
@@ -30,25 +32,33 @@ class DemoApplicationTests {
 	@Test
 	void getConnectiveDomainNum() {
 		graphService.loadCode("call_dependencies.txt");
-        System.out.println(graphService.getConnectiveDomainNum());
+		System.out.println(graphService.getConnectiveDomainNum());
 	}
-	
+
 	@Test
-	void getConnectiveDomains(){
+	void getConnectiveDomains() {
 		graphService.loadCode("call_dependencies.txt");
 		System.out.println(graphService.getConnectiveDomains().size());
 	}
 
 	@Test
-	void setClosenessMin(){
+	void setClosenessMin() {
 		graphService.loadCode("call_dependencies.txt");
-		graphService.setClosenessMin(0.05);
+		graphService.setClosenessMin(0.5);
 	}
 
 	@Test
-    void getConnectiveDomainsWithClosenessMin() {
+	void getConnectiveDomainsWithClosenessMin() {
 		graphService.loadCode("call_dependencies.txt");
 		graphService.setClosenessMin(0.05);
 		graphService.getConnectiveDomainsWithClosenessMin();
+	}
+
+	@Test
+	void getShortestPath() {
+		graphService.loadCode("call_dependencies.txt");
+		String from = "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()";
+		String to = "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)";
+		graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
 	}
 }

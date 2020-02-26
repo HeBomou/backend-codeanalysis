@@ -1,8 +1,6 @@
 package local.happysixplus.backendcodeanalysis.service;
 
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -156,6 +154,7 @@ public class GraphServiceImpl implements GraphService {
     List<String> callee = new ArrayList<>();
     // 完整有向图
     Graph graph = new Graph(caller, callee, -1.0);
+    // 变化有向图
     Graph limitedGraph = new Graph(caller, callee, -1.0);
 
     @Override
@@ -215,7 +214,6 @@ public class GraphServiceImpl implements GraphService {
     @Override
     public void setClosenessMin(double closeness) {
         limitedGraph = new Graph(caller, callee, closeness);
-        return;
     }
 
     @Override
@@ -230,6 +228,60 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public PathVo getShortestPath(VertexVo start, VertexVo end) {
-        return null;
+        Map<String, TpVertex> tpVertexs = new HashMap<>();
+        // 入度为0的点集合
+        List<TpVertex> vertexWithZero = new ArrayList<>();
+        // 初始化两个list
+        for (String vstr : graph.vertexMap.keySet()) {
+            TpVertex temp;
+            if (vstr.equals(start.getFunctionName()))
+                temp = new TpVertex(graph.vertexMap.get(vstr), 1, 0);
+            else
+                temp = new TpVertex(graph.vertexMap.get(vstr), 0, Integer.MAX_VALUE / 3);
+            tpVertexs.put(vstr, temp);
+            if (temp.inDegree == 0)
+                vertexWithZero.add(temp);
+        }
+        while (vertexWithZero.size() > 0) {
+            TpVertex from = vertexWithZero.get(0);
+            for (int i = 0; i < from.vertex.outDegree; i++) {
+                String toStr = from.vertex.edges.get(i).to.functionName;
+                TpVertex to = tpVertexs.get(toStr);
+                to.pathNum += from.pathNum;
+                to.inDegree--;
+                if (to.inDegree == 0)
+                    vertexWithZero.add(to);
+                if (from.edgeNum + 1 < to.edgeNum) {
+                    to.edgeNum = from.edgeNum + 1;
+                    to.preEdge = from.vertex.edges.get(i);
+                }
+            }
+            vertexWithZero.remove(0);
+        }
+        List<EdgeVo> path = new ArrayList<>();
+        TpVertex temp = tpVertexs.get(end.getFunctionName());
+        int pathNum = temp.pathNum;
+        while (!temp.vertex.functionName.equals(start.getFunctionName())) {
+            path.add(temp.preEdge.getEdgeVo());
+            temp = tpVertexs.get(temp.preEdge.from.functionName);
+        }
+        Collections.reverse(path);
+        return new PathVo(pathNum, path);
+    }
+
+    public class TpVertex {
+        Vertex vertex;
+        int pathNum;
+        int edgeNum;
+        int inDegree;
+        Edge preEdge;
+
+        TpVertex(Vertex v, int pn, int en) {
+            vertex = v;
+            pathNum = pn;
+            edgeNum = en;
+            inDegree = v.inDegree;
+            preEdge = null;
+        }
     }
 }

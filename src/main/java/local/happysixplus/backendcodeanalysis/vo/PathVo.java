@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PathVo {
-    VertexVo start;
+    int pathNum;
     List<EdgeVo> path;
 }
