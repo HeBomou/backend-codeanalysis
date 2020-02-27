@@ -8,8 +8,13 @@ public class CLICommandExecutorConnectiveDomain implements CLICommandExecutor {
     @Override
     public void execute(String[] params, GraphService graphService) {
         var domains = graphService.getConnectiveDomains();
-        for (var domain : domains) {
-            System.out.println(domain.getVertexNum());
+        for (int i = 0; i < domains.size(); i++) {
+            System.out.println("Domain " + i + " , vertex:" + domains.get(i).getVertexNum());
+            var edges = domains.get(i).getEdgeVos();
+            for (var edge : edges)
+                System.out.println(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->"
+                        + edge.getTo().getFunctionName());
+            System.out.println();
         }
     }
 }

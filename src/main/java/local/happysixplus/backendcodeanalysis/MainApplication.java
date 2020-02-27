@@ -21,6 +21,7 @@ public class MainApplication {
 				if(cmd.equals("quit")) break;
 				cli.deal(cmd.split(" "));
 			} catch (Exception e) {
+				System.out.println("命令输入有误");
 				e.printStackTrace();
 			}
 		}

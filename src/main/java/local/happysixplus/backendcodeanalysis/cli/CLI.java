@@ -16,6 +16,7 @@ public class CLI {
     public CLI() {
         executorMap.put("basic-attribute", new CLICommandExecutorBasicAttribute());
         executorMap.put("connective-domain", new CLICommandExecutorConnectiveDomain());
+        executorMap.put("connective-domain-num", new CLICommandExecutorConnectiveDomainNum());
         executorMap.put("connective-domain-with-closeness-min",
                 new CLICommandExecutorConnectiveDomainWithClosenessMin());
         executorMap.put("echo", new CLICommandExecutorEcho());
