@@ -47,14 +47,38 @@ class CliTests {
 	}
 
     @Test
+    void IllegalInput(){
+        try{
+            testCLI("testcases/testcase6/test_case6.txt", "testcases/testcase6/expected6.txt");
+        }catch (Exception e){
+            //读取测试文件异常
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+    @Test
     void BasicAttribute(){
-        testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
+        //testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
+        try{
+            testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
+        }catch (Exception e){
+            //读取测试文件异常
+            e.printStackTrace();
+            assert(false);
+        }
 
     }
 
     @Test
     void ConnectiveDomain(){
-        testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
+        //testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
+        try{
+            testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
+        }catch (Exception e){
+            //读取测试文件异常
+            e.printStackTrace();
+            assert(false);
+        }
 
     }
 
@@ -68,21 +92,42 @@ class CliTests {
      * @param argFileName 输入文件路径
      * @param ExpFileName 结果文件路径
      */
-    void testCLI(String argFileName, String ExpFileName){
+    void testCLI(String argFileName, String ExpFileName) throws Exception{
         outContent.reset();
         String[] args;
         try{
 
-            args = readFile("testcases/test_case4.txt").split("\n");
-            String exp = readFile("testcases/expected4.txt");
+            args = readFile(argFileName).split("\n");
+            String exp = readFile(ExpFileName);
 
             for(String arg : args){
                 cli.deal(arg.split(" "));
             }
-            assertEquals(exp, outContent.toString());
+
+
+        //     //输出
+        //     File file =new File("test_appendfile.txt");
+ 
+        // if(!file.exists()){
+        // 	file.createNewFile();
+        // }
+ 
+        // //使用true，即进行append file 
+ 
+        // FileWriter fileWritter = new FileWriter(file.getName(),true);
+ 
+ 
+        // fileWritter.write(outContent.toString());
+ 
+        // fileWritter.close();
+
+
+        assertEquals(exp, outContent.toString());
+            
 
         } catch(Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            throw e;
         }
     }
 
@@ -101,7 +146,7 @@ class CliTests {
             return new String(bytes);
 
         } catch(Exception e){
-            e.printStackTrace();
+           // e.printStackTrace();
             throw e;
         }
         

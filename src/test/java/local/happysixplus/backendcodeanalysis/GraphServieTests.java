@@ -60,6 +60,11 @@ class GraphServieTests {
 	}
 
 	@Test
+	void contextLoads3() {
+		graphService.loadCode("hbmnb");
+	}
+
+	@Test
 	void getVertexNum() {
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		System.out.println(graphService.getVertexNum());

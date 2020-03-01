@@ -1,3 +1,1 @@
-init /home/leo/Desktop/SE3/backend-codeanalysis/testcases/test_data4.txt
-set-closeness-min 1
-connective-domain-with-closeness-min
+illegal input

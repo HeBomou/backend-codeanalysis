@@ -1,2 +1,2 @@
-init testcases/test_case1.txt
+init testcases/testcase4/test_data4.txt
 basic-attribute
