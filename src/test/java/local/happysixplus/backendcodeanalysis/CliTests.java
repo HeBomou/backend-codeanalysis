@@ -48,13 +48,13 @@ class CliTests {
 
     @Test
     void BasicAttribute(){
-        testCLI("testcases/test_case4.txt", "testcases/expected4.txt");
+        testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
 
     }
 
     @Test
     void ConnectiveDomain(){
-        testCLI("testcases/test_case5.txt", "testcases/expected5.txt");
+        testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
 
     }
 

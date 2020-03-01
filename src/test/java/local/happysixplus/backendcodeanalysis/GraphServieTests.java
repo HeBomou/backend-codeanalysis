@@ -51,49 +51,49 @@ class GraphServieTests {
 
 	@Test
 	void contextLoads() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 	}
 
 	@Test
 	void contextLoads2() {
-		graphService.loadCode("testcases/test_case2.txt");
+		graphService.loadCode("testcases/testcase2/test_case2.txt");
 	}
 
 	@Test
 	void getVertexNum() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		System.out.println(graphService.getVertexNum());
 		assertEquals(3, graphService.getVertexNum());
 	}
 
 	@Test
 	void getEdgeNum() {
-		graphService.loadCode("testcases/test_case3.txt");
+		graphService.loadCode("testcases/testcase3/test_case3.txt");
 		assertEquals(6, graphService.getEdgeNum());
 	}
 
 	@Test
 	void getEdgeNum2() {
-		graphService.loadCode("testcases/test_case2.txt");
+		graphService.loadCode("testcases/testcase2/test_case2.txt");
 		assertEquals(0, graphService.getEdgeNum());
 	}
 
 	@Test
 	void getConnectiveDomainNum() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		int a = graphService.getConnectiveDomainNum();
 		assertEquals(1, graphService.getConnectiveDomainNum());
 	}
 
 	@Test
 	void getConnectiveDomains() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		assertEquals(1, graphService.getConnectiveDomains().size());
 	}
 
 	@Test
 	void setClosenessMin() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		graphService.setClosenessMin(1);
 		assertEquals(3, graphService.getConnectiveDomainNum());
 		graphService.setClosenessMin(0.5);
@@ -102,14 +102,14 @@ class GraphServieTests {
 
 	@Test
 	void getConnectiveDomainsWithClosenessMin() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		graphService.setClosenessMin(0.05);
 		graphService.getConnectiveDomainsWithClosenessMin();
 	}
 
 	@Test
 	void getShortestPath() {
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		String from = "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()";
 		String to = "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
@@ -141,7 +141,7 @@ class GraphServieTests {
 	void CLICommandExecutorBasicAttribute() {
 
 		outContent.reset();
-		graphService.loadCode("testcases/test_case1.txt");
+		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		CLICommandExecutor cli = new CLICommandExecutorBasicAttribute();
 		cli.execute(null, graphService);
 
