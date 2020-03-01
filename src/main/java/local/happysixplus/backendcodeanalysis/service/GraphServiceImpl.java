@@ -159,8 +159,8 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public void loadCode(String path) {
-        List<String> caller = new ArrayList<>();
-        List<String> callee = new ArrayList<>();
+        caller = new ArrayList<>();
+        callee = new ArrayList<>();
         List<List<String>> edgePair = new ArrayList<List<String>>();
         // 从文件中读取函数依赖关系
         File file = new File(path);
