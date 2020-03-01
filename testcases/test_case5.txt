@@ -1,0 +1,3 @@
+init /home/leo/Desktop/SE3/backend-codeanalysis/testcases/test_case1.txt
+connective-domain-num
+connective-domain

@@ -48,31 +48,40 @@ class CliTests {
 
     @Test
     void BasicAttribute(){
-
-        outContent.reset();
-        String[] args;
-
-        try{
-
-            args = readFile("testcases/test_case4.txt").split("\n");
-            String exp = readFile("testcases/expected4.txt");
-
-            cli.deal(args[0].split(" "));
-            cli.deal(args[1].split(" "));
-            assertEquals(exp, outContent.toString());
-
-        } catch(Exception e){
-            e.printStackTrace();
-        }
+        testCLI("testcases/test_case4.txt", "testcases/expected4.txt");
 
 
 
         
     }
 
+    @Test
     void ConnectiveDomain(){
-        outContent.reset();
+        testCLI("testcases/test_case5.txt", "testcases/expected5.txt");
 
+    }
+
+    /**
+     * 读取文件对CLI测试
+     * @param argFileName 输入文件路径
+     * @param ExpFileName 结果文件路径
+     */
+    void testCLI(String argFileName, String ExpFileName){
+        outContent.reset();
+        String[] args;
+        try{
+
+            args = readFile("testcases/test_case4.txt").split("\n");
+            String exp = readFile("testcases/expected4.txt");
+
+            for(String arg : args){
+                cli.deal(arg.split(" "));
+            }
+            assertEquals(exp, outContent.toString());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
