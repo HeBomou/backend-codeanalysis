@@ -50,15 +50,17 @@ class CliTests {
     void BasicAttribute(){
         testCLI("testcases/test_case4.txt", "testcases/expected4.txt");
 
-
-
-        
     }
 
     @Test
     void ConnectiveDomain(){
         testCLI("testcases/test_case5.txt", "testcases/expected5.txt");
 
+    }
+
+    @Test
+    void SetClosenessMin(){
+        //testCLI("testcases/test_case6.txt", "testcases/expected6.txt");
     }
 
     /**
