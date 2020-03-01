@@ -22,11 +22,13 @@ import java.io.*;
 
 
 @SpringBootTest
-class DemoApplicationTests {
+class GraphServieTests {
 	@Autowired
 	GraphService graphService;
 
+	//输出流
 	static ByteArrayOutputStream outContent;
+	//系统原控制台输出流
 	static PrintStream console = null;
 
 	@BeforeAll
@@ -76,7 +78,7 @@ class DemoApplicationTests {
 
 	@Test
 	void getConnectiveDomainNum() {
-		graphService.loadCode("testcases.test_case1.txt");
+		graphService.loadCode("testcases/test_case1.txt");
 		int a = graphService.getConnectiveDomainNum();
 		assertEquals(1, graphService.getConnectiveDomainNum());
 	}
