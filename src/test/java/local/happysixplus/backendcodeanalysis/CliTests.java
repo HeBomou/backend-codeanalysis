@@ -47,9 +47,52 @@ class CliTests {
 	}
 
     @Test
-    void Init(){
-        String[] args = {"init", "testcases/test_case1.txt"};
-        cli.deal(args);
+    void BasicAttribute(){
+
+        outContent.reset();
+        String[] args;
+
+        try{
+
+            args = readFile("testcases/test_case4.txt").split("\n");
+            String exp = readFile("testcases/expected4.txt");
+
+            cli.deal(args[0].split(" "));
+            cli.deal(args[1].split(" "));
+            assertEquals(exp, outContent.toString());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+
+        
+    }
+
+    void ConnectiveDomain(){
+        outContent.reset();
+
+    }
+
+    /**
+     * 读取文本文件，转为string返回
+     * @param fileName 文件路径
+     * @return
+     * @throws Exception
+     */
+    String readFile(String fileName) throws Exception{
+        try{
+            InputStream is = new FileInputStream(fileName);
+            byte[] bytes = new byte[is.available()];
+            is.read(bytes);
+            is.close();
+            return new String(bytes);
+
+        } catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
         
     }
 }
