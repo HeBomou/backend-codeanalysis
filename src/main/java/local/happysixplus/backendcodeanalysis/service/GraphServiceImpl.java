@@ -1,6 +1,7 @@
 package local.happysixplus.backendcodeanalysis.service;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -162,23 +163,23 @@ public class GraphServiceImpl implements GraphService {
     public void loadCode(String path) {
         caller = new ArrayList<>();
         callee = new ArrayList<>();
-        List<List<String>> edgePair = new ArrayList<List<String>>();
         // 从文件中读取函数依赖关系
         File file = new File(path);
         BufferedReader bf = null;
         try {
             bf = new BufferedReader(new FileReader(file));
             String line = null;
+            Set<List<String>> edgeSet = new HashSet<>();
             while ((line = bf.readLine()) != null) {
                 List<String> tempList = new ArrayList<>();
                 String[] temp = line.split(" ");
                 tempList.add(temp[0].substring(2));
                 tempList.add(temp[1].substring(3));
-                if (!edgePair.contains(tempList)) {
-                    edgePair.add(tempList);
-                    caller.add(tempList.get(0));
-                    callee.add(tempList.get(1));
-                }
+                edgeSet.add(tempList);
+            }
+            for (var edge : edgeSet) {
+                caller.add(edge.get(0));
+                callee.add(edge.get(1));
             }
             bf.close();
         } catch (IOException e) {
@@ -279,7 +280,7 @@ public class GraphServiceImpl implements GraphService {
     @Override
     public List<String> getSimilarVertex(String funcName) {
         var res = new ArrayList<String>();
-        for(var fullName : graph.vertexMap.keySet()) {
+        for (var fullName : graph.vertexMap.keySet()) {
             if (fullName.contains(funcName))
                 res.add(fullName);
         }
