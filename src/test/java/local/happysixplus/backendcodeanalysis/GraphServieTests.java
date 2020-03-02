@@ -86,7 +86,6 @@ class GraphServieTests {
 	@Test
 	void getConnectiveDomainNum() {
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
-		int a = graphService.getConnectiveDomainNum();
 		assertEquals(1, graphService.getConnectiveDomainNum());
 	}
 
@@ -143,6 +142,37 @@ class GraphServieTests {
 	}
 
 	@Test
+	void getShortestPath2(){
+		outContent.reset();
+		graphService.loadCode("testcases/testcase7/test_case7.txt");
+		String from = "M:edu.ncsu.csc.itrust.validate.BeanValidatorTest:<init>()";
+		String to = "edu.ncsu.csc.itrust.validate.BeanValidator:<init>()";
+		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
+		printPath(result);
+		 //       输出到文件
+		 try{
+        File file =new File("test_appendfile.txt");
+ 
+        if(!file.exists()){
+        	file.createNewFile();
+        }
+ 
+        //使用true，即进行append file 
+ 
+        FileWriter fileWritter = new FileWriter(file.getName(), true);
+ 
+ 
+        fileWritter.write(outContent.toString());
+ 
+		fileWritter.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		assert(false);
+
+	}
+
+	@Test
 	void CLICommandExecutorBasicAttribute() {
 
 		outContent.reset();
@@ -151,6 +181,19 @@ class GraphServieTests {
 		cli.execute(null, graphService);
 
 		assertEquals("Edge: 2\nVertex: 3\nConnectiveDomain: 1\n", outContent.toString());
+	}
+
+	/**
+	 * 打印一个路径
+	 */
+	void printPath(PathVo path){
+		System.out.println("path num: " + path.getPathNum());
+		for(EdgeVo edge: path.getPath()){
+			System.out.print(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->");
+		}
+		System.out.println(path.getPath().get(path.getPath().size() - 1).getTo().getFunctionName());
+
+
 	}
 
 }

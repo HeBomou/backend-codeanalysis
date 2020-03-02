@@ -101,8 +101,8 @@ class CliTests {
             }
 
 
-        //     //输出
-        //     File file =new File("test_appendfile.txt");
+        //输出到文件
+        //File file =new File("test_appendfile.txt");
  
         // if(!file.exists()){
         // 	file.createNewFile();
@@ -147,4 +147,6 @@ class CliTests {
         }
         
     }
+
+    
 }
