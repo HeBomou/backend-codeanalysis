@@ -1,0 +1,2 @@
+init testcases/testcase4/test_data4.txt
+basic-attribute

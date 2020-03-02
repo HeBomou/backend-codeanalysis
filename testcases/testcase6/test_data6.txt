@@ -1,0 +1,4 @@
+M:edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge() (S)edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
+M:edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge() (S)edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+M:edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge() (O)edu.ncsu.csc.itrust.risk.factors.AgeFactor:<init>(edu.ncsu.csc.itrust.beans.PatientBean,int)
+M:edu.ncsu.csc.itrust.risk.HeartDiseaseRisks:getDiseaseRiskFactors() (O)edu.ncsu.csc.itrust.risk.factors.AgeFactor:<init>(edu.ncsu.csc.itrust.beans.PatientBean,int)
