@@ -22,6 +22,7 @@ public class CLI {
         executorMap.put("echo", new CLICommandExecutorEcho());
         executorMap.put("init", new CLICommandExecutorInit());
         executorMap.put("set-closeness-min", new CLICommandExecutorSetClosenessMin());
+        executorMap.put("shortest-path", new CLICommandExecutorShortestPath());
     }
 
     public void deal(String[] args) {
