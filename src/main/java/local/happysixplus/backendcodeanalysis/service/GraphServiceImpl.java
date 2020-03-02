@@ -99,16 +99,21 @@ public class GraphServiceImpl implements GraphService {
             closenessMin = clo;
             Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
             // 去重得到所有顶点集合
-            List<String> vertexName = new ArrayList<>();
-            vertexName.addAll(caller);
-            vertexName.addAll(callee);
-            vertexName = new ArrayList<String>(new HashSet<>(vertexName));
-            for (String vertex : vertexName) {
-                Vertex newVertex = new Vertex(vertex);
-                newVertex.outDegree = Collections.frequency(caller, vertex);
-                newVertex.inDegree = Collections.frequency(callee, vertex);
-                vertexMap.put(vertex, newVertex);
-                isChecked.put(vertex, false);
+            var vertexNameSet = new HashSet<String>();
+            vertexNameSet.addAll(caller);
+            vertexNameSet.addAll(callee);
+            var vertexNames = new ArrayList<String>(vertexNameSet);
+            for (String vertexName : vertexNames) {
+                Vertex newVertex = new Vertex(vertexName);
+                vertexMap.put(vertexName, newVertex);
+                isChecked.put(vertexName, false);
+            }
+            // 得到每个顶点的出度入度
+            for (int i = 0; i < caller.size(); i++) {
+                var begin = vertexMap.get(caller.get(i));
+                var end = vertexMap.get(callee.get(i));
+                begin.outDegree++;
+                end.inDegree++;
             }
             // 为每个顶点添加边集
             for (int i = 0; i < caller.size(); i++) {
