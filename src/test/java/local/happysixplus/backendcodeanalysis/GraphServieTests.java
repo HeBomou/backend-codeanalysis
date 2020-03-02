@@ -145,30 +145,30 @@ class GraphServieTests {
 	void getShortestPath2(){
 		outContent.reset();
 		graphService.loadCode("testcases/testcase7/test_case7.txt");
-		String from = "edu.ncsu.csc.itrust.validate.BeanValidatorTest:<init>()";
-		String to = "edu.ncsu.csc.itrust.validate.BeanValidator:<init>()";
+		String from = "a()";
+		String to = "l()";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
 		printPath(result);
 		 //       输出到文件
-		 try{
-        File file =new File("test_appendfile.txt");
+		//  try{
+        // File file =new File("test_appendfile.txt");
  
-        if(!file.exists()){
-        	file.createNewFile();
-        }
+        // if(!file.exists()){
+        // 	file.createNewFile();
+        // }
  
-        //使用true，即进行append file 
+        // //使用true，即进行append file 
  
-        FileWriter fileWritter = new FileWriter(file.getName(), true);
+        // FileWriter fileWritter = new FileWriter(file.getName(), true);
  
  
-        fileWritter.write(outContent.toString());
+        // fileWritter.write(outContent.toString());
  
-		fileWritter.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		assert(false);
+		// fileWritter.close();
+		// }catch(Exception e){
+		// 	e.printStackTrace();
+		// }
+		assertEquals("path num: 7\na()--0.6666666666666666-->c()--0.5-->h()--1.0-->i()--0.6666666666666666-->l()\n", outContent.toString());
 
 	}
 
