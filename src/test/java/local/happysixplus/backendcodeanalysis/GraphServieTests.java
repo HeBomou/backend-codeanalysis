@@ -177,7 +177,7 @@ class GraphServieTests {
 		outContent.reset();
 		graphService.loadCode("testcases/testcase8/test_case8.txt");
 		String from = "a()";
-		String to = "t()";
+		String to = "l()";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
 		printPath(result);
 		 //       输出到文件
@@ -199,9 +199,7 @@ class GraphServieTests {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		//assertEquals("path num: 7\na()--0.6666666666666666-->c()--0.5-->h()--1.0-->i()--0.6666666666666666-->l()\n", outContent.toString());
-		assertEquals(6, result.getPathNum());
-		assert(false);
+		assertEquals("path num: 10\na()--0.6666666666666666-->c()--0.5-->e()--0.6666666666666666-->g()--0.5-->k()--0.5-->l()\n", outContent.toString());
 
 	}
 
