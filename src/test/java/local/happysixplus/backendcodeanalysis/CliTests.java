@@ -47,7 +47,7 @@ class CliTests {
 	}
 
     @Test
-    void IllegalInput(){
+    void SetClosenessMin(){
         try{
             testCLI("testcases/testcase6/test_case6.txt", "testcases/testcase6/expected6.txt");
         }catch (Exception e){
@@ -82,10 +82,6 @@ class CliTests {
 
     }
 
-    @Test
-    void SetClosenessMin(){
-        //testCLI("testcases/test_case6.txt", "testcases/expected6.txt");
-    }
 
     /**
      * 读取文件对CLI测试
@@ -126,7 +122,7 @@ class CliTests {
             
 
         } catch(Exception e){
-            //e.printStackTrace();
+            e.printStackTrace();
             throw e;
         }
     }
@@ -146,7 +142,7 @@ class CliTests {
             return new String(bytes);
 
         } catch(Exception e){
-           // e.printStackTrace();
+            e.printStackTrace();
             throw e;
         }
         
