@@ -49,4 +49,9 @@ public interface GraphService {
      * 获取图中从start出发到end的最短路
      */
     PathVo getShortestPath(VertexVo start, VertexVo end);
+
+    /**
+     * 获取图中与funcName相似的函数名
+     */
+    List<String> getSimilarVertex(String funcName);
 }
