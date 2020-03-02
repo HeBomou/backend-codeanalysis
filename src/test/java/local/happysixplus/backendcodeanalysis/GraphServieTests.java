@@ -173,6 +173,39 @@ class GraphServieTests {
 	}
 
 	@Test
+	void getShortestPath3(){
+		outContent.reset();
+		graphService.loadCode("testcases/testcase8/test_case8.txt");
+		String from = "a()";
+		String to = "t()";
+		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
+		printPath(result);
+		 //       输出到文件
+		 try{
+        File file =new File("test_appendfile.txt");
+ 
+        if(!file.exists()){
+        	file.createNewFile();
+        }
+ 
+        //使用true，即进行append file 
+ 
+        FileWriter fileWritter = new FileWriter(file.getName(), false);
+ 
+ 
+        fileWritter.write(outContent.toString());
+ 
+		fileWritter.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		//assertEquals("path num: 7\na()--0.6666666666666666-->c()--0.5-->h()--1.0-->i()--0.6666666666666666-->l()\n", outContent.toString());
+		assertEquals(6, result.getPathNum());
+		assert(false);
+
+	}
+
+	@Test
 	void CLICommandExecutorBasicAttribute() {
 
 		outContent.reset();
