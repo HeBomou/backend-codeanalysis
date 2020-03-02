@@ -15,6 +15,7 @@ import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexVo;
+import lombok.var;
 
 @Service
 public class GraphServiceImpl implements GraphService {
@@ -269,6 +270,16 @@ public class GraphServiceImpl implements GraphService {
         }
         Collections.reverse(path);
         return new PathVo(pathNum, path);
+    }
+
+    @Override
+    public List<String> getSimilarVertex(String funcName) {
+        var res = new ArrayList<String>();
+        for(var fullName : graph.vertexMap.keySet()) {
+            if (fullName.contains(funcName))
+                res.add(fullName);
+        }
+        return res;
     }
 
     public class TpVertex {
