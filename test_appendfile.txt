@@ -1,0 +1,4 @@
+path num: 1
+edu.ncsu.csc.itrust.validate.BeanValidatorTest:<init>()--0.08695652173913043-->edu.ncsu.csc.itrust.testutils.ValidatorProxy:<init>()--0.07142857142857142-->edu.ncsu.csc.itrust.validate.BeanValidator:<init>()
+path num: 1
+edu.ncsu.csc.itrust.validate.BeanValidatorTest:<init>()--0.08695652173913043-->edu.ncsu.csc.itrust.testutils.ValidatorProxy:<init>()--0.07142857142857142-->edu.ncsu.csc.itrust.validate.BeanValidator:<init>()

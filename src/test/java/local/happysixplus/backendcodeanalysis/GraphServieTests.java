@@ -145,7 +145,7 @@ class GraphServieTests {
 	void getShortestPath2(){
 		outContent.reset();
 		graphService.loadCode("testcases/testcase7/test_case7.txt");
-		String from = "M:edu.ncsu.csc.itrust.validate.BeanValidatorTest:<init>()";
+		String from = "edu.ncsu.csc.itrust.validate.BeanValidatorTest:<init>()";
 		String to = "edu.ncsu.csc.itrust.validate.BeanValidator:<init>()";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
 		printPath(result);
@@ -189,7 +189,7 @@ class GraphServieTests {
 	void printPath(PathVo path){
 		System.out.println("path num: " + path.getPathNum());
 		for(EdgeVo edge: path.getPath()){
-			System.out.print(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->");
+			System.out.printf(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->");
 		}
 		System.out.println(path.getPath().get(path.getPath().size() - 1).getTo().getFunctionName());
 
