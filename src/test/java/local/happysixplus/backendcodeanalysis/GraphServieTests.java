@@ -13,8 +13,6 @@ import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
 import local.happysixplus.backendcodeanalysis.cli.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -209,7 +207,7 @@ class GraphServieTests {
 		outContent.reset();
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		CLICommandExecutor cli = new CLICommandExecutorBasicAttribute();
-		cli.execute(null, graphService);
+		cli.execute(null, null, graphService);
 
 		assertEquals("Edge: 2\nVertex: 3\nConnectiveDomain: 1\n", outContent.toString());
 	}

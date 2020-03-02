@@ -3,21 +3,13 @@ package local.happysixplus.backendcodeanalysis;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import local.happysixplus.backendcodeanalysis.service.GraphService;
-import local.happysixplus.backendcodeanalysis.vo.PathVo;
-import local.happysixplus.backendcodeanalysis.vo.VertexVo;
-import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
 import local.happysixplus.backendcodeanalysis.cli.*;
-import local.happysixplus.backendcodeanalysis.MainApplication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.util.List;
+import java.util.Scanner;
 import java.io.*;
 
 import lombok.var;
@@ -118,12 +110,12 @@ class CliTests {
             //输入重定向到测试用例文件
             FileInputStream fis = new FileInputStream(argFileName);
             System.setIn(fis);
-            BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+            Scanner scanner=new Scanner(System.in);
             while(true) {
                 try {
-                    var cmd = br.readLine();
+                    var cmd = scanner.nextLine();
                     if(cmd.equals("quit")) break;
-                    cli.deal(cmd.split(" "));
+                    cli.deal(cmd.split(" "), scanner);
                 } catch (Exception e) {
                     System.out.println("命令输入有误");
                     e.printStackTrace();

@@ -3,6 +3,7 @@ package local.happysixplus.backendcodeanalysis.cli;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import local.happysixplus.backendcodeanalysis.service.GraphService;
 import local.happysixplus.backendcodeanalysis.service.GraphServiceImpl;
@@ -25,11 +26,11 @@ public class CLI {
         executorMap.put("shortest-path", new CLICommandExecutorShortestPath());
     }
 
-    public void deal(String[] args) {
+    public void deal(String[] args, Scanner scanner) {
         if (args.length == 0)
             return;
         var cmdType = args[0];
         String[] params = Arrays.copyOfRange(args, 1, args.length);
-        executorMap.get(cmdType).execute(params, graphService);
+        executorMap.get(cmdType).execute(params, scanner, graphService);
     }
 }

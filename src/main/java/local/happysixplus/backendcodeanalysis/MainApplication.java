@@ -1,7 +1,6 @@
 package local.happysixplus.backendcodeanalysis;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,17 +13,18 @@ public class MainApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run(MainApplication.class, args);
 		var cli = new CLI();
-		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		var scanner=new Scanner(System.in);
 		while(true) {
 			try {
-				var cmd = br.readLine();
+				var cmd = scanner.nextLine();
 				if(cmd.equals("quit")) break;
-				cli.deal(cmd.split(" "));
+				cli.deal(cmd.split(" "), scanner);
 			} catch (Exception e) {
 				System.out.println("命令输入有误");
 				e.printStackTrace();
 			}
 		}
+		scanner.close();
 	}
 
 }

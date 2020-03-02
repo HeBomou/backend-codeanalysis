@@ -47,8 +47,7 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
     }
 
     @Override
-    public void execute(String[] params, GraphService graphService) {
-        var scanner = new Scanner(System.in);
+    public void execute(String[] params, Scanner scanner, GraphService graphService) {
         exec: {
             var funcA = getFullFuncName(graphService, scanner, System.out, "Please input a function name.");
             if (funcA == null)
