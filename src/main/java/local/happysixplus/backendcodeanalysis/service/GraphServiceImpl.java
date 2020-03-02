@@ -261,6 +261,10 @@ public class GraphServiceImpl implements GraphService {
             }
             vertexWithZero.remove(0);
         }
+        // 判断是否能到达
+        if (tpVertexs.get(end.getFunctionName()).pathNum == 0)
+            return new PathVo(0, new ArrayList<>());
+        // 输出
         List<EdgeVo> path = new ArrayList<>();
         TpVertex temp = tpVertexs.get(end.getFunctionName());
         int pathNum = temp.pathNum;
