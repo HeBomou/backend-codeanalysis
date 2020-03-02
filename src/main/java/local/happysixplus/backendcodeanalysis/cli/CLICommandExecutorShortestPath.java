@@ -12,7 +12,7 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
 
     String getFullFuncName(GraphService service, Scanner scanner, PrintStream ps, String hint) {
         ps.println(hint);
-        String text = scanner.next();
+        String text = scanner.nextLine();
         var fullFuncs = service.getSimilarVertex(text);
         if (fullFuncs.size() == 0) {
             ps.println("There is no function name matching your input.");
@@ -23,7 +23,7 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
             ps.println("There are many function matching your input, please type the index and enter.");
             for (int i = 0; i < fullFuncs.size(); i++)
                 ps.println(i + " :" + fullFuncs.get(i));
-            idx = scanner.nextInt();
+            idx = Integer.parseInt(scanner.nextLine());
         }
         if (0 <= idx && idx < fullFuncs.size()) {
             ps.println("The full function is " + fullFuncs.get(idx));

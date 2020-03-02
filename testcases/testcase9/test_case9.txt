@@ -1,4 +1,4 @@
-init call_dependencies.txt
+init testcases/testcase9/test_data9.txt
 shortest-path
 testRegularAge()
 yearsAgo
