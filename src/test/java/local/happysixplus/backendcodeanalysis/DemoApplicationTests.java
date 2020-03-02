@@ -47,6 +47,7 @@ class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
+		graphService.loadCode("testcases/test_case3.txt");
 		graphService.loadCode("testcases/test_case1.txt");
 	}
 
