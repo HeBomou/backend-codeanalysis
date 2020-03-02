@@ -3,3 +3,4 @@ connective-domain-num
 set-closeness-min 0.45
 connective-domain-num
 connective-domain-with-closeness-min
+quit

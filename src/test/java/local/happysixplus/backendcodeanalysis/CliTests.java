@@ -11,6 +11,7 @@ import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
 import local.happysixplus.backendcodeanalysis.cli.*;
+import local.happysixplus.backendcodeanalysis.MainApplication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,22 +29,28 @@ class CliTests {
     //输出流
 	static ByteArrayOutputStream outContent;
 	//系统原控制台输出流
-	static PrintStream console = null;
+    static PrintStream consoleOut = null;
+    //系统原输入流
+    static InputStream consoleIn = null;
+
 
 	@BeforeAll
 	public static void setUp(){
 
-		console = System.out;
+		consoleOut = System.out;
 		//把标准输出定向至ByteArrayOutputStream中
 		outContent = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(outContent));
+        
+        consoleIn = System.in;
    
 	}
 
 	@AfterAll              // 后处理
 	public static void tearDown() {
    
-	   System.setOut(console);
+       System.setOut(consoleOut);
+       System.setIn(consoleIn);
 	}
 
     @Test
@@ -82,6 +89,22 @@ class CliTests {
 
     }
 
+    @Test
+    void ShortestPath(){
+        try{
+            testCLI("testcases/testcase9/test_case9.txt", "testcases/testcase9/expected9.txt");
+            
+
+        }catch (Exception e){
+            //读取测试文件异常
+            e.printStackTrace();
+            assert(false);
+        }finally{
+            System.setIn(consoleIn);
+        }
+
+    }
+
 
     /**
      * 读取文件对CLI测试
@@ -90,40 +113,47 @@ class CliTests {
      */
     void testCLI(String argFileName, String ExpFileName) throws Exception{
         outContent.reset();
-        String[] args;
+
         try{
-
-            args = readFile(argFileName).split("\n");
-            String exp = readFile(ExpFileName);
-
-            for(String arg : args){
-                cli.deal(arg.split(" "));
+            //输入重定向到测试用例文件
+            FileInputStream fis = new FileInputStream(argFileName);
+            System.setIn(fis);
+            BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+            while(true) {
+                try {
+                    var cmd = br.readLine();
+                    if(cmd.equals("quit")) break;
+                    cli.deal(cmd.split(" "));
+                } catch (Exception e) {
+                    System.out.println("命令输入有误");
+                    e.printStackTrace();
+                }
             }
 
+            //输出写入到文件
+            File file =new File("test_appendfile.txt");
+ 
+            if(!file.exists()){
+        	    file.createNewFile();
+             }
+ 
+            //使用true，即进行append file 
+ 
+            FileWriter fileWritter = new FileWriter(file.getName(), false);
+ 
+ 
+            fileWritter.write(outContent.toString());
+ 
+            fileWritter.close();
 
-        //输出到文件
-        //File file =new File("test_appendfile.txt");
- 
-        // if(!file.exists()){
-        // 	file.createNewFile();
-        // }
- 
-        // //使用true，即进行append file 
- 
-        // FileWriter fileWritter = new FileWriter(file.getName(),true);
- 
- 
-        // fileWritter.write(outContent.toString());
- 
-        // fileWritter.close();
+            String exp = readFile(ExpFileName);
+            assertEquals(exp, outContent.toString());
 
-
-        assertEquals(exp, outContent.toString());
-            
-
-        } catch(Exception e){
+        }catch(Exception e){
             e.printStackTrace();
-            throw e;
+        }finally{
+            //输入流重新定位到System.in
+            System.setIn(consoleIn);
         }
     }
 
