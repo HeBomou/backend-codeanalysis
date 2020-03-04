@@ -1,12 +1,2 @@
-Please input a function name.
-The full function is edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
-Please input the other function name.
-There are many function matching your input, please type the index and enter.
-0 :edu.ncsu.csc.itrust.DateUtil:getSQLdateXyearsAgoFromNow(int)
-1 :edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
-2 :edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
-The full function is edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
-From edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge() to edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
-Total path num: 0
-From edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int) to edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
-Total path num: 0
+path num: 10
+a()--0.6666666666666666-->c()--0.5-->e()--0.6666666666666666-->g()--0.5-->k()--0.5-->l()
