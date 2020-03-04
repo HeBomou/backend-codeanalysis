@@ -68,6 +68,21 @@ class CliTests {
 
     }
 
+
+    @Test
+    void BasicAttribute2(){
+        //testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
+        try{
+            testCLI("testcases/testcase10/test_case10.txt", "testcases/testcase10/expected10.txt");
+        }catch (Exception e){
+            //读取测试文件异常
+            e.printStackTrace();
+            assert(false);
+        }
+
+    }
+
+
     @Test
     void ConnectiveDomain(){
         //testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
@@ -143,6 +158,7 @@ class CliTests {
 
         }catch(Exception e){
             e.printStackTrace();
+            assert(false);
         }finally{
             //输入流重新定位到System.in
             System.setIn(consoleIn);
