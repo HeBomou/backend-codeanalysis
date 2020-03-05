@@ -1,9 +1,9 @@
 Domain: 1
 Domain 0 , vertex:3
-edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
 edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
 
 Domain 0 , vertex:3
-edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
 edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
 
