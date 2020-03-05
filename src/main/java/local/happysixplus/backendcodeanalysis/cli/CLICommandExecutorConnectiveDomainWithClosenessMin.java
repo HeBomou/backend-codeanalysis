@@ -10,8 +10,11 @@ public class CLICommandExecutorConnectiveDomainWithClosenessMin implements CLICo
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
         var domains = graphService.getConnectiveDomainsWithClosenessMin();
+        int cnt = 0;
+        // TODO: 应当给联通域打上id用于识别，输出
         for (int i = 0; i < domains.size(); i++) {
-            System.out.println("Domain " + i + " , vertex:" + domains.get(i).getVertexNum());
+            if (domains.get(i).getVertexNum() == 1) continue;
+            System.out.println("Domain " + ++cnt + " , vertex:" + domains.get(i).getVertexNum());
             var edges = domains.get(i).getEdgeVos();
             for (var edge : edges)
                 System.out.println(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->"
