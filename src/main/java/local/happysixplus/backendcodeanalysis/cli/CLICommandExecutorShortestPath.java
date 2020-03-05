@@ -40,8 +40,9 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
         var edges = pathVo.getPath();
         if (edges.size() > 0) {
             System.out.println("The shortest path:");
+            System.out.println(edges.get(0).getFrom().getFunctionName());
             for (var edge : edges)
-                System.out.println(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->"
+                System.out.println("--" + edge.getCloseness() + "-->"
                         + edge.getTo().getFunctionName());
         }
     }
