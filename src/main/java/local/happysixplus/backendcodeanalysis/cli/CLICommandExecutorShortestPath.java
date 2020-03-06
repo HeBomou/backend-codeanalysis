@@ -67,8 +67,6 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
                 break exec;
             var path = graphService.getShortestPath(new VertexVo(funcA), new VertexVo(funcB));
             printPath(funcA, funcB, path);
-            path = graphService.getShortestPath(new VertexVo(funcB), new VertexVo(funcA));
-            printPath(funcB, funcA, path);
         }
     }
 }
