@@ -244,6 +244,11 @@ public class GraphServiceImpl implements GraphService {
                 temp = new TpVertex(graph.vertexMap.get(vstr), 1, 0);
             else
                 temp = new TpVertex(graph.vertexMap.get(vstr), 0, Integer.MAX_VALUE / 3);
+            // 处理自环
+            for (var edge : temp.vertex.edges)
+                if (edge.to.functionName.equals(temp.vertex.functionName))
+                    temp.inDegree--;
+
             tpVertexs.put(vstr, temp);
             if (temp.inDegree == 0)
                 vertexWithZero.add(temp);
@@ -252,6 +257,9 @@ public class GraphServiceImpl implements GraphService {
             TpVertex from = vertexWithZero.get(0);
             for (int i = 0; i < from.vertex.outDegree; i++) {
                 String toStr = from.vertex.edges.get(i).to.functionName;
+                // 处理自环
+                if (toStr.equals(from.vertex.functionName))
+                    continue;
                 TpVertex to = tpVertexs.get(toStr);
                 to.pathNum += from.pathNum;
                 to.inDegree--;
