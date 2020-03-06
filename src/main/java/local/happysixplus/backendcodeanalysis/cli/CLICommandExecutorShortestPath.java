@@ -32,6 +32,7 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
             idx = Integer.parseInt(scanner.nextLine()) - 1;
         }
         if (0 <= idx && idx < fullFuncs.size()) {
+            System.out.println("The vertex you choose is " + fullFuncs.get(idx));
             return fullFuncs.get(idx);
         } else {
             ps.println("The index " + idx + " is invalid.");
@@ -41,7 +42,8 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
 
     void printPath(String funcA, String funcB, PathVo pathVo) {
         System.out.println("---------Path---------");
-        System.out.println("From " + funcA + " to " + funcB);
+        System.out.println("Source vertex: " + funcA);
+        System.out.println("Target vertex: " + funcB);
         System.out.println("Total path num: " + pathVo.getPathNum());
         var edges = pathVo.getPath();
         if (edges.size() > 0) {
