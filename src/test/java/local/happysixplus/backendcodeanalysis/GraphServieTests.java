@@ -82,7 +82,7 @@ class GraphServieTests {
 	@Test
 	void getConnectiveDomainNum() {
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
-		assertEquals(1, graphService.getConnectiveDomainNum());
+		assertEquals(1, graphService.getConnectiveDomains().size());
 	}
 
 	@Test
@@ -95,9 +95,9 @@ class GraphServieTests {
 	void setClosenessMin() {
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		graphService.setClosenessMin(1);
-		assertEquals(3, graphService.getConnectiveDomainNum());
+		assertEquals(3, graphService.getConnectiveDomains().size());
 		graphService.setClosenessMin(0.5);
-		assertEquals(1, graphService.getConnectiveDomainNum());
+		assertEquals(1, graphService.getConnectiveDomains().size());
 	}
 
 	@Test

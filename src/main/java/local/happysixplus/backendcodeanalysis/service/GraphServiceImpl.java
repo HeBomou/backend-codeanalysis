@@ -208,11 +208,6 @@ public class GraphServiceImpl implements GraphService {
     }
 
     @Override
-    public int getConnectiveDomainNum() {
-        return graph.connectiveDomain.size();
-    }
-
-    @Override
     public List<ConnectiveDomainVo> getConnectiveDomains() {
         List<ConnectiveDomainVo> resVo = new ArrayList<>();
         for (int i = 0; i < graph.connectiveDomain.size(); i++) {
@@ -225,11 +220,6 @@ public class GraphServiceImpl implements GraphService {
     @Override
     public void setClosenessMin(double closeness) {
         limitedGraph = new Graph(caller, callee, closeness);
-    }
-
-    @Override
-    public int getConnectiveDomainsNumWithClosenessMin() {
-        return limitedGraph.connectiveDomain.size();
     }
 
     @Override

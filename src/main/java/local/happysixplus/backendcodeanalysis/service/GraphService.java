@@ -26,24 +26,14 @@ public interface GraphService {
     int getEdgeNum();
 
     /**
-     * 获取图的联通域数
-     */
-    int getConnectiveDomainNum();
-
-    /**
      * 获取图的所有联通域
      */
     List<ConnectiveDomainVo> getConnectiveDomains();
 
     /**
-     * 设置最小紧密度阈值。预处理得到删除紧密度低于阈值的边后的图及其基本信息
+     * 设置最小紧密度阈值。预处理得到删除紧密度低于阈值的边后的图及其基本信息。不包括只有一个点的联通域
      */
     void setClosenessMin(double closeness);
-
-    /**
-     * 获取删除紧密度低于阈值的边之后图的联通域数
-     */
-    int getConnectiveDomainsNumWithClosenessMin();
 
     /**
      * 获取删除紧密度低于阈值的边之后图的联通域。联通域按照顶点数降序排序。不包括只有一个点的联通域
