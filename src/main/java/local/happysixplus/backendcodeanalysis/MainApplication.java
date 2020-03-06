@@ -19,22 +19,29 @@ public class MainApplication {
 		while (true) {
 			try {
 				System.out.println("Welcome to Code Analysis by Happy6+");
-				System.out.println("Then we will go through checkpoint 2, 4 and 5.");
+				System.out.println("First let's go through checkpoint 2, 4 and 5.");
 				// TODO: 依次调用检查点2、4、5的命令
+				System.out.println();
 				System.out.print("Please input the path to your project: ");
 				var path = scanner.nextLine();
 				cli.deal(("init " + path).split(" "), scanner);
+				System.out.println();
 				System.out.print("Please input the closeness threshold: ");
-				var threshold = scanner.nextDouble();
+				var threshold = Double.valueOf(scanner.nextLine());
 				cli.deal(("set-closeness-min " + threshold).split(" "), scanner);
 				cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
+				System.out.println();
 				cli.deal("shortest-path".split(" "), scanner);
+				System.out.println();
 			} catch (Exception e) {
-				System.out.println("There're some errors in your command, we will restart the check.");
+				System.out.println("There're some errors in your input, we will restart the check.");
 				continue;
 			}
 			break;
 		}
+
+		System.out.println("The check is finished, then you can try our interactive program.");
+		System.out.print(""); // TODO: Input y to continue
 
 		cli.printHelloMessage();
 		while (true) {
