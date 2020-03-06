@@ -36,7 +36,8 @@ public class CLI {
 		System.out.println("init [PATH]");
 		System.out.println("basic-attribute");
 		System.out.println("connective-domain");
-		System.out.println("set-closeness-min [VALUE]");
+        System.out.println("set-closeness-min [VALUE]");
+        System.out.println("quit");
 		System.out.println();
 		System.out.println("For further help, you can type 'help' and then enter");
     }
