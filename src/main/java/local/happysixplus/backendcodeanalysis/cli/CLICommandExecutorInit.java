@@ -8,8 +8,9 @@ import lombok.var;
 public class CLICommandExecutorInit implements CLICommandExecutor {
 
     @Override
-    public void execute(String[] params, Scanner scanner, GraphService graphService) {
-        graphService.loadCode(params[0]);
+    public void execute(String[] params, Scanner scanner, GraphService graphService) throws Exception {
+        var success = graphService.loadCode(params[0]);
+        if (!success) throw new Exception("Load code fail");
         System.out.println("---------Init---------");
         System.out.println("Your project has been loaded successfully.");
         var edgeNum = graphService.getEdgeNum();

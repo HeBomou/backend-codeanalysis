@@ -19,32 +19,30 @@ import java.util.ArrayList;
 
 import java.io.*;
 
-
-
 @SpringBootTest
 class GraphServieTests {
 	@Autowired
 	GraphService graphService;
 
-	//输出流
+	// 输出流
 	static ByteArrayOutputStream outContent;
-	//系统原控制台输出流
+	// 系统原控制台输出流
 	static PrintStream console = null;
 
 	@BeforeAll
-	public static void setUp(){
+	public static void setUp() {
 
 		console = System.out;
-		//把标准输出定向至ByteArrayOutputStream中
+		// 把标准输出定向至ByteArrayOutputStream中
 		outContent = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(outContent));
-   
+
 	}
 
-	@AfterAll              // 后处理
+	@AfterAll // 后处理
 	public static void tearDown() {
-   
-	   System.setOut(console);
+
+		System.setOut(console);
 	}
 
 	@Test
@@ -118,86 +116,84 @@ class GraphServieTests {
 		assertEquals(1, result.getPathNum());
 		List<EdgeVo> path = result.getPath();
 
-		//期待的路径顶点
-		String[] expectedName = {
-			"edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()", 
-			"edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)"
-		};
-		double[] exptectedClossness = {
-			0.6666666666666666
-		};
+		// 期待的路径顶点
+		String[] expectedName = { "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()",
+				"edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)" };
+		double[] exptectedClossness = { 0.6666666666666666 };
 		List<EdgeVo> expected = new ArrayList<EdgeVo>();
-		for(int i = 0; i < expectedName.length - 1; i++){
-			expected.add(new EdgeVo(new VertexVo(expectedName[i]), new VertexVo(expectedName[i + 1]), exptectedClossness[i]));
+		for (int i = 0; i < expectedName.length - 1; i++) {
+			expected.add(new EdgeVo(new VertexVo(expectedName[i]), new VertexVo(expectedName[i + 1]),
+					exptectedClossness[i]));
 		}
 		assertEquals(expected, path);
 		// assertEquals(expected.size(), path.size());
 		// for(int i = 0; i < expected.size(); i++){
-			// assertEquals(expected.get(i).getFrom(), path.get(i).getFrom());
-			// assertEquals(expected.get(i).getTo(), path.get(i).getTo());
+		// assertEquals(expected.get(i).getFrom(), path.get(i).getFrom());
+		// assertEquals(expected.get(i).getTo(), path.get(i).getTo());
 		// }
-		
+
 	}
 
 	@Test
-	void getShortestPath2(){
+	void getShortestPath2() {
 		outContent.reset();
 		graphService.loadCode("testcases/testcase7/test_case7.txt");
 		String from = "a()";
 		String to = "l()";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
 		printPath(result);
-		 //       输出到文件
-		//  try{
-        // File file =new File("test_appendfile.txt");
- 
-        // if(!file.exists()){
-        // 	file.createNewFile();
-        // }
- 
-        // //使用true，即进行append file 
- 
-        // FileWriter fileWritter = new FileWriter(file.getName(), true);
- 
- 
-        // fileWritter.write(outContent.toString());
- 
+		// 输出到文件
+		// try{
+		// File file =new File("test_appendfile.txt");
+
+		// if(!file.exists()){
+		// file.createNewFile();
+		// }
+
+		// //使用true，即进行append file
+
+		// FileWriter fileWritter = new FileWriter(file.getName(), true);
+
+		// fileWritter.write(outContent.toString());
+
 		// fileWritter.close();
 		// }catch(Exception e){
-		// 	e.printStackTrace();
+		// e.printStackTrace();
 		// }
-		assertEquals("path num: 7\na()--0.6666666666666666-->c()--0.5-->h()--1.0-->i()--0.6666666666666666-->l()\n", outContent.toString());
+		assertEquals("path num: 7\na()--0.6666666666666666-->c()--0.5-->h()--1.0-->i()--0.6666666666666666-->l()\n",
+				outContent.toString());
 
 	}
 
 	@Test
-	void getShortestPath3(){
+	void getShortestPath3() {
 		outContent.reset();
 		graphService.loadCode("testcases/testcase8/test_case8.txt");
 		String from = "a()";
 		String to = "l()";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
 		printPath(result);
-		 //       输出到文件
-		 try{
-        File file =new File("test_appendfile.txt");
- 
-        if(!file.exists()){
-        	file.createNewFile();
-        }
- 
-        //使用true，即进行append file 
- 
-        FileWriter fileWritter = new FileWriter(file.getName(), false);
- 
- 
-        fileWritter.write(outContent.toString());
- 
-		fileWritter.close();
-		}catch(Exception e){
+		// 输出到文件
+		try {
+			File file = new File("test_appendfile.txt");
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			// 使用true，即进行append file
+
+			FileWriter fileWritter = new FileWriter(file.getName(), false);
+
+			fileWritter.write(outContent.toString());
+
+			fileWritter.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		assertEquals("path num: 10\na()--0.6666666666666666-->c()--0.5-->e()--0.6666666666666666-->g()--0.5-->k()--0.5-->l()\n", outContent.toString());
+		assertEquals(
+				"path num: 10\na()--0.6666666666666666-->c()--0.5-->e()--0.6666666666666666-->g()--0.5-->k()--0.5-->l()\n",
+				outContent.toString());
 
 	}
 
@@ -207,7 +203,11 @@ class GraphServieTests {
 		outContent.reset();
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		CLICommandExecutor cli = new CLICommandExecutorBasicAttribute();
-		cli.execute(null, null, graphService);
+		try {
+			cli.execute(null, null, graphService);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		assertEquals("Edge: 2\nVertex: 3\nConnectiveDomain: 1\n", outContent.toString());
 	}
@@ -215,13 +215,12 @@ class GraphServieTests {
 	/**
 	 * 打印一个路径
 	 */
-	void printPath(PathVo path){
+	void printPath(PathVo path) {
 		System.out.println("path num: " + path.getPathNum());
-		for(EdgeVo edge: path.getPath()){
+		for (EdgeVo edge : path.getPath()) {
 			System.out.printf(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->");
 		}
 		System.out.println(path.getPath().get(path.getPath().size() - 1).getTo().getFunctionName());
-
 
 	}
 

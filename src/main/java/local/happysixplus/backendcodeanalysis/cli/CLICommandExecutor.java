@@ -6,5 +6,5 @@ import local.happysixplus.backendcodeanalysis.service.GraphService;
 
 public interface CLICommandExecutor {
 
-    void execute(String[] params, Scanner scanner, GraphService graphService);
+    void execute(String[] params, Scanner scanner, GraphService graphService) throws Exception;
 }

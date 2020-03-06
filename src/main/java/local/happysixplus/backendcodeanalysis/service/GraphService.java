@@ -13,7 +13,7 @@ public interface GraphService {
      * 
      * @param path 项目代码文件夹的路径
      */
-    void loadCode(String path);
+    boolean loadCode(String path);
 
     /**
      * 获取图的点数

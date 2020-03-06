@@ -17,34 +17,37 @@ public class MainApplication {
 		var scanner = new Scanner(System.in);
 
 		while (true) {
-			try {
+			instruction: {
 				System.out.println("Welcome to Code Analysis by Happy6+");
 				System.out.println("First let's go through checkpoint 2, 4 and 5.");
-				// TODO: 依次调用检查点2、4、5的命令
+				// 依次调用检查点2、4、5的命令
 				System.out.println();
 				System.out.print("Please input the path to your project: ");
 				var path = scanner.nextLine().trim();
-				cli.deal(("init " + path).split(" "), scanner);// TODO: 如果路径不合法，异常无法被截获
+				if (!cli.deal(("init " + path).split(" "), scanner))
+					break instruction;
 				System.out.println();
 				System.out.print("Please input the closeness threshold: ");
 				var threshold = Double.valueOf(scanner.nextLine().trim());
-				cli.deal(("set-closeness-min " + threshold).split(" "), scanner);
+				if (!cli.deal(("set-closeness-min " + threshold).split(" "), scanner))
+					break instruction;
 				System.out.print("Do you want to show details? (y/N) ");
-				var yesOrNo = scanner.nextLine().trim();
-				if (yesOrNo.toLowerCase().equals("y"))
+				if (scanner.nextLine().trim().toLowerCase().equals("y"))
 					cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
 				System.out.println();
-				cli.deal("shortest-path".split(" "), scanner);
+				if (!cli.deal("shortest-path".split(" "), scanner))
+					break instruction;
 				System.out.println();
-			} catch (Exception e) {
-				System.out.println("There're some errors in your input, we will restart the check.");
-				continue;
+				break;
 			}
-			break;
+
+			System.out.println("There're some errors in your input, we will restart the check.");
+			System.out.println();
 		}
 
-		System.out.println("The check is finished, then you can try our interactive program.");
-		System.out.print(""); // TODO: Input y to continue
+		System.out.print("The check is finished, then you can try our interactive program. (y/N) ");
+		if (!scanner.nextLine().trim().toLowerCase().equals("y"))
+			return;
 
 		cli.printHelloMessage();
 		while (true) {

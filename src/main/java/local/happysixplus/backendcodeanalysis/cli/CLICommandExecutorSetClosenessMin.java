@@ -3,7 +3,6 @@ package local.happysixplus.backendcodeanalysis.cli;
 import java.util.Scanner;
 
 import local.happysixplus.backendcodeanalysis.service.GraphService;
-import lombok.var;
 
 public class CLICommandExecutorSetClosenessMin implements CLICommandExecutor {
 

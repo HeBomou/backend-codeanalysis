@@ -167,7 +167,7 @@ public class GraphServiceImpl implements GraphService {
     Graph limitedGraph = new Graph(caller, callee, -1.0);
 
     @Override
-    public void loadCode(String path) {
+    public boolean loadCode(String path) {
         caller = new ArrayList<>();
         callee = new ArrayList<>();
         // 从文件中读取函数依赖关系
@@ -190,11 +190,11 @@ public class GraphServiceImpl implements GraphService {
             }
             bf.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
         graph = new Graph(caller, callee, -1.0);
         limitedGraph = new Graph(caller, callee, -1.0);
-        return;
+        return true;
     }
 
     @Override
