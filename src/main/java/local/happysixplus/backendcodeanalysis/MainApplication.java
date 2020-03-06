@@ -2,6 +2,7 @@ package local.happysixplus.backendcodeanalysis;
 
 import java.util.Scanner;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import local.happysixplus.backendcodeanalysis.cli.CLI;
@@ -11,7 +12,7 @@ import lombok.var;
 public class MainApplication {
 
 	public static void main(String[] args) {
-		// SpringApplication.run(MainApplication.class, args);
+		//SpringApplication.run(MainApplication.class, args);
 		var cli = new CLI();
 		var scanner=new Scanner(System.in);
 		while(true) {
