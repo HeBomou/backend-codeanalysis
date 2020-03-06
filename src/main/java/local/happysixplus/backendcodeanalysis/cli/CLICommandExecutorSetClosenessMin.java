@@ -9,5 +9,10 @@ public class CLICommandExecutorSetClosenessMin implements CLICommandExecutor {
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
         graphService.setClosenessMin(Double.valueOf(params[0]));
+        System.out.println("-------Threshold------");
+        System.out.println("Number of connective domains in inital graph: " + graphService.getConnectiveDomainNum());
+        System.out.println("Set closeness threshold " + Double.valueOf(params[0]));
+        System.out.println("Number of connective domains after setting threshold: " + graphService.getConnectiveDomainsWithClosenessMin().size());
+        System.out.println("----------------------");
     }
 }

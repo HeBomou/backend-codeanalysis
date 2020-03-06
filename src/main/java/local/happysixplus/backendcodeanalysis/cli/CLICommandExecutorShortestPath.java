@@ -12,7 +12,9 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
 
     String getFullFuncName(GraphService service, Scanner scanner, PrintStream ps, String hint) {
         ps.println(hint);
-        String text = scanner.nextLine();
+        String text = "";
+        while (text.equals(""))
+            text = scanner.nextLine().trim();
         var fullFuncs = service.getSimilarVertex(text);
         if (fullFuncs.size() == 0) {
             ps.println("There is no function name matching your input.");
@@ -42,8 +44,7 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
             System.out.println("The shortest path:");
             System.out.println(edges.get(0).getFrom().getFunctionName());
             for (var edge : edges)
-                System.out.println("--" + edge.getCloseness() + "-->"
-                        + edge.getTo().getFunctionName());
+                System.out.println("--" + edge.getCloseness() + "-->" + edge.getTo().getFunctionName());
         }
     }
 

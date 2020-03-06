@@ -28,18 +28,17 @@ public class CLI {
     }
 
     public void printHelloMessage() {
-		System.out.println("Code Analysis");
-		System.out.println("version 0.1");
-		System.out.println("by Happy6+");
+		System.out.println("Code Analysis version 0.1 by Happy6+");
 		System.out.println();
 		System.out.println("Example usage:");
-		System.out.println("init [PATH]");
 		System.out.println("basic-attribute");
 		System.out.println("connective-domain");
         System.out.println("set-closeness-min [VALUE]");
         System.out.println("quit");
+        System.out.println("You can type 'help' for further help.");
 		System.out.println();
-		System.out.println("For further help, you can type 'help' and then enter");
+        System.out.println("Type the following command to init your project.");
+		System.out.println("init [PATH]");
     }
 
     public void deal(String[] args, Scanner scanner) {

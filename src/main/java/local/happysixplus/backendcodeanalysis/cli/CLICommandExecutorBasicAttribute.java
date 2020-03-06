@@ -9,11 +9,13 @@ public class CLICommandExecutorBasicAttribute implements CLICommandExecutor {
 
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
+        System.out.println("------Basic-Attr------");
         var edgeNum = graphService.getEdgeNum();
         var vertexNum = graphService.getVertexNum();
         var connectiveDomainNum = graphService.getConnectiveDomainNum();
         System.out.println("Edge: " + edgeNum);
         System.out.println("Vertex: " + vertexNum);
         System.out.println("ConnectiveDomain: " + connectiveDomainNum);
+        System.out.println("----------------------");
     }
 }
