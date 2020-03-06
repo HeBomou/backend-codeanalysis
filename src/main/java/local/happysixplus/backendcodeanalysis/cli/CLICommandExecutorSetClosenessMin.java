@@ -14,12 +14,7 @@ public class CLICommandExecutorSetClosenessMin implements CLICommandExecutor {
         System.out.println("Number of connective domains in inital graph: " + graphService.getConnectiveDomainNum());
         System.out.println("Set closeness threshold " + Double.valueOf(params[0]));
 
-        var domains = graphService.getConnectiveDomainsWithClosenessMin();
-        int cnt = 0;
-        for (var domain : domains)
-            if (domain.getVertexVos().size() != 1) cnt++;
-        System.out.println("Number of connective domains after setting threshold (including domains with only one vertex): " + domains.size());
-        System.out.println("Number of connective domains after setting threshold (not including domain with only one vertex): " + cnt);
+        System.out.println("Number of connective domains after setting threshold (not including domain with only one vertex): " + graphService.getConnectiveDomainsWithClosenessMin().size());
         System.out.println("----------------------");
     }
 }
