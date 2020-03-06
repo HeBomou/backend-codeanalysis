@@ -24,7 +24,7 @@ public class MainApplication {
 				System.out.println();
 				System.out.print("Please input the path to your project: ");
 				var path = scanner.nextLine().trim();
-				cli.deal(("init " + path).split(" "), scanner);
+				cli.deal(("init " + path).split(" "), scanner);// TODO: 如果路径不合法，异常无法被截获
 				System.out.println();
 				System.out.print("Please input the closeness threshold: ");
 				var threshold = Double.valueOf(scanner.nextLine().trim());
