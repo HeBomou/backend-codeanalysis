@@ -2,7 +2,7 @@ package local.happysixplus.backendcodeanalysis;
 
 import java.util.Scanner;
 
-import org.springframework.boot.SpringApplication;
+// import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import local.happysixplus.backendcodeanalysis.cli.CLI;
@@ -14,6 +14,7 @@ public class MainApplication {
 	public static void main(String[] args) {
 		//SpringApplication.run(MainApplication.class, args);
 		var cli = new CLI();
+		cli.printHelloMessage();
 		var scanner=new Scanner(System.in);
 		while(true) {
 			try {
