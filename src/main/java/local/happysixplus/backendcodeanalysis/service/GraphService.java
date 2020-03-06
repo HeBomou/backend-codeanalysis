@@ -41,6 +41,11 @@ public interface GraphService {
     void setClosenessMin(double closeness);
 
     /**
+     * 获取删除紧密度低于阈值的边之后图的联通域数
+     */
+    int getConnectiveDomainsNumWithClosenessMin();
+
+    /**
      * 获取删除紧密度低于阈值的边之后图的联通域。联通域按照顶点数降序排序。不包括只有一个点的联通域
      */
     List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin();
