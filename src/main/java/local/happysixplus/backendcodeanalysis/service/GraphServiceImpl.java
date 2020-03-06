@@ -78,14 +78,16 @@ public class GraphServiceImpl implements GraphService {
         }
 
         ConnectiveDomainVo getConnectiveDomainVo() {
-            List<EdgeVo> edgeVo = new ArrayList<>();
-            for (int i = 0; i < vertexNum; i++) {
-                for (int j = 0; j < vertexs.get(i).edges.size(); j++) {
-                    Edge e = vertexs.get(i).edges.get(j);
-                    edgeVo.add(new EdgeVo(e.from.getVertexVo(), e.to.getVertexVo(), e.closeness));
+            List<VertexVo> vertexVos = new ArrayList<>();
+            List<EdgeVo> edgeVos = new ArrayList<>();
+            for (var vertex : vertexs) {
+                vertexVos.add(vertex.getVertexVo());
+                for (int j = 0; j < vertex.edges.size(); j++) {
+                    Edge e = vertex.edges.get(j);
+                    edgeVos.add(new EdgeVo(e.from.getVertexVo(), e.to.getVertexVo(), e.closeness));
                 }
             }
-            return new ConnectiveDomainVo(vertexNum, edgeVo);
+            return new ConnectiveDomainVo(vertexVos, edgeVos);
         }
     }
 

@@ -9,14 +9,20 @@ public class CLICommandExecutorConnectiveDomain implements CLICommandExecutor {
 
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
-        var domains = graphService.getConnectiveDomains();
-        for (int i = 0; i < domains.size(); i++) {
-            System.out.println("Domain " + i + " , vertex:" + domains.get(i).getVertexNum());
-            var edges = domains.get(i).getEdgeVos();
-            for (var edge : edges)
-                System.out.println(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->"
-                        + edge.getTo().getFunctionName());
-            System.out.println();
+        System.out.println("---------Domain-------");
+        var domains = graphService.getConnectiveDomainsWithClosenessMin();
+        int cnt = 0;
+        for (var domain : domains) {
+            if (domain.getVertexVos().size() == 1)
+                continue;
+            if (cnt != 0)
+                System.out.println("-----");
+            System.out.println("Domain " + ++cnt + ", vertex num: " + domain.getVertexVos().size() + ", edge num: "
+                    + domain.getEdgeVos().size());
+            var vertexs = domain.getVertexVos();
+            for (int i = 0; i < vertexs.size(); i++)
+                System.out.println("Vertex " + i + ": " + vertexs.get(i).getFunctionName());
         }
+        System.out.println("----------------------");
     }
 }

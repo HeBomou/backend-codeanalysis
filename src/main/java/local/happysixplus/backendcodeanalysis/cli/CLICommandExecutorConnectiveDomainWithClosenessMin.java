@@ -12,17 +12,16 @@ public class CLICommandExecutorConnectiveDomainWithClosenessMin implements CLICo
         System.out.println("---Threshold-Domain---");
         var domains = graphService.getConnectiveDomainsWithClosenessMin();
         int cnt = 0;
-        // TODO: 应当给联通域打上id用于识别，输出
-        for (int i = 0; i < domains.size(); i++) {
-            if (i != 0)
-                System.out.println("-----");
-            if (domains.get(i).getVertexNum() == 1)
+        for (var domain : domains) {
+            if (domain.getVertexVos().size() == 1)
                 continue;
-            System.out.println("Domain " + ++cnt + " , vertex:" + domains.get(i).getVertexNum());
-            var edges = domains.get(i).getEdgeVos();
-            for (var edge : edges)
-                System.out.println(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->"
-                        + edge.getTo().getFunctionName());
+            if (cnt != 0)
+                System.out.println("-----");
+            System.out.println("Domain " + ++cnt + ", vertex num: " + domain.getVertexVos().size() + ", edge num: "
+                    + domain.getEdgeVos().size());
+            var vertexs = domain.getVertexVos();
+            for (int i = 0; i < vertexs.size(); i++)
+                System.out.println("Vertex " + i + ": " + vertexs.get(i).getFunctionName());
         }
         System.out.println("----------------------");
     }

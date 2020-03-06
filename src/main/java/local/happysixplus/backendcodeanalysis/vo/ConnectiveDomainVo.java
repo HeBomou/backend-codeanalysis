@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ConnectiveDomainVo {
-    int vertexNum;
+    List<VertexVo> vertexVos;
     List<EdgeVo> edgeVos;
-
 }
