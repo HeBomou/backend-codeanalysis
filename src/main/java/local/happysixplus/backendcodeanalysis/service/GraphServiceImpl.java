@@ -207,7 +207,7 @@ public class GraphServiceImpl implements GraphService {
 
     @Override
     public int getConnectiveDomainNum() {
-        return limitedGraph.connectiveDomain.size();
+        return graph.connectiveDomain.size();
     }
 
     @Override
