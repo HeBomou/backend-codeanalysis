@@ -23,13 +23,16 @@ public class MainApplication {
 				// TODO: 依次调用检查点2、4、5的命令
 				System.out.println();
 				System.out.print("Please input the path to your project: ");
-				var path = scanner.nextLine();
+				var path = scanner.nextLine().trim();
 				cli.deal(("init " + path).split(" "), scanner);
 				System.out.println();
 				System.out.print("Please input the closeness threshold: ");
-				var threshold = Double.valueOf(scanner.nextLine());
+				var threshold = Double.valueOf(scanner.nextLine().trim());
 				cli.deal(("set-closeness-min " + threshold).split(" "), scanner);
-				cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
+				System.out.print("Do you want to show details? (y/N) ");
+				var yesOrNo = scanner.nextLine().trim();
+				if (yesOrNo.toLowerCase().equals("y"))
+					cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
 				System.out.println();
 				cli.deal("shortest-path".split(" "), scanner);
 				System.out.println();
