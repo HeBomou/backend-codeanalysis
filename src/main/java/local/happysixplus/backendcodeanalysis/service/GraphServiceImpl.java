@@ -139,10 +139,8 @@ public class GraphServiceImpl implements GraphService {
                     connectiveDomain.add(new ConnectiveDomain(tmpDomain));
             }
             // 按连通域点的个数排序
-            Collections.sort(connectiveDomain, new Comparator<ConnectiveDomain>() {
-                public int compare(ConnectiveDomain o1, ConnectiveDomain o2) {
-                    return o2.vertexNum - o1.vertexNum;
-                }
+            connectiveDomain.sort((a, b) -> {
+                return b.vertexNum - a.vertexNum;
             });
         }
 
