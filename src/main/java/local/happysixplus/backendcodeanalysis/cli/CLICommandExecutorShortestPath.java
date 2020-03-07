@@ -40,6 +40,12 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
         }
     }
 
+    String getShortVertexName(String oriName) {
+        var temp = oriName.split("\\(");
+        var left = temp[0].split("\\.");
+        return left[left.length - 1] + "(" + temp[1];
+    }
+
     void printPath(String funcA, String funcB, PathVo pathVo) {
         System.out.println("---------Path---------");
         System.out.println("Source vertex: " + funcA);
@@ -52,9 +58,10 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
             System.out.println();
             if (edges.size() > 0) {
                 System.out.print("Path " + cnt + ": ");
-                System.out.println(edges.get(0).getFrom().getFunctionName());
+                System.out.println(getShortVertexName(edges.get(0).getFrom().getFunctionName()));
                 for (var edge : edges)
-                    System.out.println("--" + edge.getCloseness() + "-->" + edge.getTo().getFunctionName());
+                    System.out.println(
+                            "--" + edge.getCloseness() + "-->" + getShortVertexName(edge.getTo().getFunctionName()));
             }
         }
         System.out.println("----------------------");
