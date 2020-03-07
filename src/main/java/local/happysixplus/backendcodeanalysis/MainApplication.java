@@ -31,7 +31,7 @@ public class MainApplication {
 				var threshold = Double.valueOf(scanner.nextLine().trim());
 				if (!cli.deal(("set-closeness-min " + threshold).split(" "), scanner))
 					break instruction;
-				System.out.print("Do you want to show details? (y/N) ");
+				System.out.print("Do you want to show vertices of each domain? (y/N) ");
 				if (scanner.nextLine().trim().toLowerCase().equals("y"))
 					cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
 				System.out.println();

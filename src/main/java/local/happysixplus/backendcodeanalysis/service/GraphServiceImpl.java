@@ -244,6 +244,7 @@ public class GraphServiceImpl implements GraphService {
                 continue;
             path.add(edge);
             getAllPathDFS(end, edge.to, path, res);
+            path.remove(path.size() - 1);
         }
     }
 

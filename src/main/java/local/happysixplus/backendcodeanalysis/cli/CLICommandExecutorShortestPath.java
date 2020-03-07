@@ -46,13 +46,18 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
         System.out.println("Target vertex: " + funcB);
         var paths = pathVo.getPaths();
         System.out.println("Total path num: " + paths.size());
-        // var edges = pathVo.getPath();
-        // if (edges.size() > 0) {
-        //     System.out.println("The shortest path:");
-        //     System.out.println(edges.get(0).getFrom().getFunctionName());
-        //     for (var edge : edges)
-        //         System.out.println("--" + edge.getCloseness() + "-->" + edge.getTo().getFunctionName());
-        // }
+        int cnt = 0;
+        for (var edges : paths) {
+            cnt++;
+            if (cnt != 1)
+                System.out.println("-----");
+            if (edges.size() > 0) {
+                System.out.print("Path " + cnt + ": ");
+                System.out.println(edges.get(0).getFrom().getFunctionName());
+                for (var edge : edges)
+                    System.out.println("--" + edge.getCloseness() + "-->" + edge.getTo().getFunctionName());
+            }
+        }
         System.out.println("----------------------");
     }
 
