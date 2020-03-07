@@ -40,12 +40,13 @@ public class MainApplication {
 						break instruction;
 					System.out.println();
 				} catch (Exception e) {
+					System.out.println("There're some errors in your input.");
 					break instruction;
 				}
 				break;
 			}
 
-			System.out.println("There're some errors in your input, we will restart the check.");
+			System.out.println("We will restart the check.");
 			System.out.println();
 		}
 
