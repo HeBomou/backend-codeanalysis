@@ -12,7 +12,6 @@ public class CLICommandExecutorHelp implements CLICommandExecutor {
         System.out.println("init [PATH]");
         System.out.println("basic-attribute");
         System.out.println("connective-domain");
-        System.out.println("connective-domain-num");
         System.out.println("set-closeness-min [VALUE]");
         System.out.println("connective-domain-with-closeness-min");
         System.out.println("shortest-path");
