@@ -113,8 +113,8 @@ class GraphServieTests {
 		String from = "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()";
 		String to = "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)";
 		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
-		assertEquals(1, result.getPathNum());
-		List<EdgeVo> path = result.getPath();
+		// assertEquals(1, result.getPathNum());
+		// List<EdgeVo> path = result.getPath();
 
 		// 期待的路径顶点
 		String[] expectedName = { "edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()",
@@ -125,7 +125,8 @@ class GraphServieTests {
 			expected.add(new EdgeVo(new VertexVo(expectedName[i]), new VertexVo(expectedName[i + 1]),
 					exptectedClossness[i]));
 		}
-		assertEquals(expected, path);
+		assertEquals(expected, null);
+		// assertEquals(expected, path);
 		// assertEquals(expected.size(), path.size());
 		// for(int i = 0; i < expected.size(); i++){
 		// assertEquals(expected.get(i).getFrom(), path.get(i).getFrom());
@@ -215,12 +216,14 @@ class GraphServieTests {
 	/**
 	 * 打印一个路径
 	 */
+	@Test
 	void printPath(PathVo path) {
-		System.out.println("path num: " + path.getPathNum());
-		for (EdgeVo edge : path.getPath()) {
-			System.out.printf(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->");
-		}
-		System.out.println(path.getPath().get(path.getPath().size() - 1).getTo().getFunctionName());
+		assertEquals(false, true);
+		// System.out.println("path num: " + path.getPathNum());
+		// for (EdgeVo edge : path.getPath()) {
+		// 	System.out.printf(edge.getFrom().getFunctionName() + "--" + edge.getCloseness() + "-->");
+		// }
+		// System.out.println(path.getPath().get(path.getPath().size() - 1).getTo().getFunctionName());
 
 	}
 
