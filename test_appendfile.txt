@@ -1,2 +1,31 @@
-path num: 10
-a()--0.6666666666666666-->c()--0.5-->e()--0.6666666666666666-->g()--0.5-->k()--0.5-->l()
+Welcome to Code Analysis by Happy6+
+First let's go through checkpoint 2, 4 and 5.
+
+Please input the path to your project: ---------Init---------
+Your project has been loaded successfully.
+Edge: 4
+Vertex: 5
+ConnectiveDomain (excluding domains with only one vertex): 1
+----------------------
+
+Please input the closeness threshold: -------Threshold------
+Number of connective domains in inital graph (excluding domains with only one vertex): 1
+Set closeness threshold 0.45
+Number of connective domains after setting threshold (not including domain with only one vertex): 2
+----------------------
+Do you want to show vertices of each domain? (y/N) ---Threshold-Domain---
+Domain 1, vertex num: 3, edge num: 2
+Vertex 0: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
+Vertex 1: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
+Vertex 2: edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+-----
+Domain 2, vertex num: 2, edge num: 1
+Vertex 0: edu.ncsu.csc.itrust.risk.HeartDiseaseRisks:getDiseaseRiskFactors()
+Vertex 1: edu.ncsu.csc.itrust.risk.factors.AgeFactor:<init>(edu.ncsu.csc.itrust.beans.PatientBean,int)
+----------------------
+
+Follow the instruction and search the shortest path.
+Please input source vertex[class/method name]
+There is no vertex matching your input.
+
+The check is finished, then you can try our interactive program. (y/N) 
