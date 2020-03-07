@@ -4,7 +4,6 @@ N
 haha
 y
 init testcases/testcase5/test_data5.txt
-connective-domain-num
 connective-domain
 connective-domain-with-closeness-min
 quit

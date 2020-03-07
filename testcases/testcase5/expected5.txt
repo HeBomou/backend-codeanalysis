@@ -35,7 +35,6 @@ Edge: 2
 Vertex: 3
 ConnectiveDomain (excluding domains with only one vertex): 1
 ----------------------
-Domain num (excluding domains with only one vertex): 1
 ---------Domain-------
 Domain 1, vertex num: 3, edge num: 2
 Vertex 0: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
