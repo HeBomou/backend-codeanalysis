@@ -144,7 +144,7 @@ class GraphServieTests {
 		printPath(result);
 		// 输出到文件
 		// try{
-		// File file =new File("test_appendfile.txt");
+		// File file =new File("/testcases/test_appendfile.txt");
 
 		// if(!file.exists()){
 		// file.createNewFile();
@@ -175,7 +175,7 @@ class GraphServieTests {
 		printPath(result);
 		// 输出到文件
 		try {
-			File file = new File("test_appendfile.txt");
+			File file = new File("testcases/test_appendfile.txt");
 
 			if (!file.exists()) {
 				file.createNewFile();

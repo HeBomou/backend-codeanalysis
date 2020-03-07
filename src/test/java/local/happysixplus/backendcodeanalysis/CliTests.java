@@ -138,7 +138,7 @@ class CliTests {
             }
 
             //输出写入到文件
-            File file =new File("test_appendfile.txt");
+            File file =new File("testcases/test_appendfile.txt");
  
             if(!file.exists()){
         	    file.createNewFile();
@@ -158,7 +158,7 @@ class CliTests {
 
         }catch(Exception e){
             e.printStackTrace();
-            assert(false);
+            throw e;
         }finally{
             //输入流重新定位到System.in
             System.setIn(consoleIn);

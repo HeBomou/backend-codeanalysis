@@ -1,6 +1,5 @@
-init testcases/testcase6/test_data6.txt
-connective-domain-num
-set-closeness-min 0.45
-connective-domain-num
-connective-domain-with-closeness-min
-quit
+testcases/testcase6/test_data6.txt
+0.45
+y
+1
+N
