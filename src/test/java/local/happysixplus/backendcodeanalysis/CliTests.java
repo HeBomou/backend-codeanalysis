@@ -57,7 +57,6 @@ class CliTests {
     }
     @Test
     void BasicAttribute(){
-        //testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
         try{
             testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
         }catch (Exception e){
@@ -71,7 +70,7 @@ class CliTests {
 
     @Test
     void BasicAttribute2(){
-        //testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
+        //多边的情况
         try{
             testCLI("testcases/testcase10/test_case10.txt", "testcases/testcase10/expected10.txt");
         }catch (Exception e){
@@ -85,7 +84,6 @@ class CliTests {
 
     @Test
     void ConnectiveDomain(){
-        //testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
         try{
             testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
         }catch (Exception e){
@@ -180,18 +178,6 @@ class CliTests {
             }
     
             
-
-            // while(true) {
-            //     try {
-            //         var cmd = scanner.nextLine();
-            //         if(cmd.equals("quit")) break;
-            //         cli.deal(cmd.split(" "), scanner);
-            //     } catch (Exception e) {
-            //         System.out.println("命令输入有误");
-            //         e.printStackTrace();
-            //     }
-            // }
-
             //输出写入到文件
             File file =new File("test_appendfile.txt");
  
