@@ -124,6 +124,7 @@ public class GraphServiceImpl implements GraphService {
                 if (closeness < closenessMin)
                     continue;
                 Edge tmpEdge = new Edge(begin, end);
+                //保存紧密度
                 tmpEdge.setCloseness(closeness);
                 begin.addEdge(tmpEdge);
                 begin.addUndirectedEdge(tmpEdge);
@@ -157,7 +158,7 @@ public class GraphServiceImpl implements GraphService {
     // 输入边集对应顶点
     List<String> caller = new ArrayList<>();
     List<String> callee = new ArrayList<>();
-    // 完整有向图
+    // 基础有向图
     Graph graph = new Graph(caller, callee, -1.0);
     // 变化有向图
     Graph limitedGraph = new Graph(caller, callee, -1.0);
