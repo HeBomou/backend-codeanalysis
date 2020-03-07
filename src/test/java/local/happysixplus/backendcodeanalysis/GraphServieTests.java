@@ -11,6 +11,7 @@ import local.happysixplus.backendcodeanalysis.service.GraphService;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
+import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -96,6 +97,14 @@ class GraphServieTests {
 	}
 
 	@Test
+	void getConnectiveDomains2() {
+		graphService.loadCode("testcases/testcase15/test_data15.txt");
+		assertEquals(3, graphService.getConnectiveDomains().size());
+		assertEquals(5, graphService.getEdgeNum());
+		assertEquals(8, graphService.getVertexNum());
+	}
+
+	@Test
 	void setClosenessMin() {
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		graphService.setClosenessMin(1.1);
@@ -111,6 +120,22 @@ class GraphServieTests {
 		graphService.loadCode("testcases/testcase1/test_case1.txt");
 		graphService.setClosenessMin(0.05);
 		graphService.getConnectiveDomainsWithClosenessMin();
+	}
+
+
+	@Test
+	void getConnectiveDomainsWithClosenessMin2() {
+		graphService.loadCode("testcases/testcase16/test_data16.txt");
+		graphService.setClosenessMin(1.1);
+		assertEquals(0, graphService.getConnectiveDomainsWithClosenessMin().size());
+		graphService.setClosenessMin(1);
+		assertEquals(2, graphService.getConnectiveDomainsWithClosenessMin().size());
+		graphService.setClosenessMin(0.7);
+		assertEquals(2, graphService.getConnectiveDomainsWithClosenessMin().size());
+		graphService.setClosenessMin(0.6);
+		assertEquals(2, graphService.getConnectiveDomainsWithClosenessMin().size());
+		graphService.setClosenessMin(0.5);
+		assertEquals(2, graphService.getConnectiveDomainsWithClosenessMin().size());
 	}
 
 	@Test
