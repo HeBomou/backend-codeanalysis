@@ -234,7 +234,7 @@ public class GraphServiceImpl implements GraphService {
 
     private void getAllPathDFS(Vertex end, Vertex p, List<Edge> path, List<List<EdgeVo>> res) {
         if (p == end) {
-            var voPath = new ArrayList<EdgeVo> (path.size());
+            var voPath = new ArrayList<EdgeVo>(path.size());
             for (var e : path)
                 voPath.add(e.getEdgeVo());
             res.add(voPath);
@@ -289,20 +289,12 @@ public class GraphServiceImpl implements GraphService {
             return new PathVo(new ArrayList<>());
         // 获取所有路径
         var res = new ArrayList<List<EdgeVo>>();
-        getAllPathDFS(graph.vertexMap.get(end.getFunctionName()), graph.vertexMap.get(start.getFunctionName()), new ArrayList<Edge>(), res);
-
+        getAllPathDFS(graph.vertexMap.get(end.getFunctionName()), graph.vertexMap.get(start.getFunctionName()),
+                new ArrayList<Edge>(), res);
+        res.sort((a, b) -> {
+            return a.size() - b.size();
+        });
         return new PathVo(res);
-
-        // List<EdgeVo> path = new ArrayList<>();
-        // TpVertex temp = tpVertexs.get(end.getFunctionName());
-        // int pathNum = temp.pathNum;
-        // while (!temp.vertex.functionName.equals(start.getFunctionName())) {
-        //     path.add(temp.preEdge.getEdgeVo());
-        //     temp = tpVertexs.get(temp.preEdge.from.functionName);
-        // }
-        // Collections.reverse(path);
-
-        // return new PathVo(pathNum, path);
     }
 
     @Override
