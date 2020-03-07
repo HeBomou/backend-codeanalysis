@@ -164,6 +164,21 @@ class GraphServieTests {
 
 	}
 
+	@Test
+	void getShortestPath4(){
+		outContent.reset();
+		graphService.loadCode("testcases/testcase14/test_data14.txt");
+		String from = "a()";
+		String to = "f()";
+		PathVo result = graphService.getShortestPath(new VertexVo(from), new VertexVo(to));
+		try{
+			printPath(result);
+			testEqualFromFile("testcases/testcase14/expected14.txt", outContent.toString());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 
 	/**
 	 * 从文件读取并判断是否相同
