@@ -40,17 +40,29 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
         }
     }
 
+    String getShortVertexName(String oriName) {
+        var temp = oriName.split("\\(");
+        var left = temp[0].split("\\.");
+        return left[left.length - 1] + "(" + temp[1];
+    }
+
     void printPath(String funcA, String funcB, PathVo pathVo) {
         System.out.println("---------Path---------");
         System.out.println("Source vertex: " + funcA);
         System.out.println("Target vertex: " + funcB);
-        System.out.println("Total path num: " + pathVo.getPathNum());
-        var edges = pathVo.getPath();
-        if (edges.size() > 0) {
-            System.out.println("The shortest path:");
-            System.out.println(edges.get(0).getFrom().getFunctionName());
-            for (var edge : edges)
-                System.out.println("--" + edge.getCloseness() + "-->" + edge.getTo().getFunctionName());
+        var paths = pathVo.getPaths();
+        System.out.println("Total path num: " + paths.size());
+        int cnt = 0;
+        for (var edges : paths) {
+            cnt++;
+            System.out.println();
+            if (edges.size() > 0) {
+                System.out.print("Path " + cnt + ": ");
+                System.out.println(getShortVertexName(edges.get(0).getFrom().getFunctionName()));
+                for (var edge : edges)
+                    System.out.println(
+                            "--" + edge.getCloseness() + "-->" + getShortVertexName(edge.getTo().getFunctionName()));
+            }
         }
         System.out.println("----------------------");
     }

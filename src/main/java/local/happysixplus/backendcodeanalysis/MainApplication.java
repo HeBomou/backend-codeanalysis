@@ -18,26 +18,30 @@ public class MainApplication {
 
 		while (true) {
 			instruction: {
-				System.out.println("Welcome to Code Analysis by Happy6+");
-				System.out.println("First let's go through checkpoint 2, 4 and 5.");
-				// 依次调用检查点2、4、5的命令
-				System.out.println();
-				System.out.print("Please input the path to your project: ");
-				var path = scanner.nextLine().trim();
-				if (!cli.deal(("init " + path).split(" "), scanner))
+				try {
+					System.out.println("Welcome to Code Analysis by Happy6+");
+					System.out.println("First let's go through checkpoint 2, 4 and 5.");
+					// 依次调用检查点2、4、5的命令
+					System.out.println();
+					System.out.print("Please input the path to your project: ");
+					var path = scanner.nextLine().trim();
+					if (!cli.deal(("init " + path).split(" "), scanner))
+						break instruction;
+					System.out.println();
+					System.out.print("Please input the closeness threshold: ");
+					var threshold = Double.valueOf(scanner.nextLine().trim());
+					if (!cli.deal(("set-closeness-min " + threshold).split(" "), scanner))
+						break instruction;
+					System.out.print("Do you want to show vertices of each domain? (y/N) ");
+					if (scanner.nextLine().trim().toLowerCase().equals("y"))
+						cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
+					System.out.println();
+					if (!cli.deal("shortest-path".split(" "), scanner))
+						break instruction;
+					System.out.println();
+				} catch (Exception e) {
 					break instruction;
-				System.out.println();
-				System.out.print("Please input the closeness threshold: ");
-				var threshold = Double.valueOf(scanner.nextLine().trim());
-				if (!cli.deal(("set-closeness-min " + threshold).split(" "), scanner))
-					break instruction;
-				System.out.print("Do you want to show details? (y/N) ");
-				if (scanner.nextLine().trim().toLowerCase().equals("y"))
-					cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
-				System.out.println();
-				if (!cli.deal("shortest-path".split(" "), scanner))
-					break instruction;
-				System.out.println();
+				}
 				break;
 			}
 

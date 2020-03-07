@@ -139,10 +139,8 @@ public class GraphServiceImpl implements GraphService {
                     connectiveDomain.add(new ConnectiveDomain(tmpDomain));
             }
             // 按连通域点的个数排序
-            Collections.sort(connectiveDomain, new Comparator<ConnectiveDomain>() {
-                public int compare(ConnectiveDomain o1, ConnectiveDomain o2) {
-                    return o2.vertexNum - o1.vertexNum;
-                }
+            connectiveDomain.sort((a, b) -> {
+                return b.vertexNum - a.vertexNum;
             });
         }
 
@@ -232,6 +230,22 @@ public class GraphServiceImpl implements GraphService {
         return resVo;
     }
 
+    private void getAllPathDFS(Vertex end, Vertex p, List<Edge> path, List<List<EdgeVo>> res) {
+        if (p == end) {
+            var voPath = new ArrayList<EdgeVo>(path.size());
+            for (var e : path)
+                voPath.add(e.getEdgeVo());
+            res.add(voPath);
+        }
+        for (var edge : p.edges) {
+            if (edge.to == p)
+                continue;
+            path.add(edge);
+            getAllPathDFS(end, edge.to, path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+
     @Override
     public PathVo getShortestPath(VertexVo start, VertexVo end) {
         Map<String, TpVertex> tpVertexs = new HashMap<>();
@@ -265,26 +279,20 @@ public class GraphServiceImpl implements GraphService {
                 to.inDegree--;
                 if (to.inDegree == 0)
                     vertexWithZero.add(to);
-                if (from.edgeNum + 1 < to.edgeNum) {
-                    to.edgeNum = from.edgeNum + 1;
-                    to.preEdge = from.vertex.edges.get(i);
-                }
             }
             vertexWithZero.remove(0);
         }
         // 判断是否能到达
         if (tpVertexs.get(end.getFunctionName()).pathNum == 0)
-            return new PathVo(0, new ArrayList<>());
-        // 输出
-        List<EdgeVo> path = new ArrayList<>();
-        TpVertex temp = tpVertexs.get(end.getFunctionName());
-        int pathNum = temp.pathNum;
-        while (!temp.vertex.functionName.equals(start.getFunctionName())) {
-            path.add(temp.preEdge.getEdgeVo());
-            temp = tpVertexs.get(temp.preEdge.from.functionName);
-        }
-        Collections.reverse(path);
-        return new PathVo(pathNum, path);
+            return new PathVo(new ArrayList<>());
+        // 获取所有路径
+        var res = new ArrayList<List<EdgeVo>>();
+        getAllPathDFS(graph.vertexMap.get(end.getFunctionName()), graph.vertexMap.get(start.getFunctionName()),
+                new ArrayList<Edge>(), res);
+        res.sort((a, b) -> {
+            return b.size() - a.size();
+        });
+        return new PathVo(res);
     }
 
     @Override
@@ -300,16 +308,12 @@ public class GraphServiceImpl implements GraphService {
     public class TpVertex {
         Vertex vertex;
         int pathNum;
-        int edgeNum;
         int inDegree;
-        Edge preEdge;
 
         TpVertex(Vertex v, int pn, int en) {
             vertex = v;
             pathNum = pn;
-            edgeNum = en;
             inDegree = v.inDegree;
-            preEdge = null;
         }
     }
 }
