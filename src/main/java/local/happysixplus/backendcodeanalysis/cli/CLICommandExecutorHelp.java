@@ -8,7 +8,7 @@ public class CLICommandExecutorHelp implements CLICommandExecutor {
 
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
-        // TODO: 需要完成help命令
+        System.out.println("---------Help---------");
         System.out.println("init [PATH]");
         System.out.println("basic-attribute");
         System.out.println("connective-domain");
@@ -17,5 +17,6 @@ public class CLICommandExecutorHelp implements CLICommandExecutor {
         System.out.println("connective-domain-with-closeness-min");
         System.out.println("shortest-path");
         System.out.println("quit");
+        System.out.println("----------------------");
     }
 }
