@@ -36,7 +36,7 @@
 
   退出
 
-![example](/documents/imgs/example.png)
+![example](documents/imgs/example.png)
 
 ## 检查点对应函数
 
