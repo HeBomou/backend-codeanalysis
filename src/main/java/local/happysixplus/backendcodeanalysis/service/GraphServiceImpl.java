@@ -290,7 +290,7 @@ public class GraphServiceImpl implements GraphService {
         getAllPathDFS(graph.vertexMap.get(end.getFunctionName()), graph.vertexMap.get(start.getFunctionName()),
                 new ArrayList<Edge>(), res);
         res.sort((a, b) -> {
-            return a.size() - b.size();
+            return b.size() - a.size();
         });
         return new PathVo(res);
     }
