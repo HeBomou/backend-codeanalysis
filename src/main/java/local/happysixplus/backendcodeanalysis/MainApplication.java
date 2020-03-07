@@ -23,7 +23,7 @@ public class MainApplication {
 					System.out.println("First let's go through checkpoint 2, 4 and 5.");
 					// 依次调用检查点2、4、5的命令
 					System.out.println();
-					System.out.print("Please input the path to your project: ");
+					System.out.print("Please input the path to the call dependencies file: ");
 					var path = scanner.nextLine().trim();
 					if (!cli.deal(("init " + path).split(" "), scanner))
 						break instruction;
