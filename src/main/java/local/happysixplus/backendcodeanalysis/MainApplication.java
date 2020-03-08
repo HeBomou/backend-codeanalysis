@@ -7,12 +7,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import local.happysixplus.backendcodeanalysis.cli.CLI;
 import lombok.var;
-
+import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 @SpringBootApplication
 public class MainApplication {
 
 	public static void main(String[] args) {
 		// SpringApplication.run(MainApplication.class, args);
+		//JCallGraph.main(null);
+
+
 		var cli = new CLI();
 		var scanner = new Scanner(System.in);
 
