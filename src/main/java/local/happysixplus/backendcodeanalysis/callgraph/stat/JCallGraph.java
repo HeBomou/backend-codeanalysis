@@ -47,7 +47,14 @@ import org.apache.bcel.classfile.ClassParser;
 public class JCallGraph {
     private static ArrayList<String> packageNames=new ArrayList<>();
     private static String path="src/main/resources/temp/";
-    public static void main(String args,String target) {
+
+    /**
+     *
+     * @param args 传入的jar包的路径
+     * @param target  输出txt文件的路径
+     * @param projectName 传入的项目名
+     */
+    public static void main(String args,String target,String projectName) {
         String arg=args;
         //String arg="/Users/tianduyingcai/Desktop/GIT/SE3/backend-codeanalysis/target/backend-codeanalysis-0.0.1-SNAPSHOT.jar";
 
@@ -72,12 +79,12 @@ public class JCallGraph {
 
             try (JarFile jar = new JarFile(f)) {
                 Stream<JarEntry> entries = enumerationAsStream(jar.entries());
-                String[] list=new File(target+"/src/main/java").list();
-                System.out.println(list.length);
+                String[] list=new File(projectName+"/src/main/java").list();
+                /*System.out.println(list.length);
                 for(int i=0;i<list.length;i++)
-                    System.out.println(list[i]);
+                    System.out.println(list[i]);*/
                 for(int i=0;i<list.length;i++){
-                    if(new File(target+"/src/main/java/"+list[i]).isDirectory()){
+                    if(new File(projectName+"/src/main/java/"+list[i]).isDirectory()){
                         packageNames.add(list[i]);
                     }
                 }
@@ -94,9 +101,9 @@ public class JCallGraph {
                     return getClassVisitor.apply(cp).start().methodCalls().stream().filter(String->isValid(String));
                 }).map(s -> s + "\n").reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append)
                         .toString();
-                BufferedWriter log =new BufferedWriter(new OutputStreamWriter(System.out));
+                //BufferedWriter log =new BufferedWriter(new OutputStreamWriter(System.out));
                 //log.write(packageNames.size()+1);
-                //BufferedWriter log = new BufferedWriter(new FileWriter(new File(target)));
+                BufferedWriter log = new BufferedWriter(new FileWriter(new File(target)));
                 log.write(methodCalls);
                 //log.write("???");
                 log.close();
