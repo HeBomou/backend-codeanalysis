@@ -3,15 +3,15 @@ First let's go through checkpoint 2, 4 and 5.
 
 Please input the path to your project: ---------Init---------
 Your project has been loaded successfully.
-Edge: 2
-Vertex: 3
-ConnectiveDomain (excluding domains with only one vertex): 1
+Edge: 10
+Vertex: 11
+ConnectiveDomain (excluding domains with only one vertex): 2
 ----------------------
 
 Please input the closeness threshold: -------Threshold------
-Number of connective domains in inital graph (excluding domains with only one vertex): 1
+Number of connective domains in inital graph (excluding domains with only one vertex): 2
 Set closeness threshold 1.0
-Number of connective domains after setting threshold (not including domain with only one vertex): 0
+Number of connective domains after setting threshold (not including domain with only one vertex): 2
 ----------------------
 Do you want to show vertices of each domain? (y/N) 
 Follow the instruction and search the shortest path.
@@ -29,8 +29,14 @@ You can type 'help' for further help.
 
 Type the following command to init your project.
 init [PATH]
-------Basic-Attr------
-Edge: 2
-Vertex: 3
-ConnectiveDomain (excluding domains with only one vertex): 1
+There're some errors in your input.
+There're some errors in your input.
+---------Help---------
+init [PATH]
+basic-attribute
+connective-domain
+set-closeness-min [VALUE]
+connective-domain-with-closeness-min
+shortest-path
+quit
 ----------------------
