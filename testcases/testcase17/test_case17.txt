@@ -1,0 +1,10 @@
+testcases/testcase17/test_data17.txt
+1
+N
+haha
+y
+haha
+
+haha hbm
+help
+quit

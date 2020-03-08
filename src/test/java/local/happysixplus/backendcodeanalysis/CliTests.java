@@ -110,6 +110,22 @@ class CliTests {
 
     }
 
+    @Test
+    void WrongeArg(){
+        try{
+            testCLI("testcases/testcase17/test_case17.txt", "testcases/testcase17/expected17.txt");
+            
+
+        }catch (Exception e){
+            //读取测试文件异常
+            e.printStackTrace();
+            assert(false);
+        }finally{
+            System.setIn(consoleIn);
+        }
+
+    }
+
 
     /**
      * 读取文件对CLI测试

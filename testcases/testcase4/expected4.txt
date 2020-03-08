@@ -18,4 +18,19 @@ Follow the instruction and search the shortest path.
 Please input source vertex[class/method name]
 There is no vertex matching your input.
 
-The check is finished, then you can try our interactive program. (y/N) 
+The check is finished, then you can try our interactive program. (y/N) Code Analysis version 0.1 by Happy6+
+
+Example usage:
+basic-attribute
+connective-domain
+set-closeness-min [VALUE]
+quit
+You can type 'help' for further help.
+
+Type the following command to init your project.
+init [PATH]
+------Basic-Attr------
+Edge: 2
+Vertex: 3
+ConnectiveDomain (excluding domains with only one vertex): 1
+----------------------
