@@ -1,12 +1,56 @@
-Please input a function name.
-The full function is edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
-Please input the other function name.
-There are many function matching your input, please type the index and enter.
-0 :edu.ncsu.csc.itrust.DateUtil:getSQLdateXyearsAgoFromNow(int)
-1 :edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
-2 :edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
-The full function is edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
-From edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge() to edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
-Total path num: 0
-From edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int) to edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
-Total path num: 0
+Welcome to Code Analysis by Happy6+
+First let's go through checkpoint 2, 4 and 5.
+
+Please input the path to your project: ---------Init---------
+Your project has been loaded successfully.
+Edge: 2
+Vertex: 3
+ConnectiveDomain (excluding domains with only one vertex): 1
+----------------------
+
+Please input the closeness threshold: -------Threshold------
+Number of connective domains in inital graph (excluding domains with only one vertex): 1
+Set closeness threshold 1.0
+Number of connective domains after setting threshold (not including domain with only one vertex): 0
+----------------------
+Do you want to show vertices of each domain? (y/N) 
+Follow the instruction and search the shortest path.
+Please input source vertex[class/method name]
+There is no vertex matching your input.
+
+The check is finished, then you can try our interactive program. (y/N) Code Analysis version 0.1 by Happy6+
+
+Example usage:
+basic-attribute
+connective-domain
+set-closeness-min [VALUE]
+quit
+You can type 'help' for further help.
+
+Type the following command to init your project.
+init [PATH]
+---------Init---------
+Your project has been loaded successfully.
+Edge: 7
+Vertex: 9
+ConnectiveDomain (excluding domains with only one vertex): 2
+----------------------
+Follow the instruction and search the shortest path.
+Please input source vertex[class/method name]
+The vertex you choose is edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
+Please input target vertex[class/method name]
+-----Match-Result-----
+1. edu.ncsu.csc.itrust.DateUtil:getSQLdateXyearsAgoFromNow(int)
+2. edu.ncsu.csc.itrust.DateUtil:getDateXyearsAgoFromNow(int)
+3. edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+----------------------
+There are some vertices matching your input, please input the number of the vertex you choose.
+The vertex you choose is edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+---------Path---------
+Source vertex: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
+Target vertex: edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+Total path num: 1
+
+Path 1: AgeFactorTest:testRegularAge()
+--0.2857142857142857-->DateUtil:yearsAgo(long)
+----------------------

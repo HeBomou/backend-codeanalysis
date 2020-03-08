@@ -20,24 +20,42 @@ public class MainApplication {
 		var scanner = new Scanner(System.in);
 
 		while (true) {
-			try {
-				System.out.println("Welcome to Code Analysis by Happy6+");
-				System.out.println("Then we will go through checkpoint 2, 4 and 5.");
-				// TODO: 依次调用检查点2、4、5的命令
-				System.out.print("Please input the path to your project: ");
-				var path = scanner.nextLine();
-				cli.deal(("init " + path).split(" "), scanner);
-				System.out.print("Please input the closeness threshold: ");
-				var threshold = scanner.nextDouble();
-				cli.deal(("set-closeness-min " + threshold).split(" "), scanner);
-				cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
-				cli.deal("shortest-path".split(" "), scanner);
-			} catch (Exception e) {
-				System.out.println("There're some errors in your command, we will restart the check.");
-				continue;
+			instruction: {
+				try {
+					System.out.println("Welcome to Code Analysis by Happy6+");
+					System.out.println("First let's go through checkpoint 2, 4 and 5.");
+					// 依次调用检查点2、4、5的命令
+					System.out.println();
+					System.out.print("Please input the path to the call dependencies file: ");
+					var path = scanner.nextLine().trim();
+					if (!cli.deal(("init " + path).split(" "), scanner))
+						break instruction;
+					System.out.println();
+					System.out.print("Please input the closeness threshold: ");
+					var threshold = Double.valueOf(scanner.nextLine().trim());
+					if (!cli.deal(("set-closeness-min " + threshold).split(" "), scanner))
+						break instruction;
+					System.out.print("Do you want to show vertices of each domain? (y/N) ");
+					if (scanner.nextLine().trim().toLowerCase().equals("y"))
+						cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
+					System.out.println();
+					if (!cli.deal("shortest-path".split(" "), scanner))
+						break instruction;
+					System.out.println();
+				} catch (Exception e) {
+					System.out.println("There're some errors in your input.");
+					break instruction;
+				}
+				break;
 			}
-			break;
+
+			System.out.println("We will restart the check.");
+			System.out.println();
 		}
+
+		System.out.print("The check is finished, then you can try our interactive program. (y/N) ");
+		if (!scanner.nextLine().trim().toLowerCase().equals("y"))
+			return;
 
 		cli.printHelloMessage();
 		while (true) {

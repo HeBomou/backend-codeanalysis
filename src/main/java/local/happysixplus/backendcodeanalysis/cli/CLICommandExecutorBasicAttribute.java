@@ -12,10 +12,10 @@ public class CLICommandExecutorBasicAttribute implements CLICommandExecutor {
         System.out.println("------Basic-Attr------");
         var edgeNum = graphService.getEdgeNum();
         var vertexNum = graphService.getVertexNum();
-        var connectiveDomainNum = graphService.getConnectiveDomainNum();
+        var connectiveDomainNum = graphService.getConnectiveDomains().size();
         System.out.println("Edge: " + edgeNum);
         System.out.println("Vertex: " + vertexNum);
-        System.out.println("ConnectiveDomain: " + connectiveDomainNum);
+        System.out.println("ConnectiveDomain (excluding domains with only one vertex): " + connectiveDomainNum);
         System.out.println("----------------------");
     }
 }

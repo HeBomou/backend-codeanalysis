@@ -57,7 +57,6 @@ class CliTests {
     }
     @Test
     void BasicAttribute(){
-        //testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
         try{
             testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
         }catch (Exception e){
@@ -71,7 +70,7 @@ class CliTests {
 
     @Test
     void BasicAttribute2(){
-        //testCLI("testcases/testcase4/test_case4.txt", "testcases/testcase4/expected4.txt");
+        //多边的情况
         try{
             testCLI("testcases/testcase10/test_case10.txt", "testcases/testcase10/expected10.txt");
         }catch (Exception e){
@@ -85,7 +84,6 @@ class CliTests {
 
     @Test
     void ConnectiveDomain(){
-        //testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
         try{
             testCLI("testcases/testcase5/test_case5.txt", "testcases/testcase5/expected5.txt");
         }catch (Exception e){
@@ -126,17 +124,60 @@ class CliTests {
             FileInputStream fis = new FileInputStream(argFileName);
             System.setIn(fis);
             Scanner scanner=new Scanner(System.in);
-            while(true) {
-                try {
-                    var cmd = scanner.nextLine();
-                    if(cmd.equals("quit")) break;
-                    cli.deal(cmd.split(" "), scanner);
-                } catch (Exception e) {
-                    System.out.println("命令输入有误");
-                    e.printStackTrace();
-                }
-            }
 
+            while (true) {
+                instruction: {
+                    try {
+                        System.out.println("Welcome to Code Analysis by Happy6+");
+                        System.out.println("First let's go through checkpoint 2, 4 and 5.");
+                        // 依次调用检查点2、4、5的命令
+                        System.out.println();
+                        System.out.print("Please input the path to your project: ");
+                        var path = scanner.nextLine().trim();
+                        if (!cli.deal(("init " + path).split(" "), scanner))
+                            break instruction;
+                        System.out.println();
+                        System.out.print("Please input the closeness threshold: ");
+                        var threshold = Double.valueOf(scanner.nextLine().trim());
+                        if (!cli.deal(("set-closeness-min " + threshold).split(" "), scanner))
+                            break instruction;
+                        System.out.print("Do you want to show vertices of each domain? (y/N) ");
+                        if (scanner.nextLine().trim().toLowerCase().equals("y"))
+                            cli.deal("connective-domain-with-closeness-min".split(" "), scanner);
+                        System.out.println();
+                        if (!cli.deal("shortest-path".split(" "), scanner))
+                            break instruction;
+                        System.out.println();
+                    } catch (Exception e) {
+                        break instruction;
+                    }
+                    break;
+                }
+    
+                System.out.println("There're some errors in your input, we will restart the check.");
+                System.out.println();
+            }
+    
+            System.out.print("The check is finished, then you can try our interactive program. (y/N) ");
+            if (scanner.nextLine().trim().toLowerCase().equals("y")){
+                cli.printHelloMessage();
+                while (true) {
+                    try {
+                        var cmd = scanner.nextLine().trim();
+                        if (cmd.equals(""))
+                            continue;
+                        if (cmd.equals("quit"))
+                            break;
+                        cli.deal(cmd.split(" "), scanner);
+                    } catch (Exception e) {
+                        System.out.println("命令有误");
+                        e.printStackTrace();
+                    }
+                }
+                scanner.close();
+            }
+    
+            
             //输出写入到文件
             File file =new File("test_appendfile.txt");
  
@@ -158,7 +199,7 @@ class CliTests {
 
         }catch(Exception e){
             e.printStackTrace();
-            assert(false);
+            throw e;
         }finally{
             //输入流重新定位到System.in
             System.setIn(consoleIn);

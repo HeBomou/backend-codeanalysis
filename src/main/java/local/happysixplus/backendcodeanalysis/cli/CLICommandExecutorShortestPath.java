@@ -17,18 +17,22 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
             text = scanner.nextLine().trim();
         var fullFuncs = service.getSimilarVertex(text);
         if (fullFuncs.size() == 0) {
-            ps.println("There is no function name matching your input.");
+            ps.println("There is no vertex matching your input.");
             return null;
         }
         int idx = 0;
         if (fullFuncs.size() != 1) {
-            ps.println("There are many function matching your input, please type the index and enter.");
+
+            System.out.println("-----Match-Result-----");
             for (int i = 0; i < fullFuncs.size(); i++)
-                ps.println(i + " :" + fullFuncs.get(i));
-            idx = Integer.parseInt(scanner.nextLine());
+                ps.println((i + 1) + ". " + fullFuncs.get(i));
+            System.out.println("----------------------");
+            ps.println(
+                    "There are some vertices matching your input, please input the number of the vertex you choose.");
+            idx = Integer.parseInt(scanner.nextLine()) - 1;
         }
         if (0 <= idx && idx < fullFuncs.size()) {
-            ps.println("The full function is " + fullFuncs.get(idx));
+            System.out.println("The vertex you choose is " + fullFuncs.get(idx));
             return fullFuncs.get(idx);
         } else {
             ps.println("The index " + idx + " is invalid.");
@@ -36,31 +40,47 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
         }
     }
 
+    String getShortVertexName(String oriName) {
+        var temp = oriName.split("\\(");
+        var left = temp[0].split("\\.");
+        return left[left.length - 1] + "(" + temp[1];
+    }
+
     void printPath(String funcA, String funcB, PathVo pathVo) {
-        System.out.println("From " + funcA + " to " + funcB);
-        System.out.println("Total path num: " + pathVo.getPathNum());
-        var edges = pathVo.getPath();
-        if (edges.size() > 0) {
-            System.out.println("The shortest path:");
-            System.out.println(edges.get(0).getFrom().getFunctionName());
-            for (var edge : edges)
-                System.out.println("--" + edge.getCloseness() + "-->" + edge.getTo().getFunctionName());
+        System.out.println("---------Path---------");
+        System.out.println("Source vertex: " + funcA);
+        System.out.println("Target vertex: " + funcB);
+        var paths = pathVo.getPaths();
+        System.out.println("Total path num: " + paths.size());
+        int cnt = 0;
+        for (var edges : paths) {
+            cnt++;
+            System.out.println();
+            if (edges.size() > 0) {
+                System.out.print("Path " + cnt + ": ");
+                System.out.println(getShortVertexName(edges.get(0).getFrom().getFunctionName()));
+                for (var edge : edges)
+                    System.out.println(
+                            "--" + edge.getCloseness() + "-->" + getShortVertexName(edge.getTo().getFunctionName()));
+            }
         }
+        System.out.println("----------------------");
     }
 
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
+        System.out.println("Follow the instruction and search the shortest path.");
         exec: {
-            var funcA = getFullFuncName(graphService, scanner, System.out, "Please input a function name.");
+            var funcA = getFullFuncName(graphService, scanner, System.out,
+                    "Please input source vertex[class/method name]");
             if (funcA == null)
                 break exec;
-            var funcB = getFullFuncName(graphService, scanner, System.out, "Please input the other function name.");
+            var funcB = getFullFuncName(graphService, scanner, System.out,
+                    "Please input target vertex[class/method name]");
             if (funcB == null)
                 break exec;
             var path = graphService.getShortestPath(new VertexVo(funcA), new VertexVo(funcB));
             printPath(funcA, funcB, path);
-            path = graphService.getShortestPath(new VertexVo(funcB), new VertexVo(funcA));
-            printPath(funcB, funcA, path);
         }
     }
 }

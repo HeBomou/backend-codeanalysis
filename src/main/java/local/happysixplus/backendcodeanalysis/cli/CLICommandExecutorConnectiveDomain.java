@@ -13,8 +13,6 @@ public class CLICommandExecutorConnectiveDomain implements CLICommandExecutor {
         var domains = graphService.getConnectiveDomainsWithClosenessMin();
         int cnt = 0;
         for (var domain : domains) {
-            if (domain.getVertexVos().size() == 1)
-                continue;
             if (cnt != 0)
                 System.out.println("-----");
             System.out.println("Domain " + ++cnt + ", vertex num: " + domain.getVertexVos().size() + ", edge num: "

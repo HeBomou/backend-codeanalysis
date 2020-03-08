@@ -1,3 +1,21 @@
+Welcome to Code Analysis by Happy6+
+First let's go through checkpoint 2, 4 and 5.
+
+Please input the path to your project: ---------Init---------
+Your project has been loaded successfully.
 Edge: 2
 Vertex: 3
-ConnectiveDomain: 1
+ConnectiveDomain (excluding domains with only one vertex): 1
+----------------------
+
+Please input the closeness threshold: -------Threshold------
+Number of connective domains in inital graph (excluding domains with only one vertex): 1
+Set closeness threshold 1.0
+Number of connective domains after setting threshold (not including domain with only one vertex): 0
+----------------------
+Do you want to show vertices of each domain? (y/N) 
+Follow the instruction and search the shortest path.
+Please input source vertex[class/method name]
+There is no vertex matching your input.
+
+The check is finished, then you can try our interactive program. (y/N) 

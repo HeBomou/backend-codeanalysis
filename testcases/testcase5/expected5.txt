@@ -1,9 +1,49 @@
-Domain: 1
-Domain 0 , vertex:3
-edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
-edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
+Welcome to Code Analysis by Happy6+
+First let's go through checkpoint 2, 4 and 5.
 
-Domain 0 , vertex:3
-edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
-edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()--0.6666666666666666-->edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
+Please input the path to your project: ---------Init---------
+Your project has been loaded successfully.
+Edge: 2
+Vertex: 3
+ConnectiveDomain (excluding domains with only one vertex): 1
+----------------------
 
+Please input the closeness threshold: -------Threshold------
+Number of connective domains in inital graph (excluding domains with only one vertex): 1
+Set closeness threshold 1.0
+Number of connective domains after setting threshold (not including domain with only one vertex): 0
+----------------------
+Do you want to show vertices of each domain? (y/N) 
+Follow the instruction and search the shortest path.
+Please input source vertex[class/method name]
+There is no vertex matching your input.
+
+The check is finished, then you can try our interactive program. (y/N) Code Analysis version 0.1 by Happy6+
+
+Example usage:
+basic-attribute
+connective-domain
+set-closeness-min [VALUE]
+quit
+You can type 'help' for further help.
+
+Type the following command to init your project.
+init [PATH]
+---------Init---------
+Your project has been loaded successfully.
+Edge: 2
+Vertex: 3
+ConnectiveDomain (excluding domains with only one vertex): 1
+----------------------
+---------Domain-------
+Domain 1, vertex num: 3, edge num: 2
+Vertex 0: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
+Vertex 1: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
+Vertex 2: edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+----------------------
+---Threshold-Domain---
+Domain 1, vertex num: 3, edge num: 2
+Vertex 0: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:assertFalse(boolean)
+Vertex 1: edu.ncsu.csc.itrust.risk.factors.AgeFactorTest:testRegularAge()
+Vertex 2: edu.ncsu.csc.itrust.DateUtil:yearsAgo(long)
+----------------------
