@@ -34,6 +34,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import java.io.*;
 
 import org.apache.bcel.classfile.ClassParser;
 
@@ -45,14 +46,10 @@ import org.apache.bcel.classfile.ClassParser;
  */
 public class JCallGraph {
     private static ArrayList<String> packageNames=new ArrayList<>();
-
-    public static void main(String[] args) {
-
+    public static void main(String args,String target) {
+        //String arg=args;
         String arg="//Users//tianduyingcai//Desktop//GIT//Hello//target//Hello-1.0-SNAPSHOT.jar";
-        /*if(args.length>0)
-            packageNames = new String[args.length - 1];
-        packageNames=new String[1];
-        packageNames[0]="temp";*/
+
         Function<ClassParser, ClassVisitor> getClassVisitor = (ClassParser cp) -> {
             try {
                 return new ClassVisitor(cp.parse());
@@ -89,7 +86,7 @@ public class JCallGraph {
                 }).map(s -> s + "\n").reduce(new StringBuilder(), StringBuilder::append, StringBuilder::append)
                         .toString();
 
-                BufferedWriter log = new BufferedWriter(new OutputStreamWriter(System.out));
+                BufferedWriter log = new BufferedWriter(new FileWriter(new File(target)));
                 log.write(methodCalls);
                 //log.write("???");
                 log.close();
