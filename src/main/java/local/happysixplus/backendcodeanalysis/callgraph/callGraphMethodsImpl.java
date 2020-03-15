@@ -17,7 +17,7 @@ public class callGraphMethodsImpl implements callGraphMethods{
     }
 
     private void getGraphFromJar(String jarLocation,String targetTxtLocation){
-        JCallGraph.main(jarLocation,targetTxtLocation);
+        // JCallGraph.main(jarLocation,targetTxtLocation);
     }
     private void cloneProject(String githubLink,String projectName){
         int retCode=JavaShellUtil.ExecCommand(clone,projectName+" "+githubLink);
