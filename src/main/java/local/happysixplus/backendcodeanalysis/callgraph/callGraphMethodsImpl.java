@@ -4,6 +4,7 @@ import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 public class CallGraphMethodsImpl implements CallGraphMethods{
     private static final String rm="src/main/resources/Scripts/rm.sh";
@@ -21,14 +22,14 @@ public class CallGraphMethodsImpl implements CallGraphMethods{
      */
 
     //TODO：根据完整路径获取函数源码
-    public String[] getSourceCode(String projectName,String classPath){
+    public String[] getSourceCode(String projectName, String methodPath, ArrayList<String> parameters){
         return null;
     }
     @Override
     public int initGraph(String githubLink,String projectName) {
         cloneProject(githubLink,projectName);
         String jarName=null; //TODO:获取jar包的名称
-        if(getGraphFromJar("src/main/resources/temp/"+projectName+"/target/"+jarName,"src/main/resources/dependencies/"+projectName+"/"+projectName+".txt",projectName)==-1){
+        if(getGraphFromJar("src/main/resources/temp/"+projectName+"/target/"+"Hello-1.0-SNAPSHOT.jar","src/main/resources/dependencies/"+projectName+"/"+projectName+".txt",projectName)==-1){
             return -1;
         }
         loadSourceCode();

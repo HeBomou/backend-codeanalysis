@@ -12,7 +12,6 @@ import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
 @SpringBootApplication
 public class MainApplication {
-
 	public static void main(String[] args) {
 		// SpringApplication.run(MainApplication.class, args);
 		//JCallGraph.s();
