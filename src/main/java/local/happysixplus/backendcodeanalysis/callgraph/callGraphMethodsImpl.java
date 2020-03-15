@@ -21,7 +21,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods{
      */
 
     //TODO：根据完整路径获取函数源码
-    ){
+    public String[] getSourceCode(String projectName,String classPath){
         return null;
     }
     @Override
