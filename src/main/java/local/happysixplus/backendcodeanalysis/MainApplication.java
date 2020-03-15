@@ -3,13 +3,13 @@ package local.happysixplus.backendcodeanalysis;
 import java.util.Scanner;
 
 // import org.springframework.boot.SpringApplication;
-import local.happysixplus.backendcodeanalysis.callgraph.callGraphMethodsImpl;
+import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethodsImpl;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import local.happysixplus.backendcodeanalysis.cli.CLI;
 import lombok.var;
 import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
-import local.happysixplus.backendcodeanalysis.callgraph.callGraphMethods;
+import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
 @SpringBootApplication
 public class MainApplication {
 

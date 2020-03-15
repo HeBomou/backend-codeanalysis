@@ -1,23 +1,43 @@
 package local.happysixplus.backendcodeanalysis.callgraph;
 import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
-public class callGraphMethodsImpl implements callGraphMethods{
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+public class CallGraphMethodsImpl implements CallGraphMethods{
     private static final String rm="src/main/resources/Scripts/rm.sh";
     private static final String clone="src/main/resources/Scripts/clone.sh";
-    public callGraphMethodsImpl(){
+    public CallGraphMethodsImpl(){
         JavaShellUtil.InitCommand(rm);
         JavaShellUtil.InitCommand(clone);
     }
-
     @Override
-    public void initGraph(String githubLink) {
-        cloneProject("https://github.com/gousiosg/java-callgraph","SKTFaker");
-        deleteFile("SKTFaker");
-        //getGraphFromJar(null,"src/main/resources/Scripts/a.txt");
+    /**
+     * @param classPath 函数所在的完整路径
+     *
+     *
+     * 如果函数不合法则返回-1
+     */
+
+    //TODO：根据完整路径获取函数源码
+    ){
+        return null;
+    }
+    @Override
+    public int initGraph(String githubLink,String projectName) {
+        cloneProject(githubLink,projectName);
+        String jarName=null; //TODO:获取jar包的名称
+        if(getGraphFromJar("src/main/resources/temp/"+projectName+"/target/"+jarName,"src/main/resources/dependencies/"+projectName+"/"+projectName+".txt",projectName)==-1){
+            return -1;
+        }
+        loadSourceCode();
+        deleteFile(projectName);
+        return 0;
     }
 
-    private void getGraphFromJar(String jarLocation,String targetTxtLocation){
-        // JCallGraph.main(jarLocation,targetTxtLocation);
+    private int getGraphFromJar(String jarLocation,String targetTxtLocation,String projectName){
+        return JCallGraph.getGraphFromJar(jarLocation,targetTxtLocation,projectName);
     }
     private void cloneProject(String githubLink,String projectName){
         int retCode=JavaShellUtil.ExecCommand(clone,projectName+" "+githubLink);
@@ -28,4 +48,9 @@ public class callGraphMethodsImpl implements callGraphMethods{
         //System.out.println(retCode);
 
     }
+    //TODO:加载函数源码到txt
+    private void loadSourceCode(){}
+
 }
+
+

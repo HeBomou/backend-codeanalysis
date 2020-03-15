@@ -54,7 +54,7 @@ public class JCallGraph {
      * @param target  输出txt文件的路径
      * @param projectName 传入的项目名
      */
-    public static void main(String args,String target,String projectName) {
+    public static int getGraphFromJar(String args,String target,String projectName) {
         String arg=args;
         //String arg="/Users/tianduyingcai/Desktop/GIT/SE3/backend-codeanalysis/target/backend-codeanalysis-0.0.1-SNAPSHOT.jar";
 
@@ -75,20 +75,21 @@ public class JCallGraph {
 
             if (!f.exists()) {
                 System.err.println("Jar file " + arg + " does not exist");
+                return -1;
             }
 
             try (JarFile jar = new JarFile(f)) {
                 Stream<JarEntry> entries = enumerationAsStream(jar.entries());
-                String[] list=new File(projectName+"/src/main/java").list();
+                String[] list=new File("src/main/resources/temp/"+projectName+"/src/main/java").list();
                 /*System.out.println(list.length);
                 for(int i=0;i<list.length;i++)
                     System.out.println(list[i]);*/
                 for(int i=0;i<list.length;i++){
-                    if(new File(projectName+"/src/main/java/"+list[i]).isDirectory()){
+                    if(new File("src/main/resources/temp/"+projectName+"/src/main/java/"+list[i]).isDirectory()){
                         packageNames.add(list[i]);
                     }
                 }
-                System.out.println(packageNames.size());
+                //System.out.println(packageNames.size());
                 String methodCalls = entries.flatMap(e -> {
                     if (e.isDirectory() || !e.getName().endsWith(".class")){
                         return (new ArrayList<String>()).stream();
@@ -113,7 +114,9 @@ public class JCallGraph {
         } catch (IOException e) {
             System.err.println("Error while processing jar: " + e.getMessage());
             e.printStackTrace();
+            return -1;
         }
+        return 0;
     }
 
     public static <T> Stream<T> enumerationAsStream(Enumeration<T> e) {
