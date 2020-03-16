@@ -3,7 +3,7 @@ package local.happysixplus.backendcodeanalysis.callgraph;
 import java.util.ArrayList;
 
 public interface CallGraphMethods{
-    /**
+    /**@param username 用户名
      *
      * @param githubLink 项目的github连接，要求public项目，且完全符合maven规范
      *
@@ -11,9 +11,9 @@ public interface CallGraphMethods{
      *
      *
      * 输出的代码依赖图在
-     * @retrun 正常则返回0 否则返回-1
+     * @return 正常则返回0 否则返回-1
      */
-    public int initGraph(String githubLink,String projectName);
+    public int initGraph(String username,String githubLink,String projectName);
 
     /**
      *
@@ -24,5 +24,5 @@ public interface CallGraphMethods{
      */
 
 
-    public String[] getSourceCode(String projectName, String methodPath, ArrayList<String> parameters);
+    public String[] getSourceCode(String username,String projectName, String methodPath, ArrayList<String> parameters);
 }
