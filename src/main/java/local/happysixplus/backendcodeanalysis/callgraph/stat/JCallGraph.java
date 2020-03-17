@@ -54,7 +54,7 @@ public class JCallGraph {
      * @param target  输出txt文件的路径
      * @param projectName 传入的项目名
      */
-    public static int getGraphFromJar(String args,String target,String projectName) {
+    public static String[] getGraphFromJar(String args,String target,String projectName) {
         String arg=args;
         //String arg="/Users/tianduyingcai/Desktop/GIT/SE3/backend-codeanalysis/target/backend-codeanalysis-0.0.1-SNAPSHOT.jar";
 
@@ -75,7 +75,7 @@ public class JCallGraph {
 
             if (!f.exists()) {
                 System.err.println("Jar file " + arg + " does not exist");
-                return -1;
+                return null;
             }
 
             try (JarFile jar = new JarFile(f)) {
@@ -104,19 +104,19 @@ public class JCallGraph {
                         .toString();
                 //BufferedWriter log =new BufferedWriter(new OutputStreamWriter(System.out));
                 //log.write(packageNames.size()+1);
-                BufferedWriter log = new BufferedWriter(new FileWriter(new File(target)));
+                /*BufferedWriter log = new BufferedWriter(new FileWriter(new File(target)));
                 log.write(methodCalls);
                 //log.write("???");
-                log.close();
+                log.close();*/
+                return methodCalls.split("\n");
 
 
             }
         } catch (IOException e) {
             System.err.println("Error while processing jar: " + e.getMessage());
             e.printStackTrace();
-            return -1;
+            return null;
         }
-        return 0;
     }
 
     public static <T> Stream<T> enumerationAsStream(Enumeration<T> e) {

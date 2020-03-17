@@ -14,11 +14,8 @@ import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
 public class MainApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run(MainApplication.class, args);
-		//JCallGraph.s();
-		//callGraphMethods cgm=new callGraphMethodsImpl();
-
-
-
+		//CallGraphMethods cgm=new CallGraphMethodsImpl();
+		//cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Linux");
 		var cli = new CLI();
 		var scanner = new Scanner(System.in);
 

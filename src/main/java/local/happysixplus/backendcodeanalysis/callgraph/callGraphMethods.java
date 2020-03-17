@@ -1,9 +1,12 @@
 package local.happysixplus.backendcodeanalysis.callgraph;
 
+import javafx.util.Pair;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public interface CallGraphMethods{
-    /**@param username 用户名
+    /*
      *
      * @param githubLink 项目的github连接，要求public项目，且完全符合maven规范
      *
@@ -13,16 +16,5 @@ public interface CallGraphMethods{
      * 输出的代码依赖图在
      * @return 正常则返回0 否则返回-1
      */
-    public int initGraph(String username,String githubLink,String projectName);
-
-    /**
-     *
-     * @param projectName 项目名
-     * @param methodPath 方法的完整路径
-     * @param parameters 方法的参数列表，只需要提供类名，例如：Java.util.Scanner，则只需要提供"Scanner"
-     * @return 返回需要的源码内容
-     */
-
-
-    public String[] getSourceCode(String username,String projectName, String methodPath, ArrayList<String> parameters);
+    public Pair<String[],ArrayList<String>> initGraph(String githubLink, String projectName);
 }

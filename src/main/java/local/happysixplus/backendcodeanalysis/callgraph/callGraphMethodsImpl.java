@@ -1,10 +1,15 @@
 package local.happysixplus.backendcodeanalysis.callgraph;
+import javafx.util.Pair;
 import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
+import local.happysixplus.backendcodeanalysis.callgraph.file.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class CallGraphMethodsImpl implements CallGraphMethods{
     private static final String rm="src/main/resources/Scripts/rm.sh";
@@ -14,31 +19,18 @@ public class CallGraphMethodsImpl implements CallGraphMethods{
         JavaShellUtil.InitCommand(clone);
     }
     @Override
-    /**
-     * @param classPath 函数所在的完整路径
-     *
-     *
-     * 如果函数不合法则返回-1
-     */
-
-    //TODO：根据完整路径获取函数源码
-    public String[] getSourceCode(String username,String projectName, String methodPath, ArrayList<String> parameters){
-        return null;
-    }
-    @Override
-    public int initGraph(String username,String githubLink,String projectName) {
+    public Pair<String[],ArrayList<String>> initGraph(String githubLink, String projectName) {
         cloneProject(githubLink,projectName);
-        String jarName=null; //TODO:获取jar包的名称
-        if(getGraphFromJar("src/main/resources/temp/"+projectName+"/target/"+"Hello-1.0-SNAPSHOT.jar","src/main/resources/dependencies/"+projectName+"/"+projectName+".txt",projectName)==-1){
-            return -1;
-        }
-        loadSourceCode();
-        deleteFile(projectName);
-        return 0;
-    }
+        String jarName=null;
 
-    private int getGraphFromJar(String jarLocation,String targetTxtLocation,String projectName){
-        return JCallGraph.getGraphFromJar(jarLocation,targetTxtLocation,projectName);
+        //TODO:获取jar包的名称
+        String[] callGraph=JCallGraph.getGraphFromJar("src/main/resources/temp/"+projectName+"/target/"+"Hello-1.0-SNAPSHOT.jar","src/main/resources/dependencies/",projectName);
+        if (callGraph==null)
+            return null;
+        Pair<String[],ArrayList<String>> result=new Pair<String[], ArrayList<String>>(callGraph,new ArrayList<String>());
+        loadSourceCode(result.getValue(),projectName);
+        deleteFile(projectName);
+        return null;
     }
     private void cloneProject(String githubLink,String projectName){
         int retCode=JavaShellUtil.ExecCommand(clone,projectName+" "+githubLink);
@@ -49,9 +41,56 @@ public class CallGraphMethodsImpl implements CallGraphMethods{
         //System.out.println(retCode);
 
     }
-    //TODO:加载函数源码到txt
-    private void loadSourceCode(){}
+    private void loadSourceCode(ArrayList<String> res,String projectName){
+        ArrayList<String> javaFilePaths=getAllJavaFile("src/main/resources/temp/"+projectName+"/src/main/java");
+        SourceCodeReader scReader=new SourceCodeReader(projectName);
+        for(int i=0;i<javaFilePaths.size();i++){
+            ArrayList<String> tempStrings=scReader.getSourceCodeFromFile(javaFilePaths.get(i));
+            for(int j=0;j<tempStrings.size();j++){
+                res.add(tempStrings.get(j));
+            }
+        }
 
+        for(int i=0;i<res.size();i++){
+            System.out.println("-------------");
+            System.out.println(res.get(i));
+            System.out.println("-------------");
+
+        }
+    }
+    private ArrayList<String> getAllJavaFile(String path){
+        int fileNum = 0, folderNum = 0;
+        File file = new File(path);
+        LinkedList<File> list = new LinkedList<>();
+        ArrayList<String> res=new ArrayList<>();
+        if (file.exists()) {
+            if (null == file.listFiles()) {
+                return null;
+            }
+            list.addAll(Arrays.asList(file.listFiles()));
+            while (!list.isEmpty()) {
+                File[] files = list.removeFirst().listFiles();
+                if (null == files) {
+                    continue;
+                }
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        //System.out.println("文件夹:" + f.getAbsolutePath());
+                        list.add(f);
+                        folderNum++;
+                    } else if(f.getName().endsWith(".java")){
+                        //System.out.println("文件:" + f.getPath());
+                        res.add(f.getPath());
+                        fileNum++;
+                    }
+                }
+            }
+        } else {
+            //System.out.println("文件不存在!");
+        }
+        //System.out.println("文件夹数量:" + folderNum + ",文件数量:" + fileNum);
+        return res;
+    }
 }
 
 
