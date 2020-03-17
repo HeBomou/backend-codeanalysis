@@ -5,14 +5,15 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class SourceCodeReader {
-    private final String defaultPrePath = "src/main/resource/temp/";
-    private final String defaultSufPath = "/main/java";
+    private static final String defaultPrePath = "src/main/resources/temp/";
+    private static final String defaultSufPath = "/src/main/java/";
     private char[] c;
     private boolean commitSign1 = false;
     private boolean commitSign2 = false;
     private boolean stringSign = false;
     private boolean charSign = false;
     private boolean isInMethod = false;
+    private boolean isInMember = false;
     private String projectName;
 
     public SourceCodeReader(String projectName) {
@@ -27,7 +28,7 @@ public class SourceCodeReader {
         try {
             //将.java文件的内容加载到char数组中
             BufferedReader br = new BufferedReader(new FileReader(filePath));
-            String tempStr = null;
+            String tempStr;
             StringBuilder tempStringBuilder = new StringBuilder();
             while ((tempStr = br.readLine()) != null)
                 tempStringBuilder.append(tempStr).append('\n');
@@ -37,14 +38,13 @@ public class SourceCodeReader {
             for (int i = 0; i < len; i++) {
                 c[i] = tempStr.charAt(i);
             }
-            StringBuilder method = new StringBuilder();
             int beginPos = -1;
-            int endPos = -1;
+            int endPos;
             int num = 0;// 花括号的数量
             boolean isInClass = false;
             for (int i = 0; i < len; i++) {
                 //段注释结束
-                if (!commitSign2 && c[i] == '*' && c[i + 1] == '/') {
+                if (commitSign2 && c[i] == '/' && c[i - 1] == '*') {
                     commitSign2 = false;
                     continue;
                 }
@@ -89,8 +89,39 @@ public class SourceCodeReader {
                     commitSign2 = true;
                     continue;
                 }
+
+                if (commitSign1 || commitSign2 || stringSign || charSign) {
+                    continue;
+                }
+
+                //遇到= 表示直到分号都不属于某个函数
+                if (c[i] == '=' && !isInMethod) {
+                    isInMember = true;
+                    continue;
+                }
+                //遇到; 且前边有'=' 表明有成员变量的声明
+                if (isInMember && c[i] == ';') {
+                    isInMember = false;
+                    beginPos = i + 1;
+                    continue;
+                }
+
+                if (c[i] == ';' && num == 0) {
+                    beginPos = i + 1;
+                    isInMember = false;
+
+                    continue;
+                }
+                if (!isInMethod && c[i] == ';') {
+                    isInMember = false;
+                    beginPos = i + 1;
+                    continue;
+                }
                 //方法内的域
                 if (c[i] == '{' && isInClass) {
+                    if (num == 0) {
+                        isInMethod = true;
+                    }
                     num++;
                     continue;
                 }
@@ -102,11 +133,12 @@ public class SourceCodeReader {
                 //方法结束
                 if (c[i] == '}' && isInClass && num == 1) {
                     endPos = i;
-                    String str=getMethod(beginPos, endPos);
-                    if(str!=null)
-                        res.add(str);
+                    String str = getMethod(beginPos, endPos);
+
+                    if (str != null)
+                        res.add(filePath.replace(path, "").replaceAll("/", ".").replace(".java", "") + ":" + getMethodName(str, className) + getMethodParameters(str) + "\n" + str);
                     beginPos = i + 1;
-                    num=0;
+                    num = 0;
                     resetSigns();
                 }
 
@@ -114,6 +146,7 @@ public class SourceCodeReader {
                 if (c[i] == '{' && !isInClass) {
                     isInClass = true;
                     isInMethod = true;
+                    isInMember = false;
                     num = 0;
                     beginPos = i + 1;
                 }
@@ -133,15 +166,23 @@ public class SourceCodeReader {
         stringSign = false;
         charSign = false;
         isInMethod = false;
+        isInMember = false;
     }
 
     private String getClassName(String filePath) {
         String[] strings = filePath.split("/");
-        String[] strs= strings[strings.length - 1].split("\\.");
+        String[] strs = strings[strings.length - 1].split("\\.");
         return strs[0];
     }
 
     private String getMethod(int beginPos, int endPos) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = beginPos; i <= endPos; i++) {
+            sb.append(c[i]);
+        }
+        return parse(sb.toString());
+    }
+    /*private String getMethod(int beginPos, int endPos) {
 
 
         char[] durex = new char[endPos - beginPos + 1];
@@ -156,7 +197,7 @@ public class SourceCodeReader {
         boolean ss = false;
         StringBuilder res=new StringBuilder();
         for (int i = 0; i < len; i++) {
-            if (!cs2 && durex[i] == '*' && durex[i + 1] == '/') {
+            if (cs2 && durex[i] == '*' && durex[i + 1] == '/') {
                 cs2 = false;
                 beginPos=i+2;
                 continue;
@@ -203,7 +244,7 @@ public class SourceCodeReader {
                 cs2 = true;
                 continue;
             }
-
+            if(cs1||cs2||ss||cs) continue;
             if(durex[i]==';'){
                 begin=i+1;
             }
@@ -220,14 +261,150 @@ public class SourceCodeReader {
             res.append(durex[i]);
         }
 
-        return parse(parse(res.toString()));
-    }
-    private String parse(String str){
-        for(int i=0;i<str.length();i++){
-            if(Character.isAlphabetic(str.charAt(i))){
-                return "\t"+str.substring(i);
+        return parse(res.toString());
+    }*/
+
+    private String parse(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (Character.isAlphabetic(str.charAt(i))) {
+                return str.substring(i);
             }
         }
         return null;
+    }
+
+    private String getMethodName(String str, String className) {
+        int len = str.length();
+        char[] durex = new char[len];
+        for (int i = 0; i < len; i++) {
+            durex[i] = str.charAt(i);
+        }
+        boolean check = false;
+        StringBuilder sb = new StringBuilder();
+        boolean c1 = false;
+        boolean c2 = false;
+        boolean seprated = false;
+        int signNum = 0;
+        for (int i = 0; i < len; i++) {
+            if (durex[i] == '/' && durex[i + 1] == '/') {
+                c1 = true;
+                continue;
+            }
+            if (c1 && durex[i] == '\n') {
+                c1 = false;
+                continue;
+            }
+            if (durex[i] == '/' && durex[i + 1] == '*') {
+                c2 = true;
+                continue;
+            }
+            if (c2 && durex[i] == '/' && durex[i - 1] == '*') {
+                c2 = false;
+                continue;
+            }
+            if (!c1 & !c2) {
+                if (Character.isAlphabetic(durex[i])) {
+                    if (seprated) {
+                        sb = new StringBuilder().append(durex[i]);
+                        seprated = false;
+                    } else {
+                        sb.append(durex[i]);
+                    }
+                } else if (durex[i] == ' ' || durex[i] == '\n') {
+                    seprated = true;
+                } else if (durex[i] == '(') {
+                    seprated = false;
+                    return sb.toString();
+                }
+            }
+
+        }
+        return null;
+    }
+
+    private String getMethodParameters(String str) {
+        int len = str.length();
+        char[] durex = new char[len];
+        for (int i = 0; i < len; i++) {
+            durex[i] = str.charAt(i);
+        }
+        ArrayList<String> res = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean c1 = false;
+        boolean c2 = false;
+        boolean started = false;
+        boolean seprated = false;
+        int signNum = 0;
+        for (int i = 0; i < len; i++) {
+            if (durex[i] == '/' && durex[i + 1] == '/') {
+                c1 = true;
+                continue;
+            }
+            if (c1 && durex[i] == '\n') {
+                c1 = false;
+                continue;
+            }
+            if (durex[i] == '/' && durex[i + 1] == '*') {
+                c2 = true;
+                continue;
+            }
+            if (c2 && durex[i] == '/' && durex[i - 1] == '*') {
+                c2 = false;
+                continue;
+            }
+            if (!c1 & !c2) {
+                if (durex[i] == '(') {
+                    started = true;
+                } else if (durex[i] == ')' && started) {
+                    break;
+                } else if (started) {
+                    if (durex[i] == '<') {
+                        signNum++;
+                        sb.append('<');
+                        continue;
+                    }
+                    if (signNum != 0) {
+                        sb.append(durex[i]);
+                        if (durex[i] == '>') {
+                            signNum--;
+                        }
+                        continue;
+                    }
+                    if (durex[i] == ' ' && sb.length() != 0) {
+                        seprated = true;
+                        continue;
+                    }
+                    if (seprated && (Character.isAlphabetic(durex[i]) || durex[i] == '$' || durex[i] == '¥' || durex[i] == '_')) {
+                        res.add(sb.toString().replace(" ", ""));
+                        sb = new StringBuilder();
+                        seprated = false;
+                        continue;
+                    }
+                    if (!seprated && durex[i] != ' ') {
+                        sb.append(durex[i]);
+                        continue;
+                    }
+
+                    if (durex[i] == ',') {
+                        seprated = false;
+                        sb = new StringBuilder();
+                    }
+
+                }
+            }
+
+        }
+        if (res.size() == 0) {
+            return "()";
+        }
+
+        sb = new StringBuilder().append("(");
+        sb.append(res.get(0));
+        for (int i = 1; i < res.size(); i++) {
+            sb.append(", ").append(res.get(i));
+        }
+        return sb.append(")").toString();
+
+
     }
 }
