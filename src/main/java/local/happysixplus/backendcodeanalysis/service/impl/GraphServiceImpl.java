@@ -1,4 +1,4 @@
-package local.happysixplus.backendcodeanalysis.service;
+package local.happysixplus.backendcodeanalysis.service.impl;
 
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +10,7 @@ import java.io.*;
 
 import org.springframework.stereotype.Service;
 
+import local.happysixplus.backendcodeanalysis.service.GraphService;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;

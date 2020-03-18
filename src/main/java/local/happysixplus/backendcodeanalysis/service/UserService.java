@@ -27,4 +27,9 @@ public interface UserService {
      * @return
      */
     List<UserVo> getAllUsers();
+
+    /**
+     * 获取单个用户
+     */
+    UserVo getOneUser(Integer id);
 }

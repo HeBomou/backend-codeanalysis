@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import local.happysixplus.backendcodeanalysis.service.GraphService;
-import local.happysixplus.backendcodeanalysis.service.GraphServiceImpl;
+import local.happysixplus.backendcodeanalysis.service.impl.GraphServiceImpl;
 import lombok.var;
 
 public class CLI {
