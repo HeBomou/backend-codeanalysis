@@ -14,7 +14,7 @@ public interface UserService {
     /**
      * 删除用户
      */
-    void removeUser(Integer id);
+    void removeUser(Long id);
 
     /**
      * 用户信息修改
@@ -31,5 +31,5 @@ public interface UserService {
     /**
      * 获取单个用户
      */
-    UserVo getOneUser(Integer id);
+    UserVo getOneUser(Long id);
 }

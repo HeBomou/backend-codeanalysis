@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserVo {
-    Integer id;
+    Long id;
     String username;
     String pwdMd5;
 }

@@ -3,9 +3,9 @@ package local.happysixplus.backendcodeanalysis.vo;
 import lombok.Data;
 
 @Data
-public class AdminUserVo{
+public class VertexBaseVo {
+
     Long id;
-    String username;
-    String pwdMd5;
-    String inviteCode;
+    String functionName;
+    String sourceCode;
 }

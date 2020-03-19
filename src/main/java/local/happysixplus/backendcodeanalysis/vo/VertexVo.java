@@ -7,6 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class VertexVo {
 
-    String functionName;
-
+    Long id;
+    String anotation;
+    Float x;
+    Float y;
 }

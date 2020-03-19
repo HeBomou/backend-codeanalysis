@@ -14,7 +14,7 @@ public interface AdminUserService{
     /**
      * 删除
      */
-    void removeAdmin(Integer id);
+    void removeAdmin(Long id);
 
     /**
      * 管理员信息修改
@@ -29,5 +29,5 @@ public interface AdminUserService{
     /**
      * 获取单个管理员
      */
-    AdminUserVo getOneUser(Integer id);
+    AdminUserVo getOneUser(Long id);
 }

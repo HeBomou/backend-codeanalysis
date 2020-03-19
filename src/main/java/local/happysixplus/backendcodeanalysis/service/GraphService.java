@@ -6,6 +6,7 @@ import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 
+@Deprecated()
 public interface GraphService {
 
     /**

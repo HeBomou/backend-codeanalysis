@@ -8,5 +8,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PathVo {
-    List<List<EdgeVo>> paths;
+    /**
+     * 外层是所有的路径，内层是每一条路径从起点出发到终点的所有边
+     */
+    List<List<EdgeBaseVo>> paths;
 }

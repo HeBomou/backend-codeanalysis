@@ -5,7 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ConnectiveDomainVo {
+public class EdgeBaseVo {
+
     Long id;
-    String anotation;
+    Long fromId;
+    Long toId;
+    Double closeness;
 }
