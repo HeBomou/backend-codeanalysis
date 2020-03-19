@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 public class CallGraphMethodsImpl implements CallGraphMethods {
     private static final String rm = "src/main/resources/Scripts/rm.sh";
@@ -22,15 +23,27 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     @Override
     public Pair<String[], ArrayList<String>> initGraph(String githubLink, String projectName) {
         cloneProject(githubLink, projectName);
-        String jarName = null;
+        ArrayList<String> cg=new ArrayList<>();
+        String[] list=new File("src/main/resources/temp/"+projectName+"/target").list();
+        for (String s:list){
+            //System.out.println(s);
+            if (s.endsWith(".jar")){
+                String[] tp=JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/"+s , projectName);
+                if(tp==null){
+                    return null;
+                }
+                List<String> tempList=Arrays.asList(tp);
+                cg.addAll(tempList);
+            }
+        }
+        //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
 
-        //TODO:获取jar包的名称
-        String[] callGraph = JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", "src/main/resources/dependencies/", projectName);
-        if (callGraph == null)
-            return null;
-        Pair<String[], ArrayList<String>> result = new Pair<String[], ArrayList<String>>(callGraph, new ArrayList<String>());
+        Pair<String[], ArrayList<String>> result = new Pair<String[], ArrayList<String>>(cg.toArray(new String[cg.size()]), new ArrayList<String>());
         loadSourceCode(result.getValue(), projectName);
         deleteFile(projectName);
+        /*for(int i=0;i<cg.size();i++){
+            System.out.println(cg.get(i));
+        }*/
         return null;
     }
 

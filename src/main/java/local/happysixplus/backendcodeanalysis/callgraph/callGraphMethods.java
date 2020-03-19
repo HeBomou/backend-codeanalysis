@@ -13,8 +13,8 @@ public interface CallGraphMethods{
      * @param projectName 项目名称，要求和github项目根目录名称相同
      *
      *
-     * 输出的代码依赖图在
-     * @return 正常则返回0 否则返回-1
+     * @return Pair的第一个元素：每一行为一个代码依赖 第二个元素：String的ArrayList，每个String为一个函数的源码
+     *
      */
     public Pair<String[],ArrayList<String>> initGraph(String githubLink, String projectName);
 }

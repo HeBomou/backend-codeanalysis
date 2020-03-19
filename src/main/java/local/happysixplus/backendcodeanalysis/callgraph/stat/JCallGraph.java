@@ -51,10 +51,9 @@ public class JCallGraph {
     /**
      *
      * @param args 传入的jar包的路径
-     * @param target  输出txt文件的路径
      * @param projectName 传入的项目名
      */
-    public static String[] getGraphFromJar(String args,String target,String projectName) {
+    public static String[] getGraphFromJar(String args,String projectName) {
         String arg=args;
         //String arg="/Users/tianduyingcai/Desktop/GIT/SE3/backend-codeanalysis/target/backend-codeanalysis-0.0.1-SNAPSHOT.jar";
 

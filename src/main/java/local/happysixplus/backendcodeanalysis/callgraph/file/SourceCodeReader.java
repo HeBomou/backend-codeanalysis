@@ -1,6 +1,7 @@
 package local.happysixplus.backendcodeanalysis.callgraph.file;
 
 
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -135,8 +136,10 @@ public class SourceCodeReader {
                     endPos = i;
                     String str = getMethod(beginPos, endPos);
 
-                    if (str != null)
-                        res.add(filePath.replace(path, "").replaceAll("/", ".").replace(".java", "") + ":" + getMethodName(str, className) + getMethodParameters(str) + "\n" + str);
+                    if (str != null){
+                        String s=filePath.replace(path, "").replaceAll("/", ".");
+                        res.add( s.substring(0,s.length()-5)+ ":" + getMethodName(str, className) + getMethodParameters(str) + "\n" + str);
+                    }
                     beginPos = i + 1;
                     num = 0;
                     resetSigns();
@@ -182,93 +185,46 @@ public class SourceCodeReader {
         }
         return parse(sb.toString());
     }
-    /*private String getMethod(int beginPos, int endPos) {
-
-
-        char[] durex = new char[endPos - beginPos + 1];
-        for (int i = beginPos; i <= endPos; i++) {
-            durex[i - beginPos] = c[i];
-        }
-        int len = endPos - beginPos + 1;
-        int begin = 0;
-        boolean cs2 = false;
-        boolean cs1 = false;
-        boolean cs = false;
-        boolean ss = false;
-        StringBuilder res=new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            if (cs2 && durex[i] == '*' && durex[i + 1] == '/') {
-                cs2 = false;
-                beginPos=i+2;
-                continue;
-            }
-            //行注释结束
-            if (cs1 && durex[i] == '\n') {
-                cs1 = false;
-                beginPos=i+1;
-                continue;
-            }
-
-            //不在注释中，字符串结尾
-            if (!cs1 && !cs2 && ss && durex[i] == '\"' && durex[i - 1] != '\\') {
-                ss = false;
-                continue;
-            }
-
-            //不在注释中，字符结尾
-            if (!cs2 && !cs1 && cs && durex[i] == '\'' && durex[i - 1] != '\\') {
-                cs = false;
-                continue;
-            }
-
-            //遇到字符串
-            if (!cs1 && !cs2 && !ss && durex[i] == '\"') {
-                ss = true;
-                continue;
-            }
-
-            //遇到字符
-            if (!cs1 && !cs2 && !ss && durex[i] == '\'') {
-                cs = true;
-                continue;
-            }
-
-            //遇到行注释
-            if (!cs1 && !cs2 && durex[i] == '/' && durex[i + 1] == '/') {
-                cs1 = true;
-                continue;
-            }
-
-            //遇到段注释
-            if (!cs1 && !cs2 && durex[i] == '/' && durex[i + 1] == '*') {
-                cs2 = true;
-                continue;
-            }
-            if(cs1||cs2||ss||cs) continue;
-            if(durex[i]==';'){
-                begin=i+1;
-            }
-
-            if(durex[i]=='{'){
-                break;
-            }
-
-        }
-        if(beginPos==-1){
-            return null;
-        }
-        for(int i=begin;i<len;i++){
-            res.append(durex[i]);
-        }
-
-        return parse(res.toString());
-    }*/
 
     private String parse(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            if (Character.isAlphabetic(str.charAt(i))) {
-                return str.substring(i);
+        int len = str.length();
+        char[] durex = new char[len];
+        for (int i = 0; i < len; i++) {
+            durex[i] = str.charAt(i);
+        }
+        ArrayList<String> res = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean c1 = false;
+        boolean c2 = false;
+        boolean started = false;
+        boolean seprated = false;
+        int signNum = 0;
+        for (int i = 0; i < len; i++) {
+            if (durex[i] == '/' && durex[i + 1] == '/') {
+                c1 = true;
+                continue;
             }
+            if (c1 && durex[i] == '\n') {
+                c1 = false;
+                continue;
+            }
+            if (durex[i] == '/' && durex[i + 1] == '*') {
+                c2 = true;
+                continue;
+            }
+            if (c2 && durex[i] == '/' && durex[i - 1] == '*') {
+                c2 = false;
+                continue;
+            }
+
+
+            if(!c1 && !c2){
+                if (Character.isAlphabetic(str.charAt(i)) || str.charAt(i)=='@') {
+                    return str.substring(i);
+                }
+            }
+
+
         }
         return null;
     }
@@ -314,7 +270,7 @@ public class SourceCodeReader {
                     seprated = true;
                 } else if (durex[i] == '(') {
                     seprated = false;
-                    return sb.toString();
+                    return sb.toString().equals(className)?"<init>":sb.toString();
                 }
             }
 
@@ -372,6 +328,11 @@ public class SourceCodeReader {
                     }
                     if (durex[i] == ' ' && sb.length() != 0) {
                         seprated = true;
+                        continue;
+                    }
+                    if(durex[i]==','){
+                        //res.add(sb.toString().replace(" ",""));
+                        sb=new StringBuilder();
                         continue;
                     }
                     if (seprated && (Character.isAlphabetic(durex[i]) || durex[i] == '$' || durex[i] == '¥' || durex[i] == '_')) {
