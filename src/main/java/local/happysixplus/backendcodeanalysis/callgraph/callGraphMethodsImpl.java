@@ -6,6 +6,7 @@ import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
 import local.happysixplus.backendcodeanalysis.callgraph.file.*;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -21,7 +22,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     }
 
     @Override
-    public Pair<String[], ArrayList<String>> initGraph(String githubLink, String projectName) {
+    public ProjectData initGraph(String githubLink, String projectName) {
         cloneProject(githubLink, projectName);
         ArrayList<String> cg=new ArrayList<>();
         String[] list=new File("src/main/resources/temp/"+projectName+"/target").list();
@@ -37,14 +38,14 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             }
         }
         //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
+        ArrayList<String> srcCode=new ArrayList<>();
+        loadSourceCode(srcCode, projectName);
 
-        Pair<String[], ArrayList<String>> result = new Pair<String[], ArrayList<String>>(cg.toArray(new String[cg.size()]), new ArrayList<String>());
-        loadSourceCode(result.getValue(), projectName);
         deleteFile(projectName);
         /*for(int i=0;i<cg.size();i++){
             System.out.println(cg.get(i));
         }*/
-        return null;
+        return new ProjectData(cg.toArray(new String[cg.size()]),srcCode);
     }
 
     private void cloneProject(String githubLink, String projectName) {
