@@ -5,9 +5,11 @@ import java.util.ArrayList;
 public class ProjectData {
     private String[] callGraph;
     private ArrayList<String> sourceCode;
-    public ProjectData(String[] callGraph,ArrayList<String> sourceCode){
+    private Node rootNode;
+    public ProjectData(String[] callGraph,ArrayList<String> sourceCode,Node rootNode){
         this.callGraph=callGraph;
         this.sourceCode=sourceCode;
+        this.rootNode=rootNode;
     }
 
     public String[] getCallGraph(){
@@ -16,5 +18,6 @@ public class ProjectData {
     public ArrayList<String> getSourceCode(){
         return sourceCode;
     }
+    public Node getRootNode(){return rootNode;}
 
 }

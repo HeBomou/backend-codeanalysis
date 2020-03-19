@@ -15,7 +15,7 @@ public class MainApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run(MainApplication.class, args);
 		CallGraphMethods cgm=new CallGraphMethodsImpl();
-		//cgm.initGraph("https://github.com/gousiosg/java-callgraph","java-callgraph");
+		//cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Linux");
 		var cli = new CLI();
 		var scanner = new Scanner(System.in);
 
