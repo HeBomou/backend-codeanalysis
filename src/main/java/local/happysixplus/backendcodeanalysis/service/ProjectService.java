@@ -8,7 +8,6 @@ import local.happysixplus.backendcodeanalysis.vo.ProjectVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphVo;
 
-@Deprecated()
 public interface ProjectService {
 
     /**
