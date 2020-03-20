@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Node {
     public String name;
-    public boolean isFolder=false;
+    public boolean isFolder;
     public ArrayList<Node> contents;
     public Node(String name,boolean isFolder){
         this.name=name;
@@ -16,9 +16,4 @@ public class Node {
             contents=null;
         }
     }
-    public void addNode(Node n){
-        contents.add(n);
-
-    }
-
 }

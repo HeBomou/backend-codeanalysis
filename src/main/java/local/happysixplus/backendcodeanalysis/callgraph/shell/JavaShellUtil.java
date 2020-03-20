@@ -5,31 +5,27 @@ import java.io.LineNumberReader;
 
 public class JavaShellUtil {
 
-    public static int InitCommand(String command) {
-        int retCode = 0;
+    public static void InitCommand(String command) {
         try {
             Process process=Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","chmod +x "+command},null,null);
-            retCode = process.waitFor();
             ExecOutput(process);
         } catch (Exception e) {
-            retCode = -1;
+            e.printStackTrace();
         }
-        return retCode;
     }
 
 
 
-    public static int ExecCommand(String command,String parameters) {
-        int retCode = 0;
+    public static void ExecCommand(String command,String parameters) {
         try {
             //Process process0=Runtime.getRuntime().exec(new String[]{"/bin/sh","-c","chmod +x "+command},null,null);
             Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", command+" "+parameters}, null, null);
-            retCode = process.waitFor();
-            ExecOutput(process);
+            if(!ExecOutput(process)){
+                throw new Exception();
+            }
         } catch (Exception e) {
-            retCode = -1;
+            e.printStackTrace();
         }
-        return retCode;
     }
 
     public static boolean ExecOutput(Process process) throws Exception {
@@ -39,14 +35,15 @@ public class JavaShellUtil {
             InputStreamReader ir = new InputStreamReader(process.getInputStream());
             LineNumberReader input = new LineNumberReader(ir);
             String line;
-            String output = "";
+            StringBuilder output = new StringBuilder();
             while ((line = input.readLine()) != null) {
-                output += line + "\n";
+                output.append(line).append("\n");
+            }
+            if(output.toString().equals("ILovedHerasdasdasdashgdkjskhdfsjkfh")){
+                return true;
             }
             input.close();
             ir.close();
-            if (output.length() > 0) {
-            }
         }
         return true;
     }

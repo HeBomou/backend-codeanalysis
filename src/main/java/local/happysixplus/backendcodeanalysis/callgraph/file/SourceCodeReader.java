@@ -192,13 +192,9 @@ public class SourceCodeReader {
         for (int i = 0; i < len; i++) {
             durex[i] = str.charAt(i);
         }
-        ArrayList<String> res = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        //ArrayList<String> res = new ArrayList<>();
         boolean c1 = false;
         boolean c2 = false;
-        boolean started = false;
-        boolean seprated = false;
-        int signNum = 0;
         for (int i = 0; i < len; i++) {
             if (durex[i] == '/' && durex[i + 1] == '/') {
                 c1 = true;
@@ -235,12 +231,10 @@ public class SourceCodeReader {
         for (int i = 0; i < len; i++) {
             durex[i] = str.charAt(i);
         }
-        boolean check = false;
         StringBuilder sb = new StringBuilder();
         boolean c1 = false;
         boolean c2 = false;
         boolean seprated = false;
-        int signNum = 0;
         for (int i = 0; i < len; i++) {
             if (durex[i] == '/' && durex[i + 1] == '/') {
                 c1 = true;
@@ -269,7 +263,6 @@ public class SourceCodeReader {
                 } else if (durex[i] == ' ' || durex[i] == '\n') {
                     seprated = true;
                 } else if (durex[i] == '(') {
-                    seprated = false;
                     return sb.toString().equals(className)?"<init>":sb.toString();
                 }
             }
