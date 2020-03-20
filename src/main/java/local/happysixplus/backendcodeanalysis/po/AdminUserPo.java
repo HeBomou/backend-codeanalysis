@@ -1,0 +1,22 @@
+package local.happysixplus.backendcodeanalysis.po;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class AdminUserPo {
+
+    @Id
+    Long id;
+
+    String username;
+
+    String pwdMd5;
+}
