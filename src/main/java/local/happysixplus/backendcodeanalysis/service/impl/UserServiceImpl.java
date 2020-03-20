@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserVo vo) {
-        userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
+        userData.save(new UserPo(vo.getId(), vo.getUsername(), vo.getPwdMd5()));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVo getOneUser(Long id) {
+    public UserVo getUser(Long id) {
         var po = userData.findById(id).orElse(null);
         return new UserVo(po.getId(), po.getUsername(), null);
     }

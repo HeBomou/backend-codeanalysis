@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -34,6 +35,7 @@ public class UserController {
 
     @PutMapping(value = "/{id}")
     public void putUser(@PathVariable Long id, @RequestBody UserVo vo) {
+        vo.setId(id);
         service.updateUser(vo);
     }
 
@@ -41,4 +43,10 @@ public class UserController {
     public List<UserVo> getAllUsers() {
         return service.getAllUsers();
     }
+
+    @GetMapping(value = "/{id}")
+    public UserVo getMethodName(@PathVariable String id) {
+        return service.getUser(id);
+    }
+
 }

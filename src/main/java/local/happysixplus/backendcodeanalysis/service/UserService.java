@@ -31,5 +31,5 @@ public interface UserService {
     /**
      * 获取单个用户
      */
-    UserVo getOneUser(Long id);
+    UserVo getUser(Long id);
 }
