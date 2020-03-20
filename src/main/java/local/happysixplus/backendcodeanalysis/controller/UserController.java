@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public UserVo getMethodName(@PathVariable String id) {
+    public UserVo getMethodName(@PathVariable Long id) {
         return service.getUser(id);
     }
 
