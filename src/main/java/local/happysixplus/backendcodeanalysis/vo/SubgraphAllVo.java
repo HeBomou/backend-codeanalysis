@@ -11,13 +11,18 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SubgraphAllVo {
+
+    Long id;
+
     /**
      * 外层是联通域，内层是每一个联通域的所有节点id
      */
-    List<List<Long>> connectiveDomains;
+    List<List<Long>> staticConnectiveDomains;
+
+    Double threshold;
 
     /**
-     * 子图动态信息
+     * 各联通域注释等动态信息
      */
-    SubgraphVo subgraph;
+    List<ConnectiveDomainVo> dynamicConnectiveDomains;
 }

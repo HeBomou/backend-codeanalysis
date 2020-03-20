@@ -12,6 +12,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProjectAllVo {
 
+    Long id;
+
     /**
      * 初始图的所有点
      */
@@ -22,10 +24,12 @@ public class ProjectAllVo {
      */
     List<EdgeBaseVo> edges;
 
+    String projectName;
+
     /**
-     * 项目动态信息
+     * 初始图的动态信息
      */
-    ProjectVo project;
+    OriginGraphVo baseGraph;
 
     /**
      * 所有的子图
