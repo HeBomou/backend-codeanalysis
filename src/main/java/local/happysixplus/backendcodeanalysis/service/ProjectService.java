@@ -35,19 +35,19 @@ public interface ProjectService {
 
     void deleteSubgraph(Long id);
 
-    void updateSubGraph(SubgraphDynamicVo vo);
+    void updateSubGraph(Long projectId, SubgraphDynamicVo vo);
 
     List<SubgraphAllVo> getSubgraphAllByProjectId (Long projectId);
 
     /**
      * 获取初始图中从start出发到end的最短路
      */
-    PathVo getOriginalGraphShortestPath(Long startVertexId, Long endVertexId);
+    PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId);
 
     /**
      * 获取子图中从start出发到end的最短路
      */
-    PathVo getSubgraphShortestPath(Long subgraphId, Long startVertexId, Long endVertexId);
+    PathVo getSubgraphShortestPath(Long projectId, Long subgraphId, Long startVertexId, Long endVertexId);
 
     /**
      * 获取项目中与funcName相似的函数名
