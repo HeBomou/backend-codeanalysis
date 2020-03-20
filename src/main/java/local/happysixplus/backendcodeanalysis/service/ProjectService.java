@@ -20,7 +20,7 @@ public interface ProjectService {
 
     void deleteProject(Long id);
 
-    void updateProjectDynamic(ProjectDynamicVo vo);
+    void updateProject(ProjectDynamicVo vo);
 
     List<ProjectAllVo> getProjectAllByUserId(Long userId);
 
