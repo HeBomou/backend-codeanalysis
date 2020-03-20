@@ -29,5 +29,5 @@ public interface AdminUserService{
     /**
      * 获取单个管理员
      */
-    AdminUserVo getOneUser(Long id);
+    AdminUserVo getOneAdmin(Long id);
 }
