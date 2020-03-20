@@ -18,7 +18,7 @@ public interface ProjectService {
      */
     ProjectAllVo addProject(String url);
 
-    void deleteProject(Long id);
+    void removeProject(Long id);
 
     void updateProject(ProjectDynamicVo vo);
 
@@ -33,7 +33,7 @@ public interface ProjectService {
      */
     SubgraphAllVo addSubgraph(Long projectId, Double threshold);
 
-    void deleteSubgraph(Long id);
+    void removeSubgraph(Long id);
 
     void updateSubGraph(Long projectId, SubgraphDynamicVo vo);
 
