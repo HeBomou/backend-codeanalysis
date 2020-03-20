@@ -13,7 +13,7 @@ public interface ProjectService {
     /**
      * 读取项目代码，并解析依赖关系，生成有向图。预处理得到点数、边数、联通域数、各点出度入度紧密度
      * 
-     * @param path 项目代码的git仓库url
+     * @param url 项目代码的git仓库url
      * @return 返回新项目的id
      */
     ProjectAllVo addProject(String projectName, String url);
