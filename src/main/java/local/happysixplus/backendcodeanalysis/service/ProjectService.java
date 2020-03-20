@@ -20,7 +20,7 @@ public interface ProjectService {
 
     Boolean deleteProject(Long id);
 
-    List<ProjectAllVo> getProject();
+    List<ProjectAllVo> getProject(Long userId);
 
     Boolean updateProject(ProjectVo vo);
 
