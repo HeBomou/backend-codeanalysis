@@ -3,38 +3,48 @@ package local.happysixplus.backendcodeanalysis.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import local.happysixplus.backendcodeanalysis.data.UserData;
+import local.happysixplus.backendcodeanalysis.po.UserPo;
 import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.UserVo;
+import lombok.var;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    UserData userData;
+
     @Override
     public void addUser(UserVo vo) {
-        System.out.println("Add user");
+        userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
     }
 
     @Override
     public void removeUser(Long id) {
-        System.out.println("Remove user");
+        userData.deleteById(id);
     }
 
     @Override
     public void updateUser(UserVo vo) {
-        System.out.println("Update user");
+        userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
     }
 
     @Override
     public List<UserVo> getAllUsers() {
-        System.out.println("Get all user");
-        return new ArrayList<>();
+        var pos = userData.findAll();
+        var vos = new ArrayList<UserVo>(pos.size());
+        for (var po : pos)
+            vos.add(new UserVo(po.getId(), po.getUsername(), null));
+        return vos;
     }
 
     @Override
     public UserVo getOneUser(Long id) {
-        System.out.println("Get one user");
-        return new UserVo();
+        var po = userData.findById(id).orElse(null);
+        return new UserVo(po.getId(), po.getUsername(), null);
     }
 }
