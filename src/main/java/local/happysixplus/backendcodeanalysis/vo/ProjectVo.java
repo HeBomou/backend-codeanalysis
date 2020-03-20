@@ -10,6 +10,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProjectVo {
 
+    Long id;
+
     String projectName;
 
     OriginGraphVo baseGraph;
