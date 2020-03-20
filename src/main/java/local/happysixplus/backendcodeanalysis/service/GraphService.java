@@ -2,9 +2,9 @@ package local.happysixplus.backendcodeanalysis.service;
 
 import java.util.List;
 
-import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
-import local.happysixplus.backendcodeanalysis.vo.PathVo;
-import local.happysixplus.backendcodeanalysis.vo.VertexVo;
+// import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainVo;
+// import local.happysixplus.backendcodeanalysis.vo.PathVo;
+// import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 
 @Deprecated()
 public interface GraphService {
@@ -29,7 +29,7 @@ public interface GraphService {
     /**
      * 获取图的所有联通域
      */
-    List<ConnectiveDomainVo> getConnectiveDomains();
+    // List<ConnectiveDomainVo> getConnectiveDomains();
 
     /**
      * 设置最小紧密度阈值。预处理得到删除紧密度低于阈值的边后的图及其基本信息。不包括只有一个点的联通域
@@ -39,12 +39,12 @@ public interface GraphService {
     /**
      * 获取删除紧密度低于阈值的边之后图的联通域。联通域按照顶点数降序排序。不包括只有一个点的联通域
      */
-    List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin();
+    // List<ConnectiveDomainVo> getConnectiveDomainsWithClosenessMin();
 
     /**
      * 获取图中从start出发到end的最短路
      */
-    PathVo getShortestPath(VertexVo start, VertexVo end);
+    // PathVo getShortestPath(VertexVo start, VertexVo end);
 
     /**
      * 获取图中与funcName相似的函数名
