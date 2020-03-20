@@ -14,6 +14,8 @@ public class ProjectStaticPo {
 
     Long id;
 
+    Long userId;
+
     /**
      * 初始图的所有点
      */
