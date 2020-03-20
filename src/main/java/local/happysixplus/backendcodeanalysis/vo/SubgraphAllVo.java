@@ -14,7 +14,7 @@ public class SubgraphAllVo {
     /**
      * 外层是联通域，内层是每一个联通域的所有节点id
      */
-    List<List<Integer>> connectiveDomains;
+    List<List<Long>> connectiveDomains;
 
     /**
      * 子图动态信息
