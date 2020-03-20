@@ -5,10 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VertexVo {
+public class EdgeDynamicVo {
 
     Long id;
     String anotation;
-    Float x;
-    Float y;
 }

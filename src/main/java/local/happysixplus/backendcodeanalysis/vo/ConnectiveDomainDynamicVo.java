@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VertexBaseVo {
+public class ConnectiveDomainDynamicVo {
 
     Long id;
-    String functionName;
-    String sourceCode;
+
+    String anotation;
 }

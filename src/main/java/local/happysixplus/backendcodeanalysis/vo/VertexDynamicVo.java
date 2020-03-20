@@ -5,7 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ConnectiveDomainVo {
+public class VertexDynamicVo {
+
     Long id;
     String anotation;
+    Float x;
+    Float y;
 }

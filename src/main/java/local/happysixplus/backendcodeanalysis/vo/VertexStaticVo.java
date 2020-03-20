@@ -5,10 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EdgeBaseVo {
+public class VertexStaticVo {
 
     Long id;
-    Long fromId;
-    Long toId;
-    Double closeness;
+    String functionName;
+    String sourceCode;
 }

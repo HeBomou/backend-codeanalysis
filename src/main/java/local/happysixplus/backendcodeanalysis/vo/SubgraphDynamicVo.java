@@ -10,14 +10,14 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class SubgraphVo {
+public class SubgraphDynamicVo {
 
     Long id;
 
-    Double threshold;
+    String name;
 
     /**
      * 各联通域注释
      */
-    List<ConnectiveDomainVo> connectiveDomains;
+    List<ConnectiveDomainDynamicVo> connectiveDomains;
 }

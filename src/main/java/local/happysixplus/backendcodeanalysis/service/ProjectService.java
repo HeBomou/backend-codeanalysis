@@ -4,9 +4,9 @@ import java.util.List;
 
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
-import local.happysixplus.backendcodeanalysis.vo.ProjectVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
-import local.happysixplus.backendcodeanalysis.vo.SubgraphVo;
+import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 
 public interface ProjectService {
 
@@ -18,11 +18,11 @@ public interface ProjectService {
      */
     ProjectAllVo addProject(String url);
 
-    Boolean deleteProject(Long id);
+    void deleteProject(Long id);
 
-    List<ProjectAllVo> getProject(Long userId);
+    void updateProjectDynamic(ProjectDynamicVo vo);
 
-    Boolean updateProject(ProjectVo vo);
+    List<ProjectAllVo> getProjectAllByUserId(Long userId);
 
     /**
      * 根据阈值生成一张子图，预处理得到删除紧密度低于阈值的边后的图及其基本信息，不包括只有一个点的联通域
@@ -33,9 +33,11 @@ public interface ProjectService {
      */
     SubgraphAllVo addSubgraph(Long projectId, Double threshold);
 
-    Boolean deleteSubgraph(Long subgraphId);
+    void deleteSubgraph(Long id);
 
-    Boolean updateSubGraph(SubgraphVo vo);
+    void updateSubGraph(SubgraphDynamicVo vo);
+
+    List<SubgraphAllVo> getSubgraphAllByProjectId (Long projectId);
 
     /**
      * 获取初始图中从start出发到end的最短路

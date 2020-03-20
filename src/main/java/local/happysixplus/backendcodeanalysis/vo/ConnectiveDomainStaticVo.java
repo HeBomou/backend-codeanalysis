@@ -1,12 +1,15 @@
 package local.happysixplus.backendcodeanalysis.vo;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EdgeVo {
+public class ConnectiveDomainStaticVo {
 
-    Long id;
-    String anotation;
+    List<Long> vertexIds;
+
+    List<Long> edgeIds;
 }
