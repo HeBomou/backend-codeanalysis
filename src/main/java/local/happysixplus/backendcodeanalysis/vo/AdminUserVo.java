@@ -5,9 +5,13 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AdminUserVo{
+public class AdminUserVo {
+
     Long id;
+
     String username;
+
     String pwdMd5;
+
     String inviteCode;
 }

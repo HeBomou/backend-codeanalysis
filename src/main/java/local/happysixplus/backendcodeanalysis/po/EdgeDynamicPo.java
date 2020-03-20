@@ -1,17 +1,13 @@
-package local.happysixplus.backendcodeanalysis.vo;
+package local.happysixplus.backendcodeanalysis.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VertexDynamicVo {
+public class EdgeDynamicPo {
 
     Long id;
 
     String anotation;
-
-    Float x;
-
-    Float y;
 }

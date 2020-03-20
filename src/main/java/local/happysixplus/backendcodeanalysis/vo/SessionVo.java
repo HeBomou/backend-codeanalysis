@@ -8,5 +8,6 @@ import lombok.Data;
 public class SessionVo {
 
     String username;
+
     String pwdMd5;
 }

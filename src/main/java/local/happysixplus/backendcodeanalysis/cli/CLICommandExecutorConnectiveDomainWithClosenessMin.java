@@ -10,17 +10,17 @@ public class CLICommandExecutorConnectiveDomainWithClosenessMin implements CLICo
     @Override
     public void execute(String[] params, Scanner scanner, GraphService graphService) {
         System.out.println("---Threshold-Domain---");
-        var domains = graphService.getConnectiveDomainsWithClosenessMin();
-        int cnt = 0;
-        for (var domain : domains) {
-            if (cnt != 0)
-                System.out.println("-----");
-            // System.out.println("Domain " + ++cnt + ", vertex num: " + domain.getVertexVos().size() + ", edge num: "
-            //         + domain.getEdgeVos().size());
-            // var vertexs = domain.getVertexVos();
-            // for (int i = 0; i < vertexs.size(); i++)
-            //     System.out.println("Vertex " + i + ": " + vertexs.get(i).getFunctionName());
-        }
+        // var domains = graphService.getConnectiveDomainsWithClosenessMin();
+        // int cnt = 0;
+        // for (var domain : domains) {
+        //     if (cnt != 0)
+        //         System.out.println("-----");
+        //     System.out.println("Domain " + ++cnt + ", vertex num: " + domain.getVertexVos().size() + ", edge num: "
+        //             + domain.getEdgeVos().size());
+        //     var vertexs = domain.getVertexVos();
+        //     for (int i = 0; i < vertexs.size(); i++)
+        //         System.out.println("Vertex " + i + ": " + vertexs.get(i).getFunctionName());
+        // }
         System.out.println("----------------------");
     }
 }

@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AdminSessionVo{
+public class AdminSessionVo {
 
     String username;
+
     String pwdMd5;
 }

@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import local.happysixplus.backendcodeanalysis.service.GraphService;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
-import local.happysixplus.backendcodeanalysis.vo.VertexVo;
 import lombok.var;
 
 public class CLICommandExecutorShortestPath implements CLICommandExecutor {

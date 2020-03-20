@@ -1,11 +1,11 @@
-package local.happysixplus.backendcodeanalysis.vo;
+package local.happysixplus.backendcodeanalysis.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EdgeStaticVo {
+public class EdgeStaticPo {
 
     Long id;
 
