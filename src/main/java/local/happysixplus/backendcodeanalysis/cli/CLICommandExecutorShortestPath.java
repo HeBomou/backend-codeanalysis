@@ -58,10 +58,10 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
             System.out.println();
             if (edges.size() > 0) {
                 System.out.print("Path " + cnt + ": ");
-                System.out.println(getShortVertexName(edges.get(0).getFrom().getFunctionName()));
-                for (var edge : edges)
-                    System.out.println(
-                            "--" + edge.getCloseness() + "-->" + getShortVertexName(edge.getTo().getFunctionName()));
+                // System.out.println(getShortVertexName(edges.get(0).getFrom().getFunctionName()));
+                // for (var edge : edges)
+                //     System.out.println(
+                //             "--" + edge.getCloseness() + "-->" + getShortVertexName(edge.getTo().getFunctionName()));
             }
         }
         System.out.println("----------------------");
@@ -79,8 +79,8 @@ public class CLICommandExecutorShortestPath implements CLICommandExecutor {
                     "Please input target vertex[class/method name]");
             if (funcB == null)
                 break exec;
-            var path = graphService.getShortestPath(new VertexVo(funcA), new VertexVo(funcB));
-            printPath(funcA, funcB, path);
+            // var path = graphService.getShortestPath(new VertexVo(funcA), new VertexVo(funcB));
+            // printPath(funcA, funcB, path);
         }
     }
 }
