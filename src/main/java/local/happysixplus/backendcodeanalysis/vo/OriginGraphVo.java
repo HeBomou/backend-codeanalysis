@@ -2,12 +2,14 @@ package local.happysixplus.backendcodeanalysis.vo;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * 初始图
  */
 @Data
+@AllArgsConstructor
 public class OriginGraphVo {
 
     /**
