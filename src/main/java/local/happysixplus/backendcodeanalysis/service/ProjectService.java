@@ -16,7 +16,7 @@ public interface ProjectService {
      * @param path 项目代码的git仓库url
      * @return 返回新项目的id
      */
-    ProjectAllVo addProject(String url);
+    ProjectAllVo addProject(String projectName, String url);
 
     void removeProject(Long id);
 
