@@ -9,6 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class ConnectiveDomainStaticVo {
 
+    Long id;
+
     List<Long> vertexIds;
 
     List<Long> edgeIds;
