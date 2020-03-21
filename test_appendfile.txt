@@ -1,42 +1,8 @@
-Welcome to Code Analysis by Happy6+
-First let's go through checkpoint 2, 4 and 5.
-
-Please input the path to your project: ---------Init---------
-Your project has been loaded successfully.
-Edge: 10
-Vertex: 11
-ConnectiveDomain (excluding domains with only one vertex): 2
-----------------------
-
-Please input the closeness threshold: -------Threshold------
-Number of connective domains in inital graph (excluding domains with only one vertex): 2
-Set closeness threshold 1.0
-Number of connective domains after setting threshold (not including domain with only one vertex): 2
-----------------------
-Do you want to show vertices of each domain? (y/N) 
-Follow the instruction and search the shortest path.
-Please input source vertex[class/method name]
-There is no vertex matching your input.
-
-The check is finished, then you can try our interactive program. (y/N) Code Analysis version 0.1 by Happy6+
-
-Example usage:
-basic-attribute
-connective-domain
-set-closeness-min [VALUE]
-quit
-You can type 'help' for further help.
-
-Type the following command to init your project.
-init [PATH]
-There're some errors in your input.
-There're some errors in your input.
----------Help---------
-init [PATH]
-basic-attribute
-connective-domain
-set-closeness-min [VALUE]
-connective-domain-with-closeness-min
-shortest-path
-quit
-----------------------
+path num: 7
+a()--0.6666666666666666-->c()--0.4-->b()--0.6666666666666666-->d()--0.5-->e()--0.6666666666666666-->f()
+a()--0.5-->b()--0.6666666666666666-->d()--0.5-->e()--0.6666666666666666-->f()
+a()--0.6666666666666666-->c()--0.4-->d()--0.5-->e()--0.6666666666666666-->f()
+a()--0.6666666666666666-->c()--0.4-->b()--0.6666666666666666-->d()--0.5-->f()
+a()--0.5-->b()--0.6666666666666666-->d()--0.5-->f()
+a()--0.6666666666666666-->c()--0.4-->e()--0.6666666666666666-->f()
+a()--0.6666666666666666-->c()--0.4-->d()--0.5-->f()
