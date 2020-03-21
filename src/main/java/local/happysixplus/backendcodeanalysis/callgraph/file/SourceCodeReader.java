@@ -4,6 +4,8 @@ package local.happysixplus.backendcodeanalysis.callgraph.file;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SourceCodeReader {
     private static final String defaultPrePath = "src/main/resources/temp/";
@@ -22,10 +24,10 @@ public class SourceCodeReader {
     }
 
     //TODO:加载函数源码到数组里
-    public ArrayList<String> getSourceCodeFromFile(String filePath) {
+    public Map<String,String> getSourceCodeFromFile(String filePath) {
         String path = defaultPrePath + projectName + defaultSufPath;
         String className = getClassName(filePath);
-        ArrayList<String> res = new ArrayList<>();
+        Map<String,String> res=new HashMap<>();
         try {
             //将.java文件的内容加载到char数组中
             BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -138,7 +140,7 @@ public class SourceCodeReader {
 
                     if (str != null){
                         String s=filePath.replace(path, "").replaceAll("/", ".");
-                        res.add( s.substring(0,s.length()-5)+ ":" + getMethodName(str, className) + getMethodParameters(str) + "\n" + str);
+                        res.put(s.substring(0,s.length()-5)+ ":" + getMethodName(str, className) + getMethodParameters(str),str);
                     }
                     beginPos = i + 1;
                     num = 0;

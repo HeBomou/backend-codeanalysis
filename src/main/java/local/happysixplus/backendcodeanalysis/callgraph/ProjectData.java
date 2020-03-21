@@ -1,15 +1,16 @@
 package local.happysixplus.backendcodeanalysis.callgraph;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 
 
 public class ProjectData {
     private String[] callGraph;
-    private ArrayList<String> sourceCode;
+    private Map<String,String> sourceCode;
     private Node rootNode;
 
-    public ProjectData(String[] callGraph,ArrayList<String> sourceCode,Node rootNode){
+    public ProjectData(String[] callGraph,Map<String,String> sourceCode,Node rootNode){
         this.callGraph=callGraph;
         this.sourceCode=sourceCode;
         this.rootNode=rootNode;
@@ -19,7 +20,7 @@ public class ProjectData {
         return callGraph;
     }
 
-    public ArrayList<String> getSourceCode(){
+    public Map<String,String> getSourceCode(){
         return sourceCode;
     }
 
@@ -28,7 +29,7 @@ public class ProjectData {
     /**
      * 打印这个对象，方便测试使用。
      */
-    public void printProjectData(){
+    /*public void printProjectData(){
         for(String s : this.callGraph){
             System.out.println(s);
             System.out.println();
@@ -38,6 +39,6 @@ public class ProjectData {
             System.out.println();
         }
         rootNode.printNode(0);
-    }
+    }*/
 
 }

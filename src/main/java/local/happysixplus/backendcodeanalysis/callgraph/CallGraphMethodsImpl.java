@@ -5,10 +5,7 @@ import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
 import local.happysixplus.backendcodeanalysis.callgraph.file.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class CallGraphMethodsImpl implements CallGraphMethods {
     private static final String rm = "src/main/resources/Scripts/rm.sh";
@@ -38,7 +35,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             }
         }
         //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
-        ArrayList<String> srcCode = new ArrayList<>();
+        Map<String,String> srcCode = new HashMap<>();
         loadSourceCode(srcCode, projectName);
         File[] rootPackage0 = new File("src/main/resources/temp/" + projectName + "/src/main/java").listFiles();
         File rootPackage1=null;
@@ -54,15 +51,15 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         String rootPackageName = rootPackage.getName();
         Node root = new Node(rootPackageName, true);
         loadProjectStructure(root, rootPackage);
-
-
+        String[] callGraph=cg.toArray(new String[0]);
+        match(callGraph,srcCode);
         deleteFile(projectName);
         /*for(int i=0;i<cg.size();i++){
             System.out.println(cg.get(i));
         }*/
 
 
-        return new ProjectData(cg.toArray(new String[0]), srcCode, root);
+        return new ProjectData(callGraph, srcCode, root);
     }
 
     private void cloneProject(String githubLink, String projectName) {
@@ -76,7 +73,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
 
     }
 
-    private void loadSourceCode(ArrayList<String> res, String projectName) {
+    private void loadSourceCode(Map<String,String> map, String projectName) {
         ArrayList<String> javaFilePaths = getAllJavaFile("src/main/resources/temp/" + projectName + "/src/main/java");
         SourceCodeReader scReader = new SourceCodeReader(projectName);
         if (javaFilePaths == null) return;
@@ -85,8 +82,8 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             res.addAll(tempStrings);
         }*/
         for (String s : javaFilePaths) {
-            ArrayList<String> tempStrings = scReader.getSourceCodeFromFile(s);
-            res.addAll(tempStrings);
+            Map<String,String> temp= scReader.getSourceCodeFromFile(s);
+            map.putAll(temp);
         }
 
         /*for (int i = 0; i < res.size(); i++) {
@@ -143,6 +140,10 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
                     node.contents.add(n);
                 }
             }
+    }
+
+    private void match(String[] graph, Map<String,String> map){
+
     }
 }
 
