@@ -27,7 +27,7 @@ public class ProjectStaticVo {
     List<EdgeStaticVo> edges;
 
     /**
-     * 阈值为零的默认子图
+     * 设置了阈值的所有子图，包括阈值为零的默认子图
      */
-    SubgraphStaticVo defaultSubgraph;
+    List<SubgraphStaticVo> subgraphs;
 }

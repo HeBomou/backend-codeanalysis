@@ -29,7 +29,7 @@ public class ProjectDynamicVo {
     List<EdgeDynamicVo> edges;
 
     /**
-     * 阈值为零的默认子图
+     * 设置了阈值的所有子图，包括阈值为零的默认子图
      */
-    SubgraphDynamicVo defaultSubgraph;
+    List<SubgraphDynamicVo> subgraphs;
 }
