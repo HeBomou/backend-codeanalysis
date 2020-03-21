@@ -1,6 +1,6 @@
 package local.happysixplus.backendcodeanalysis.po;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -39,5 +39,5 @@ public class SubgraphPo {
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "subgraphId")
-    List<ConnectiveDomainPo> connectiveDomains;
+    Set<ConnectiveDomainPo> connectiveDomains;
 }

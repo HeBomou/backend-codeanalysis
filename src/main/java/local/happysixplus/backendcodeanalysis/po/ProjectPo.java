@@ -1,6 +1,6 @@
 package local.happysixplus.backendcodeanalysis.po;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,16 +31,16 @@ public class ProjectPo {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "projectId")
-    List<VertexPo> vertices;
+    Set<VertexPo> vertices;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "projectId")
-    List<EdgePo> edges;
+    Set<EdgePo> edges;
 
     /**
      * 设置了阈值的所有子图，包括阈值为零的默认子图
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "projectId")
-    List<SubgraphPo> subgraphs;
+    Set<SubgraphPo> subgraphs;
 }

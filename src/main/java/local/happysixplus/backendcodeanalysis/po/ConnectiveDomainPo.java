@@ -1,5 +1,8 @@
 package local.happysixplus.backendcodeanalysis.po;
 
+import java.util.List;
+
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,12 +24,11 @@ public class ConnectiveDomainPo {
 
     Long subgraphId;
 
-    // TODO: 需要使用@Convert注解实现Long数组
-    // @Convert
-    // List<Long> vertexIds;
+    @Convert(converter = LongListToStringConverter.class)
+    List<Long> vertexIds;
 
-    // @Convert
-    // List<Long> edgeIds;
+    @Convert(converter = LongListToStringConverter.class)
+    List<Long> edgeIds;
 
     String anotation;
 }
