@@ -50,7 +50,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         }
         if(rootPackage1==null) return null;
         if(rootPackage1.list()==null) return null;
-        File rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java/" + rootPackage1.list()[0]);
+        File rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java/" + rootPackage1.getName());
         String rootPackageName = rootPackage.getName();
         Node root = new Node(rootPackageName, true);
         loadProjectStructure(root, rootPackage);
