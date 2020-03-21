@@ -40,11 +40,17 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
         ArrayList<String> srcCode = new ArrayList<>();
         loadSourceCode(srcCode, projectName);
-        File rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java");
-        String[] asdad = rootPackage.list();
-        if (asdad == null) return null;
-        if (asdad[0] == null) return null;
-        rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java/" + asdad[0]);
+        File[] rootPackage0 = new File("src/main/resources/temp/" + projectName + "/src/main/java").listFiles();
+        File rootPackage1=null;
+        if(rootPackage0==null) return null;
+        for(File f:rootPackage0){
+            if(f.isDirectory() && !f.getName().startsWith(".")){
+                rootPackage1=f;
+            }
+        }
+        if(rootPackage1==null) return null;
+        if(rootPackage1.list()==null) return null;
+        File rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java/" + rootPackage1.list()[0]);
         String rootPackageName = rootPackage.getName();
         Node root = new Node(rootPackageName, true);
         loadProjectStructure(root, rootPackage);
