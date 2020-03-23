@@ -19,8 +19,8 @@ public class SessionController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteSession(@RequestParam String id,HttpServletRequest request) {
-        service.removeSession(id,request);
+    public void deleteSession(@RequestParam String id, HttpServletRequest request) {
+        service.removeSession(id, request);
     }
 
 }

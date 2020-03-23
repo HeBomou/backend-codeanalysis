@@ -25,15 +25,15 @@ public class SessionServiceImpl implements SessionService {
         }
         Object value = session.getAttribute("user");
         if (value == null) {
-            session.setAttribute("user", po.getId());
-        }
-        if (value != null && session.getAttribute("user").equals(session.getId())) {
-            System.out.println("don't need login");
+            session.setAttribute("user", po.getId().toString());
         }
     };
 
     @Override
-    public void removeSession(HttpServletRequest request) {
-        System.out.println("remove Session");
+    public void removeSession(String id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null && session.getAttribute("user").equals(id)) {
+            session.removeAttribute("user");
+        }
     };
 }
