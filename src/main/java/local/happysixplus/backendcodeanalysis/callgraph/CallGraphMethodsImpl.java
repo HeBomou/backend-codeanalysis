@@ -1,5 +1,6 @@
 package local.happysixplus.backendcodeanalysis.callgraph;
 
+import local.happysixplus.backendcodeanalysis.callgraph.dyn.Pair;
 import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
 import local.happysixplus.backendcodeanalysis.callgraph.file.*;
@@ -10,7 +11,7 @@ import java.util.*;
 public class CallGraphMethodsImpl implements CallGraphMethods {
     private static final String rm = "src/main/resources/Scripts/rm.sh";
     private static final String clone = "src/main/resources/Scripts/clone.sh";
-
+    private Node root;
     public CallGraphMethodsImpl() {
         JavaShellUtil.InitCommand(rm);
         JavaShellUtil.InitCommand(clone);
@@ -37,6 +38,14 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
         Map<String,String> srcCode = new HashMap<>();
         loadSourceCode(srcCode, projectName);
+        /*for(String key:srcCode.keySet()){
+            System.out.println("-----------------");
+            System.out.println(key);
+            System.out.println("-----");
+            System.out.println(srcCode.get(key));
+            System.out.println("-----------------");
+        }*/
+
         File[] rootPackage0 = new File("src/main/resources/temp/" + projectName + "/src/main/java").listFiles();
         File rootPackage1=null;
         if(rootPackage0==null) return null;
@@ -49,17 +58,22 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         if(rootPackage1.list()==null) return null;
         File rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java/" + rootPackage1.getName());
         String rootPackageName = rootPackage.getName();
-        Node root = new Node(rootPackageName, true);
+        root = new Node(rootPackageName, true);
         loadProjectStructure(root, rootPackage);
         String[] callGraph=cg.toArray(new String[0]);
-        match(callGraph,srcCode);
+        //System.out.println(callGraph.length);
+        Map<String,String> code=match(callGraph,srcCode);
         deleteFile(projectName);
-        /*for(int i=0;i<cg.size();i++){
-            System.out.println(cg.get(i));
+
+        /*for(String key:code.keySet()){
+            System.out.println("-----------------");
+            System.out.println(key);
+            System.out.println("-----");
+            System.out.println(code.get(key)==null?" ":code.get(key));
+            System.out.println("-----------------");
         }*/
 
-
-        return new ProjectData(callGraph, srcCode, root);
+        return new ProjectData(callGraph, code, root);
     }
 
     private void cloneProject(String githubLink, String projectName) {
@@ -142,9 +156,48 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             }
     }
 
-    private void match(String[] graph, Map<String,String> map){
+    private Map<String,String> match(String[] graph, Map<String,String> map){
+        Map<String,String> res=new HashMap<>();
+        for(String s:graph){
+            //System.out.println(s);
+            String[] durex=s.split(" ");
+            String method1=durex[0].substring(2);
+            String method2=durex[1].substring(3);
+            //System.out.println("1:"+method1);
+            //System.out.println("2:"+method2);
+            String simplifiedMethod1 = parse(durex[0].substring(2));
+            String simplifiedMethod2 = parse(durex[1].substring(3));
+            if(!res.containsKey(simplifiedMethod1)){
+                String dau=map.get(simplifiedMethod1);
+                res.put(method1,dau==null?"":dau);
+            }
+            if(!res.containsKey(simplifiedMethod2)){
+                String dau=map.get(simplifiedMethod2);
+                res.put(method2,dau==null?"":dau);
+            }
 
+        }
+        return res;
     }
+    private String parse(String str1){
+        StringBuilder sb=new StringBuilder();
+        int index1 = str1.indexOf('(');
+        int index2 = str1.indexOf(')');
+        sb.append(str1, 0, index1+1);
+        if(index2==index1+1){
+            sb.append(')');
+            return sb.toString();
+        }
+        String parameters=str1.substring(index1+1,index2);
+        String[] parameterList=parameters.split(",");
+        for(int i=0;i<parameterList.length;i++){
+            String[] tempStrs=parameterList[i].split("\\.");
+            parameterList[i]=tempStrs[tempStrs.length-1];
+        }
+        sb.append(String.join(",",parameterList)).append(")");
+        return sb.toString();
+    }
+
 }
 
 

@@ -131,13 +131,24 @@ public class JCallGraph {
     }
 
     public static boolean isValid(String string) {
+        boolean check1=false;
+        boolean check2=false;
+        //System.out.println(string);
+        String str1=string.split(" ")[0].substring(2);
         String str=string.split(" ")[1].substring(3);
         for(int i=0;i<packageNames.size();i++){
             if(str.startsWith(packageNames.get(i))){
-                return true;
+                check1=true;
+                break;
             }
         }
-        return false;
+        for(int i=0;i<packageNames.size();i++){
+            if(str.startsWith(packageNames.get(i))){
+                check2=true;
+                break;
+            }
+        }
+        return check1&&check2;
     }
 
     public static int print(String s) {

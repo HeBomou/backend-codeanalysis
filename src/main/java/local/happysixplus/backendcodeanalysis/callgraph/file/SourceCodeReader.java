@@ -311,11 +311,9 @@ public class SourceCodeReader {
                 } else if (started) {
                     if (durex[i] == '<') {
                         signNum++;
-                        sb.append('<');
                         continue;
                     }
                     if (signNum != 0) {
-                        sb.append(durex[i]);
                         if (durex[i] == '>') {
                             signNum--;
                         }
@@ -357,7 +355,7 @@ public class SourceCodeReader {
         sb = new StringBuilder().append("(");
         sb.append(res.get(0));
         for (int i = 1; i < res.size(); i++) {
-            sb.append(", ").append(res.get(i));
+            sb.append(",").append(res.get(i));
         }
         return sb.append(")").toString();
 
