@@ -2,37 +2,49 @@ package local.happysixplus.backendcodeanalysis.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import local.happysixplus.backendcodeanalysis.data.AdminUserData;
+import local.happysixplus.backendcodeanalysis.po.AdminUserPo;
 import local.happysixplus.backendcodeanalysis.service.AdminUserService;
 import local.happysixplus.backendcodeanalysis.vo.AdminUserVo;
+import lombok.var;
 
 @Service
-public class AdminUserServiceImpl implements AdminUserService{
+public class AdminUserServiceImpl implements AdminUserService {
+
+    @Autowired
+    AdminUserData adminUserData;
 
     @Override
-    public void addAdmin(AdminUserVo vo){
-        System.out.println("add admin");
+    public void addAdmin(AdminUserVo vo) {
+        adminUserData.save(new AdminUserPo(null, vo.getUsername(), vo.getPwdMd5()));
     };
 
     @Override
-    public void removeAdmin(Long id){
-        System.out.println("remove admin");
+    public void removeAdmin(Long id) {
+        adminUserData.deleteById(id);
     };
 
     @Override
-    public void updateAdmin(AdminUserVo vo){
-        System.out.println("update admin");
+    public void updateAdmin(AdminUserVo vo) {
+        adminUserData.save(new AdminUserPo(vo.getId(), vo.getUsername(), vo.getPwdMd5()));
     };
 
     @Override
-    public List<AdminUserVo> getAllAdmin(){
-        System.out.println("get all admin");
-        return new ArrayList<>();
+    public List<AdminUserVo> getAllAdmin() {
+        var pos = adminUserData.findAll();
+        var vos = new ArrayList<AdminUserVo>(pos.size());
+        for (var po : pos)
+            vos.add(new AdminUserVo(po.getId(), po.getUsername(), po.getPwdMd5(), null));
+        return vos;
     };
 
     @Override
-    public AdminUserVo getOneAdmin(Long id){
-        System.out.println("get one admin");
-        return new AdminUserVo();
+    public AdminUserVo getOneAdmin(Long id) {
+        var po = adminUserData.findById(id).orElse(null);
+        return new AdminUserVo(po.getId(), po.getUsername(), po.getPwdMd5(), null);
     };
 }
