@@ -8,6 +8,9 @@ import local.happysixplus.backendcodeanalysis.callgraph.file.*;
 import java.io.File;
 import java.util.*;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CallGraphMethodsImpl implements CallGraphMethods {
     private static final String rm = "src/main/resources/Scripts/rm.sh";
     private static final String clone = "src/main/resources/Scripts/clone.sh";

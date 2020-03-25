@@ -1,6 +1,6 @@
 package local.happysixplus.backendcodeanalysis.po;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,11 +26,11 @@ public class ConnectiveDomainPo {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable
-    List<VertexPo> vertexs;
+    Set<VertexPo> vertexs;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable
-    List<VertexPo> edges;
+    Set<EdgePo> edges;
 
     String anotation;
 }
