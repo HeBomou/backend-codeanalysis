@@ -62,6 +62,9 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         loadProjectStructure(root, rootPackage);
         String[] callGraph=cg.toArray(new String[0]);
         //System.out.println(callGraph.length);
+        /*for(String s:callGraph){
+            System.out.println(s);
+        }*/
         Map<String,String> code=match(callGraph,srcCode);
         deleteFile(projectName);
 

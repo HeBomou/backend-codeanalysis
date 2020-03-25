@@ -255,7 +255,7 @@ public class SourceCodeReader {
                 continue;
             }
             if (!c1 & !c2) {
-                if (Character.isAlphabetic(durex[i])) {
+                if (Character.isAlphabetic(durex[i]) || Character.isDigit(durex[i])) {
                     if (seprated) {
                         sb = new StringBuilder().append(durex[i]);
                         seprated = false;
