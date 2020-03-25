@@ -44,7 +44,6 @@ class SubgraphDataTest {
             }
             skt.setEdgeIds(listIds);
             skt.setVertexIds(listIds);
-            skt.setSubgraphId(1234L);
             cpos.add(skt);
         }
         po.setConnectiveDomains(cpos);

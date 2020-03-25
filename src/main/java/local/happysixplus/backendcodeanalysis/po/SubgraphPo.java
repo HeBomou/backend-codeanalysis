@@ -28,7 +28,6 @@ public class SubgraphPo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     Double threshold;
 
     String name;
