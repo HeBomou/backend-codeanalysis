@@ -21,7 +21,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     }
 
     @Override
-    public ProjectData initGraph(String githubLink, String projectName) {
+    public ProjectInfo initGraph(String githubLink, String projectName) {
         cloneProject(githubLink, projectName);
         ArrayList<String> cg = new ArrayList<>();
         String[] list = new File("src/main/resources/temp/" + projectName + "/target").list();
@@ -79,7 +79,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             System.out.println("-----------------");
         }*/
 
-        return new ProjectData(callGraph, code, root);
+        return new ProjectInfo(callGraph, code, root);
     }
 
     private void cloneProject(String githubLink, String projectName) {

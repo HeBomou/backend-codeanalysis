@@ -5,12 +5,12 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-public class ProjectData {
+public class ProjectInfo {
     private String[] callGraph;
     private Map<String,String> sourceCode;
     private Node rootNode;
 
-    public ProjectData(String[] callGraph,Map<String,String> sourceCode,Node rootNode){
+    public ProjectInfo(String[] callGraph,Map<String,String> sourceCode,Node rootNode){
         this.callGraph=callGraph;
         this.sourceCode=sourceCode;
         this.rootNode=rootNode;

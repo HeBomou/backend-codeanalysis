@@ -19,7 +19,7 @@ import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class ProjecthDataTest {
+class ProjectDataTest {
     @Autowired
     ProjectData data;
     int a = 1;
