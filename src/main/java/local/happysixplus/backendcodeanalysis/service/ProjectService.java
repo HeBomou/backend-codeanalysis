@@ -16,7 +16,7 @@ public interface ProjectService {
      * @param url 项目代码的git仓库url
      * @return 返回新项目的id
      */
-    ProjectAllVo addProject(String projectName, String url);
+    ProjectAllVo addProject(String projectName, String url, long userId);
 
     void removeProject(Long id);
 
@@ -37,7 +37,7 @@ public interface ProjectService {
 
     void updateSubGraph(Long projectId, SubgraphDynamicVo vo);
 
-    List<SubgraphAllVo> getSubgraphAllByProjectId (Long projectId);
+    List<SubgraphAllVo> getSubgraphAllByProjectId(Long projectId);
 
     /**
      * 获取初始图中从start出发到end的最短路
