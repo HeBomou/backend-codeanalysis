@@ -1,7 +1,9 @@
 package local.happysixplus.backendcodeanalysis.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,71 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     SubgraphData subgraphData;
 
+    public class Vertex {
+        String functionName;
+        int inDegree;
+        int outDegree;
+        String sourceCode;
+        List<Edge> edges = new ArrayList<>();
+        List<Edge> undirectedEdge = new ArrayList<>();
+
+        Vertex(String name) {
+            functionName = name;
+        }
+
+        void addEdge(Edge e) {
+            edges.add(e);
+        }
+
+        void addUndirectedEdge(Edge e) {
+            undirectedEdge.add(e);
+        }
+    }
+
+    public class Edge {
+        Vertex from;
+        Vertex to;
+        Double closeness;
+
+        Edge(Vertex begin, Vertex end) {
+            from = begin;
+            to = end;
+        }
+
+        void setCloseness(Double num) {
+            closeness = num;
+        }
+    }
+
+    public class ConnectiveDomain {
+        int vertexNum;
+        List<Vertex> vertexs = new ArrayList<>();
+        List<Edge> edges = new ArrayList<>();
+
+        ConnectiveDomain(List<Vertex> v) {
+            vertexs = v;
+            vertexNum = v.size();
+        }
+    }
+
     @Override
     public ProjectAllVo addProject(String projectName, String url, long userId) {
         var project = callGraphMethods.initGraph(url, projectName);
         String[] callGraph = project.getCallGraph();
-        System.out.println("add project");
+        List<String> caller = new ArrayList<>();
+        List<String> callee = new ArrayList<>();
+        Set<List<String>> edgeSet = new HashSet<>();
+        for (var str : callGraph) {
+            List<String> tempList = new ArrayList<>();
+            String[] temp = str.split(" ");
+            tempList.add(temp[0].substring(2));
+            tempList.add(temp[1].substring(3));
+            edgeSet.add(tempList);
+        }
+        for (var edge : edgeSet) {
+            caller.add(edge.get(0));
+            callee.add(edge.get(1));
+        }
         return new ProjectAllVo();
     };
 
