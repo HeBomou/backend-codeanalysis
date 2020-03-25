@@ -1,8 +1,10 @@
 package local.happysixplus.backendcodeanalysis.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,6 @@ public class ProjectServiceImpl implements ProjectService {
         String functionName;
         int inDegree;
         int outDegree;
-        String sourceCode;
         List<Edge> edges = new ArrayList<>();
         List<Edge> undirectedEdge = new ArrayList<>();
 
@@ -71,9 +72,75 @@ public class ProjectServiceImpl implements ProjectService {
         List<Vertex> vertexs = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
-        ConnectiveDomain(List<Vertex> v) {
+        ConnectiveDomain(List<Vertex> v, List<Edge> e) {
+            edges = e;
             vertexs = v;
             vertexNum = v.size();
+        }
+    }
+
+    public class Graph {
+        Map<String, Vertex> vertexMap;
+        List<ConnectiveDomain> connectiveDomain;
+        Set<Edge> edges;
+
+        Graph(List<String> caller, List<String> callee) {
+            Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
+            // 去重得到所有顶点集合
+            var vertexNameSet = new HashSet<String>();
+            vertexNameSet.addAll(caller);
+            vertexNameSet.addAll(callee);
+            var vertexNames = new ArrayList<String>(vertexNameSet);
+            for (var str : vertexNames) {
+                Vertex newVertex = new Vertex(str);
+                vertexMap.put(str, newVertex);
+                isChecked.put(str, false);
+            }
+            // 得到每个顶点的出度入度
+            for (int i = 0; i < caller.size(); i++) {
+                var begin = vertexMap.get(caller.get(i));
+                var end = vertexMap.get(callee.get(i));
+                begin.outDegree++;
+                end.inDegree++;
+            }
+            // 为每个顶点添加边集
+            for (int i = 0; i < caller.size(); i++) {
+                Vertex begin = vertexMap.get(caller.get(i));
+                Vertex end = vertexMap.get(callee.get(i));
+                Double closeness = 2.0 / (begin.outDegree + end.inDegree);
+                Edge newEdge = new Edge(begin, end);
+                newEdge.setCloseness(closeness);
+                edges.add(newEdge);
+                begin.addEdge(newEdge);
+                begin.addUndirectedEdge(newEdge);
+                end.addUndirectedEdge(newEdge);
+            }
+            // 计算连通域
+            for (var str : vertexMap.keySet()) {
+                List<Vertex> domainVertexs = new ArrayList<>();
+                List<Edge> domainEdges = new ArrayList<>();
+                DFS(null, vertexMap.get(str), isChecked, domainVertexs, domainEdges);
+                if (domainVertexs.size() > 0)
+                    connectiveDomain.add(new ConnectiveDomain(domainVertexs, domainEdges));
+            }
+            // 按连通域点的个数排序
+            connectiveDomain.sort((a, b) -> {
+                return b.vertexNum - a.vertexNum;
+            });
+        }
+
+        void DFS(Edge edge, Vertex vertex, Map<String, Boolean> isChecked, List<Vertex> domainVertexs,
+                List<Edge> domainEdges) {
+            if (isChecked.get(vertex.functionName))
+                return;
+            isChecked.put(vertex.functionName, true);
+            domainVertexs.add(vertex);
+            if (edge != null)
+                domainEdges.add(edge);
+            for (Edge e : vertex.undirectedEdge) {
+                Vertex anotherVertex = (e.from == vertex) ? e.to : e.from;
+                DFS(e, anotherVertex, isChecked, domainVertexs, domainEdges);
+            }
         }
     }
 
@@ -95,6 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
+        Graph graph=new Graph(caller, callee);
         return new ProjectAllVo();
     };
 
