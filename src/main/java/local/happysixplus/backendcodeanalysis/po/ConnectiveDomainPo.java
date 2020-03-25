@@ -22,8 +22,6 @@ public class ConnectiveDomainPo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Long subgraphId;
-
     @Convert(converter = LongListToStringConverter.class)
     List<Long> vertexIds;
 

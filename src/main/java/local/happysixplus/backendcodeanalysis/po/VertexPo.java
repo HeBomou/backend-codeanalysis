@@ -19,8 +19,6 @@ public class VertexPo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Long projectId;
-
     String functionName;
 
     String sourceCode;

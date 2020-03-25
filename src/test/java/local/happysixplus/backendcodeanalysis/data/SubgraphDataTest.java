@@ -48,7 +48,7 @@ class SubgraphDataTest {
             cpos.add(skt);
         }
         po.setConnectiveDomains(cpos);
-        po.setProjectId(12345L);
+        //po.setProjectId(12345L);
         po.setThreshold(0.4396);
 
     }

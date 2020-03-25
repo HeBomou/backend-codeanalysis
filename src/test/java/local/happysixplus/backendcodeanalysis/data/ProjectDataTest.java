@@ -63,7 +63,7 @@ class ProjecthDataTest {
     }
     @Test
     public void insertData(){
-        ppo=data.findById(1L).get();
+        /*ppo=data.findById(1L).get();
         ppo.setProjectName("5345");
         Set<SubgraphPo> skt=ppo.getSubgraphs();
         Iterator<SubgraphPo> is=skt.iterator();
@@ -71,9 +71,9 @@ class ProjecthDataTest {
             if(is.next().getId()==1){
                 is.remove();
             }
-        }
+        }*/
 
-        ppo.setSubgraphs(skt);
+        ppo=data.save(ppo);
         data.save(ppo);
     }
     @AfterEach

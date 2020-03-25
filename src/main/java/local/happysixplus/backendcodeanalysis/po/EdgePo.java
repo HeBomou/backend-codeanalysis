@@ -19,8 +19,6 @@ public class EdgePo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Long projectId;
-
     Long fromId;
 
     Long toId;

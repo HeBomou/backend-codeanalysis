@@ -37,6 +37,6 @@ public class ProjectPo {
      * 设置了阈值的所有子图，包括阈值为零的默认子图
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "projectId")
+    @JoinColumn(name="projectId")
     Set<SubgraphPo> subgraphs;
 }
