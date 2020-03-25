@@ -1,9 +1,12 @@
 package local.happysixplus.backendcodeanalysis.po;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +22,13 @@ public class EdgePo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Long fromId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    VertexPo from;
 
-    Long toId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    VertexPo to;
 
     Double closeness;
 

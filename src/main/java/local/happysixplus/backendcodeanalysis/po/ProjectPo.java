@@ -26,17 +26,17 @@ public class ProjectPo {
     String projectName;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "projectId")
+    @JoinColumn
     Set<VertexPo> vertices;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "projectId")
+    @JoinColumn
     Set<EdgePo> edges;
 
     /**
      * 设置了阈值的所有子图，包括阈值为零的默认子图
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name="projectId")
+    @JoinColumn
     Set<SubgraphPo> subgraphs;
 }

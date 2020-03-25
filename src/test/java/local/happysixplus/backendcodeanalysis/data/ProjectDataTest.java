@@ -45,8 +45,8 @@ class ProjecthDataTest {
                 listIds.add((long)(Math.pow(i*3,j+2)));
             }
 
-            skt.setEdgeIds(listIds);
-            skt.setVertexIds(listIds);
+            // skt.setEdgeIds(listIds);
+            // skt.setVertexIds(listIds);
             cpos.add(skt);
         }
         po.setConnectiveDomains(cpos);

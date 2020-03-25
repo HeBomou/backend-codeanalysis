@@ -36,6 +36,6 @@ public class SubgraphPo {
      * 联通域的点与边等信息
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "subgraphId")
+    @JoinColumn
     Set<ConnectiveDomainPo> connectiveDomains;
 }
