@@ -13,12 +13,25 @@ import org.springframework.stereotype.Service;
 import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
+import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
+import local.happysixplus.backendcodeanalysis.po.EdgePo;
+import local.happysixplus.backendcodeanalysis.po.ProjectPo;
+import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
+import local.happysixplus.backendcodeanalysis.po.VertexPo;
 import local.happysixplus.backendcodeanalysis.service.ProjectService;
+import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainStaticVo;
+import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.EdgeStaticVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectStaticVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.SubgraphStaticVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexStaticVo;
 import lombok.var;
 
 @Service
@@ -33,7 +46,12 @@ public class ProjectServiceImpl implements ProjectService {
     SubgraphData subgraphData;
 
     public class Vertex {
+        Long id;
         String functionName;
+        String sourceCode;
+        String anotation;
+        Float x;
+        Float y;
         int inDegree;
         int outDegree;
         List<Edge> edges = new ArrayList<>();
@@ -41,6 +59,23 @@ public class ProjectServiceImpl implements ProjectService {
 
         Vertex(String name) {
             functionName = name;
+        }
+
+        Vertex(VertexPo po) {
+            id = po.getId();
+            functionName = po.getFunctionName();
+            sourceCode = po.getSourceCode();
+            anotation = po.getAnotation();
+            x = po.getX();
+            y = po.getY();
+        }
+
+        VertexStaticVo getStaticVo() {
+            return new VertexStaticVo(id, functionName, sourceCode);
+        }
+
+        VertexDynamicVo getDynamicVo() {
+            return new VertexDynamicVo(id, anotation, x, y);
         }
 
         void addEdge(Edge e) {
@@ -53,38 +88,106 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     public class Edge {
+        Long id;
+        Double closeness;
+        String anotation;
         Vertex from;
         Vertex to;
-        Double closeness;
 
         Edge(Vertex begin, Vertex end) {
             from = begin;
             to = end;
         }
 
-        void setCloseness(Double num) {
-            closeness = num;
+        Edge(EdgePo po, Vertex from, Vertex to) {
+            id = po.getId();
+            closeness = po.getCloseness();
+            anotation = po.getAnotation();
+            this.from = from;
+            this.to = to;
+        }
+
+        EdgeStaticVo getStaticVo() {
+            return new EdgeStaticVo(id, from.id, to.id, closeness);
+        }
+
+        EdgeDynamicVo getDynamicVo() {
+            return new EdgeDynamicVo(id, anotation);
         }
     }
 
     public class ConnectiveDomain {
-        int vertexNum;
-        List<Vertex> vertexs = new ArrayList<>();
-        List<Edge> edges = new ArrayList<>();
+        Long id;
+        String anotation;
+        List<Vertex> vertices;
+        List<Edge> edges;
 
         ConnectiveDomain(List<Vertex> v, List<Edge> e) {
             edges = e;
-            vertexs = v;
-            vertexNum = v.size();
+            vertices = v;
+            vertices = new ArrayList<>();
+            edges = new ArrayList<>();
+        }
+
+        ConnectiveDomain(ConnectiveDomainPo po, List<Vertex> vertices, List<Edge> edges) {
+            id = po.getId();
+            anotation = po.getAnotation();
+            this.vertices = vertices;
+            this.edges = edges;
+        }
+
+        ConnectiveDomainStaticVo getStaticVo() {
+            List<Long> vertexIds = new ArrayList<Long>(vertices.size());
+            for (var v : vertices)
+                vertexIds.add(v.id);
+            List<Long> edgeIds = new ArrayList<Long>(vertices.size());
+            for (var e : edges)
+                edgeIds.add(e.id);
+            return new ConnectiveDomainStaticVo(id, vertexIds, edgeIds);
+        }
+
+        ConnectiveDomainDynamicVo getDynamicVo() {
+            return new ConnectiveDomainDynamicVo(id, anotation);
         }
     }
 
-    public class Graph {
-        Map<String, Vertex> vertexMap;
-        List<ConnectiveDomain> connectiveDomain;
-        Set<Edge> edges;
+    public class Subgraph {
+        Long id;
+        Double threshold;
+        String name;
+        List<ConnectiveDomain> connectiveDomains;
 
-        Graph(List<String> caller, List<String> callee) {
+        Subgraph(SubgraphPo po, List<ConnectiveDomain> connectiveDomains) {
+            id = po.getId();
+            threshold = po.getThreshold();
+            name = po.getName();
+            this.connectiveDomains = connectiveDomains;
+        }
+
+        SubgraphStaticVo getStaticVo() {
+            var connectiveDomainVos = new ArrayList<ConnectiveDomainStaticVo>(connectiveDomains.size());
+            for (var cd : connectiveDomains)
+                connectiveDomainVos.add(cd.getStaticVo());
+            return new SubgraphStaticVo(id, threshold, connectiveDomainVos);
+        }
+
+        SubgraphDynamicVo getDynamicVo() {
+            var connectiveDomainVos = new ArrayList<ConnectiveDomainDynamicVo>(connectiveDomains.size());
+            for (var cd : connectiveDomains)
+                connectiveDomainVos.add(cd.getDynamicVo());
+            return new SubgraphDynamicVo(id, name, connectiveDomainVos);
+        }
+    }
+
+    public class Project {
+        Long id;
+        Long userId;
+        String projectName;
+        Map<String, Vertex> vertexMap;
+        Set<Edge> edges;
+        List<ConnectiveDomain> connectiveDomain; // TODO: 原图联通域改成阈值为零的子图
+
+        Project(List<String> caller, List<String> callee) {
             Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
             // 去重得到所有顶点集合
             var vertexNameSet = new HashSet<String>();
@@ -109,7 +212,7 @@ public class ProjectServiceImpl implements ProjectService {
                 Vertex end = vertexMap.get(callee.get(i));
                 Double closeness = 2.0 / (begin.outDegree + end.inDegree);
                 Edge newEdge = new Edge(begin, end);
-                newEdge.setCloseness(closeness);
+                newEdge.closeness = closeness;
                 edges.add(newEdge);
                 begin.addEdge(newEdge);
                 begin.addUndirectedEdge(newEdge);
@@ -125,8 +228,47 @@ public class ProjectServiceImpl implements ProjectService {
             }
             // 按连通域点的个数排序
             connectiveDomain.sort((a, b) -> {
-                return b.vertexNum - a.vertexNum;
+                return b.vertices.size() - a.vertices.size();
             });
+        }
+
+        Project(ProjectPo po) {
+            id = po.getId();
+            userId = po.getUserId();
+            projectName = po.getProjectName();
+            vertexMap = new HashMap<>(po.getVertices().size());
+            for (var vPo : po.getVertices())
+                vertexMap.put(vPo.getFunctionName(), new Vertex(vPo));
+            edges = new HashSet<>(po.getEdges().size());
+            for (var ePo : po.getEdges())
+                edges.add(new Edge(ePo, vertexMap.get(ePo.getFrom().getFunctionName()), vertexMap.get(ePo.getTo().getFunctionName())));
+            // TODO: 子图
+        }
+
+        ProjectStaticVo getStaticVo() {
+            var vertexVos = new ArrayList<VertexStaticVo>(vertexMap.size());
+            for (var v : vertexMap.values())
+                vertexVos.add(v.getStaticVo());
+            var edgeVos = new ArrayList<EdgeStaticVo>(edges.size());
+            for (var e : edges)
+                edgeVos.add(e.getStaticVo());
+            // TODO: 子图
+            return new ProjectStaticVo(id, vertexVos, edgeVos, null);
+        }
+
+        ProjectDynamicVo getDynamicVo() {
+            List<VertexDynamicVo> vertexVos = new ArrayList<>(vertexMap.size());
+            for (var v : vertexMap.values())
+                vertexVos.add(v.getDynamicVo());
+            var edgeVos = new ArrayList<EdgeDynamicVo>(edges.size());
+            for (var e : edges)
+                edgeVos.add(e.getDynamicVo());
+            // TODO: 子图
+            return new ProjectDynamicVo(id, projectName, vertexVos, edgeVos, null);
+        }
+
+        ProjectAllVo getAllVo() {
+            return new ProjectAllVo(id, getStaticVo(), getDynamicVo());
         }
 
         void DFS(Edge edge, Vertex vertex, Map<String, Boolean> isChecked, List<Vertex> domainVertexs,
@@ -162,7 +304,7 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        Graph graph=new Graph(caller, callee);
+        Project graph = new Project(caller, callee);
         return new ProjectAllVo();
     };
 
@@ -178,8 +320,14 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectAllVo> getProjectAllByUserId(Long userId) {
-        System.out.println("get Project All By UserId");
-        return new ArrayList<>();
+        var projectPos = projectData.findByUserId(userId);
+        var projects = new ArrayList<Project>(projectPos.size());
+        for (var projPo : projectPos)
+            projects.add(new Project(projPo));
+        var res = new ArrayList<ProjectAllVo>(projectPos.size());
+        for (var proj : projects)
+            res.add(proj.getAllVo());
+        return res;
     };
 
     @Override

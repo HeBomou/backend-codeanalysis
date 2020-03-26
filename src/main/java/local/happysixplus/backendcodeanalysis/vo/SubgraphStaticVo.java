@@ -21,5 +21,5 @@ public class SubgraphStaticVo {
     /**
      * 联通域的点与边等信息
      */
-    List<ConnectiveDomainStaticVo> staticConnectiveDomains;
+    List<ConnectiveDomainStaticVo> connectiveDomains;
 }
