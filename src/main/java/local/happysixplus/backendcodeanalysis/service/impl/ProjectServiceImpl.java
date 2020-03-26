@@ -125,8 +125,6 @@ public class ProjectServiceImpl implements ProjectService {
         ConnectiveDomain(List<Vertex> v, List<Edge> e) {
             edges = e;
             vertices = v;
-            vertices = new ArrayList<>();
-            edges = new ArrayList<>();
         }
 
         ConnectiveDomain(ConnectiveDomainPo po, List<Vertex> vertices, List<Edge> edges) {
@@ -184,10 +182,11 @@ public class ProjectServiceImpl implements ProjectService {
         Long userId;
         String projectName;
         Map<String, Vertex> vertexMap;
-        Set<Edge> edges;
+        List<Edge> edges;
+        List<Subgraph> subgraphs;
         List<ConnectiveDomain> connectiveDomain; // TODO: 原图联通域改成阈值为零的子图
 
-        Project(List<String> caller, List<String> callee) {
+        Project(List<String> caller, List<String> callee, Map<String, String> sourceCode) {
             Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
             // 去重得到所有顶点集合
             var vertexNameSet = new HashSet<String>();
@@ -196,6 +195,8 @@ public class ProjectServiceImpl implements ProjectService {
             var vertexNames = new ArrayList<String>(vertexNameSet);
             for (var str : vertexNames) {
                 Vertex newVertex = new Vertex(str);
+                if (sourceCode.containsKey(str))
+                    newVertex.sourceCode = sourceCode.get(str);
                 vertexMap.put(str, newVertex);
                 isChecked.put(str, false);
             }
@@ -239,9 +240,10 @@ public class ProjectServiceImpl implements ProjectService {
             vertexMap = new HashMap<>(po.getVertices().size());
             for (var vPo : po.getVertices())
                 vertexMap.put(vPo.getFunctionName(), new Vertex(vPo));
-            edges = new HashSet<>(po.getEdges().size());
+            edges = new ArrayList<>(po.getEdges().size());
             for (var ePo : po.getEdges())
-                edges.add(new Edge(ePo, vertexMap.get(ePo.getFrom().getFunctionName()), vertexMap.get(ePo.getTo().getFunctionName())));
+                edges.add(new Edge(ePo, vertexMap.get(ePo.getFrom().getFunctionName()),
+                        vertexMap.get(ePo.getTo().getFunctionName())));
             // TODO: 子图
         }
 
@@ -252,19 +254,23 @@ public class ProjectServiceImpl implements ProjectService {
             var edgeVos = new ArrayList<EdgeStaticVo>(edges.size());
             for (var e : edges)
                 edgeVos.add(e.getStaticVo());
-            // TODO: 子图
-            return new ProjectStaticVo(id, vertexVos, edgeVos, null);
+            var subgraphVos = new ArrayList<SubgraphStaticVo>(subgraphs.size());
+            for (var s : subgraphs)
+                subgraphVos.add(s.getStaticVo());
+            return new ProjectStaticVo(id, vertexVos, edgeVos, subgraphVos);
         }
 
         ProjectDynamicVo getDynamicVo() {
-            List<VertexDynamicVo> vertexVos = new ArrayList<>(vertexMap.size());
+            var vertexVos = new ArrayList<VertexDynamicVo>(vertexMap.size());
             for (var v : vertexMap.values())
                 vertexVos.add(v.getDynamicVo());
             var edgeVos = new ArrayList<EdgeDynamicVo>(edges.size());
             for (var e : edges)
                 edgeVos.add(e.getDynamicVo());
-            // TODO: 子图
-            return new ProjectDynamicVo(id, projectName, vertexVos, edgeVos, null);
+            var subgraphVos = new ArrayList<SubgraphDynamicVo>(subgraphs.size());
+            for (var s : subgraphs)
+                subgraphVos.add(s.getDynamicVo());
+            return new ProjectDynamicVo(id, projectName, vertexVos, edgeVos, subgraphVos);
         }
 
         ProjectAllVo getAllVo() {
@@ -290,6 +296,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectAllVo addProject(String projectName, String url, long userId) {
         var project = callGraphMethods.initGraph(url, projectName);
         String[] callGraph = project.getCallGraph();
+        var sourceCode = project.getSourceCode();
         List<String> caller = new ArrayList<>();
         List<String> callee = new ArrayList<>();
         Set<List<String>> edgeSet = new HashSet<>();
@@ -304,7 +311,7 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        Project graph = new Project(caller, callee);
+        Project newProject = new Project(caller, callee, sourceCode);
         return new ProjectAllVo();
     };
 
