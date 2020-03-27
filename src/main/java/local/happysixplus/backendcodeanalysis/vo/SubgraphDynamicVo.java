@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubgraphDynamicVo {
-
+ 
     Long id;
 
     String name;

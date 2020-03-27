@@ -448,7 +448,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public SubgraphAllVo addSubgraph(Long projectId, Double threshold) {
-        System.out.println("add subgraph");
+        //todo
         return new SubgraphAllVo();
     };
 
@@ -459,30 +459,50 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateSubGraph(Long projectId, SubgraphDynamicVo vo) {
-        System.out.println("update subgraph");
+        var po = projectData.findById(projectId).orElse(null);
+        var project = new Project(po);
+        Map<Long, Subgraph> sIdMap = project.subgraphs.stream().collect(Collectors.toMap(s -> s.id, s -> s));
+        var subgraph = sIdMap.get(vo.getId());
+        subgraph.name = vo.getName();
+        Map<Long, ConnectiveDomain> cIdMap = subgraph.connectiveDomains.stream()
+                .collect(Collectors.toMap(c -> c.id, c -> c));
+        for (var c : vo.getConnectiveDomains()) {
+            var connectiveDomain = cIdMap.get(c.getId());
+            connectiveDomain.anotation = c.getAnotation();
+            connectiveDomain.color = c.getColor();
+        }
+        projectData.save(project.getProjectPo());
     };
 
     @Override
     public List<SubgraphAllVo> getSubgraphAllByProjectId(Long projectId) {
-        System.out.println("get subgraph All By ProjectId");
-        return new ArrayList<>();
+        var po = projectData.findById(projectId).orElse(null);
+        var project = new Project(po);
+        var res = new ArrayList<SubgraphAllVo>(project.subgraphs.size());
+        for (var s : project.subgraphs)
+            res.add(new SubgraphAllVo(s.id, s.getStaticVo(), s.getDynamicVo()));
+        return res;
     };
 
     @Override
     public PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId) {
-        System.out.println("get OriginalGraph Shortest Path");
+        //todo
         return new PathVo();
     };
 
     @Override
     public PathVo getSubgraphShortestPath(Long projectId, Long subgraphId, Long startVertexId, Long endVertexId) {
-        System.out.println("get Subgraph Shortest Path");
+        //todo
         return new PathVo();
     };
 
     @Override
     public List<String> getSimilarFunction(Long projectId, String funcName) {
-        System.out.println("get similar function");
-        return new ArrayList<>();
+        var res = new ArrayList<String>();
+        var po = projectData.findById(projectId).orElse(null);
+        for (var vPo : po.getVertices())
+            if (vPo.getFunctionName().contains(funcName))
+                res.add(vPo.getFunctionName());
+        return res;
     };
 }
