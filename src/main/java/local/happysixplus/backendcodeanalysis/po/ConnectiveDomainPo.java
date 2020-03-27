@@ -33,4 +33,7 @@ public class ConnectiveDomainPo {
     Set<EdgePo> edges;
 
     String anotation;
+
+    String color;
+    
 }

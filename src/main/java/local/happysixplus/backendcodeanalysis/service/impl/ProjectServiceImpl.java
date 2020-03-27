@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,24 +37,16 @@ import lombok.var;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
-    @Autowired
-    CallGraphMethods callGraphMethods;
-
-    @Autowired
-    ProjectData projectData;
-
-    @Autowired
-    SubgraphData subgraphData;
 
     public class Vertex {
         Long id;
         String functionName;
         String sourceCode;
-        String anotation;
-        Float x;
-        Float y;
-        int inDegree;
-        int outDegree;
+        String anotation = "";
+        Float x = 0F;
+        Float y = 0F;
+        int inDegree = 0;
+        int outDegree = 0;
         List<Edge> edges = new ArrayList<>();
         List<Edge> undirectedEdge = new ArrayList<>();
 
@@ -68,6 +61,10 @@ public class ProjectServiceImpl implements ProjectService {
             anotation = po.getAnotation();
             x = po.getX();
             y = po.getY();
+        }
+
+        VertexPo getVertexPo() {
+            return new VertexPo(id, functionName, sourceCode, anotation, x, y);
         }
 
         VertexStaticVo getStaticVo() {
@@ -90,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
     public class Edge {
         Long id;
         Double closeness;
-        String anotation;
+        String anotation = "";
         Vertex from;
         Vertex to;
 
@@ -107,6 +104,10 @@ public class ProjectServiceImpl implements ProjectService {
             this.to = to;
         }
 
+        EdgePo getEdgePo(Map<String, VertexPo> vMap) {
+            return new EdgePo(id, vMap.get(from.functionName), vMap.get(to.functionName), closeness, anotation);
+        }
+
         EdgeStaticVo getStaticVo() {
             return new EdgeStaticVo(id, from.id, to.id, closeness);
         }
@@ -118,7 +119,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     public class ConnectiveDomain {
         Long id;
-        String anotation;
+        String anotation = "";
+        String color;
         List<Vertex> vertices;
         List<Edge> edges;
 
@@ -127,11 +129,24 @@ public class ProjectServiceImpl implements ProjectService {
             vertices = v;
         }
 
-        ConnectiveDomain(ConnectiveDomainPo po, List<Vertex> vertices, List<Edge> edges) {
+        ConnectiveDomain(ConnectiveDomainPo po, Map<Long, Vertex> vMap, Map<Long, Edge> eMap) {
             id = po.getId();
             anotation = po.getAnotation();
-            this.vertices = vertices;
-            this.edges = edges;
+            color = po.getColor();
+            for (var vPo : po.getVertexs())
+                vertices.add(vMap.get(vPo.getId()));
+            for (var ePo : po.getEdges())
+                edges.add(eMap.get(ePo.getId()));
+        }
+
+        ConnectiveDomainPo getConnectiveDomainPo(Map<String, VertexPo> vMap, Map<String, EdgePo> eMap) {
+            var vPo = new HashSet<VertexPo>(vertices.size());
+            for (var v : vertices)
+                vPo.add(vMap.get(v.functionName));
+            var ePo = new HashSet<EdgePo>(vertices.size());
+            for (var e : edges)
+                ePo.add(eMap.get(e.from.functionName + e.to.functionName));
+            return new ConnectiveDomainPo(id, vPo, ePo, anotation, color);
         }
 
         ConnectiveDomainStaticVo getStaticVo() {
@@ -145,21 +160,35 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         ConnectiveDomainDynamicVo getDynamicVo() {
-            return new ConnectiveDomainDynamicVo(id, anotation);
+            return new ConnectiveDomainDynamicVo(id, anotation, color);
         }
     }
 
     public class Subgraph {
         Long id;
         Double threshold;
-        String name;
+        String name = "";
         List<ConnectiveDomain> connectiveDomains;
 
-        Subgraph(SubgraphPo po, List<ConnectiveDomain> connectiveDomains) {
+        Subgraph(Double t, List<ConnectiveDomain> c) {
+            threshold = t;
+            connectiveDomains = c;
+        }
+
+        Subgraph(SubgraphPo po, Map<Long, Vertex> vMap, Map<Long, Edge> eMap) {
             id = po.getId();
             threshold = po.getThreshold();
             name = po.getName();
-            this.connectiveDomains = connectiveDomains;
+            for (var cPo : po.getConnectiveDomains()) {
+                connectiveDomains.add(new ConnectiveDomain(cPo, vMap, eMap));
+            }
+        }
+
+        SubgraphPo getSubgraphPo(Map<String, VertexPo> vMap, Map<String, EdgePo> eMap) {
+            var cPo = new HashSet<ConnectiveDomainPo>(connectiveDomains.size());
+            for (var c : connectiveDomains)
+                cPo.add(c.getConnectiveDomainPo(vMap, eMap));
+            return new SubgraphPo(id, threshold, name, cPo);
         }
 
         SubgraphStaticVo getStaticVo() {
@@ -181,78 +210,61 @@ public class ProjectServiceImpl implements ProjectService {
         Long id;
         Long userId;
         String projectName;
-        Map<String, Vertex> vertexMap;
-        List<Edge> edges;
         List<Subgraph> subgraphs;
-        List<ConnectiveDomain> connectiveDomain; // TODO: 原图联通域改成阈值为零的子图
+        Map<Long, Vertex> vIdMap;
+        Map<Long, Edge> eIdMap;
 
-        Project(List<String> caller, List<String> callee, Map<String, String> sourceCode) {
-            Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
-            // 去重得到所有顶点集合
-            var vertexNameSet = new HashSet<String>();
-            vertexNameSet.addAll(caller);
-            vertexNameSet.addAll(callee);
-            var vertexNames = new ArrayList<String>(vertexNameSet);
-            for (var str : vertexNames) {
-                Vertex newVertex = new Vertex(str);
-                if (sourceCode.containsKey(str))
-                    newVertex.sourceCode = sourceCode.get(str);
-                vertexMap.put(str, newVertex);
-                isChecked.put(str, false);
-            }
-            // 得到每个顶点的出度入度
-            for (int i = 0; i < caller.size(); i++) {
-                var begin = vertexMap.get(caller.get(i));
-                var end = vertexMap.get(callee.get(i));
-                begin.outDegree++;
-                end.inDegree++;
-            }
-            // 为每个顶点添加边集
-            for (int i = 0; i < caller.size(); i++) {
-                Vertex begin = vertexMap.get(caller.get(i));
-                Vertex end = vertexMap.get(callee.get(i));
-                Double closeness = 2.0 / (begin.outDegree + end.inDegree);
-                Edge newEdge = new Edge(begin, end);
-                newEdge.closeness = closeness;
-                edges.add(newEdge);
-                begin.addEdge(newEdge);
-                begin.addUndirectedEdge(newEdge);
-                end.addUndirectedEdge(newEdge);
-            }
-            // 计算连通域
-            for (var str : vertexMap.keySet()) {
-                List<Vertex> domainVertexs = new ArrayList<>();
-                List<Edge> domainEdges = new ArrayList<>();
-                DFS(null, vertexMap.get(str), isChecked, domainVertexs, domainEdges);
-                if (domainVertexs.size() > 0)
-                    connectiveDomain.add(new ConnectiveDomain(domainVertexs, domainEdges));
-            }
-            // 按连通域点的个数排序
-            connectiveDomain.sort((a, b) -> {
-                return b.vertices.size() - a.vertices.size();
-            });
+        Project(String pn, long ui) {
+            projectName = pn;
+            userId = ui;
         }
 
         Project(ProjectPo po) {
             id = po.getId();
             userId = po.getUserId();
             projectName = po.getProjectName();
-            vertexMap = new HashMap<>(po.getVertices().size());
-            for (var vPo : po.getVertices())
-                vertexMap.put(vPo.getFunctionName(), new Vertex(vPo));
-            edges = new ArrayList<>(po.getEdges().size());
-            for (var ePo : po.getEdges())
-                edges.add(new Edge(ePo, vertexMap.get(ePo.getFrom().getFunctionName()),
-                        vertexMap.get(ePo.getTo().getFunctionName())));
-            // TODO: 子图
+            vIdMap = new HashMap<Long, Vertex>(po.getVertices().size());
+            for (var vPo : po.getVertices()) {
+                var temp = new Vertex(vPo);
+                vIdMap.put(vPo.getId(), temp);
+            }
+            eIdMap = new HashMap<Long, Edge>(po.getEdges().size());
+            for (var ePo : po.getEdges()) {
+                var temp = new Edge(ePo, vIdMap.get(ePo.getFrom().getId()), vIdMap.get(ePo.getTo().getId()));
+                eIdMap.put(ePo.getId(), temp);
+            }
+            for (var sPo : po.getSubgraphs()) {
+                subgraphs.add(new Subgraph(sPo, vIdMap, eIdMap));
+            }
+        }
+
+        ProjectPo getProjectPo() {
+            var vPo = new HashSet<VertexPo>(vIdMap.size());
+            var vMap = new HashMap<String, VertexPo>(vIdMap.size());
+            for (var v : vIdMap.values()) {
+                var temp = v.getVertexPo();
+                vPo.add(temp);
+                vMap.put(v.functionName, temp);
+            }
+            var ePo = new HashSet<EdgePo>(eIdMap.size());
+            var eMap = new HashMap<String, EdgePo>(eIdMap.size());
+            for (var e : eIdMap.values()) {
+                var temp = e.getEdgePo(vMap);
+                ePo.add(temp);
+                eMap.put(e.from.functionName + e.to.functionName, temp);
+            }
+            var sPo = new HashSet<SubgraphPo>(subgraphs.size());
+            for (var s : subgraphs)
+                sPo.add(s.getSubgraphPo(vMap, eMap));
+            return new ProjectPo(id, userId, projectName, vPo, ePo, sPo);
         }
 
         ProjectStaticVo getStaticVo() {
-            var vertexVos = new ArrayList<VertexStaticVo>(vertexMap.size());
-            for (var v : vertexMap.values())
+            var vertexVos = new ArrayList<VertexStaticVo>(vIdMap.size());
+            for (var v : vIdMap.values())
                 vertexVos.add(v.getStaticVo());
-            var edgeVos = new ArrayList<EdgeStaticVo>(edges.size());
-            for (var e : edges)
+            var edgeVos = new ArrayList<EdgeStaticVo>(eIdMap.size());
+            for (var e : eIdMap.values())
                 edgeVos.add(e.getStaticVo());
             var subgraphVos = new ArrayList<SubgraphStaticVo>(subgraphs.size());
             for (var s : subgraphs)
@@ -261,11 +273,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         ProjectDynamicVo getDynamicVo() {
-            var vertexVos = new ArrayList<VertexDynamicVo>(vertexMap.size());
-            for (var v : vertexMap.values())
+            var vertexVos = new ArrayList<VertexDynamicVo>(vIdMap.size());
+            for (var v : vIdMap.values())
                 vertexVos.add(v.getDynamicVo());
-            var edgeVos = new ArrayList<EdgeDynamicVo>(edges.size());
-            for (var e : edges)
+            var edgeVos = new ArrayList<EdgeDynamicVo>(eIdMap.size());
+            for (var e : eIdMap.values())
                 edgeVos.add(e.getDynamicVo());
             var subgraphVos = new ArrayList<SubgraphDynamicVo>(subgraphs.size());
             for (var s : subgraphs)
@@ -292,6 +304,76 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
+    ProjectPo initProject(List<String> caller, List<String> callee, Map<String, String> sourceCode, String pn,
+            long ui) {
+        Project project = new Project(pn, ui);
+        project.projectName = pn;
+        project.userId = ui;
+        List<Edge> edges = new ArrayList<Edge>();
+        Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+        Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
+        // 去重得到所有顶点集合
+        var vertexNameSet = new HashSet<String>();
+        vertexNameSet.addAll(caller);
+        vertexNameSet.addAll(callee);
+        var vertexNames = new ArrayList<String>(vertexNameSet);
+        for (var str : vertexNames) {
+            Vertex newVertex = new Vertex(str);
+            if (sourceCode.containsKey(str))
+                newVertex.sourceCode = sourceCode.get(str);
+            vertexMap.put(str, newVertex);
+            isChecked.put(str, false);
+        }
+        // 得到每个顶点的出度入度
+        for (int i = 0; i < caller.size(); i++) {
+            var begin = vertexMap.get(caller.get(i));
+            var end = vertexMap.get(callee.get(i));
+            begin.outDegree++;
+            end.inDegree++;
+        }
+        // 为每个顶点添加边集
+        for (int i = 0; i < caller.size(); i++) {
+            Vertex begin = vertexMap.get(caller.get(i));
+            Vertex end = vertexMap.get(callee.get(i));
+            Double closeness = 2.0 / (begin.outDegree + end.inDegree);
+            Edge newEdge = new Edge(begin, end);
+            newEdge.closeness = closeness;
+            edges.add(newEdge);
+            begin.addEdge(newEdge);
+            begin.addUndirectedEdge(newEdge);
+            end.addUndirectedEdge(newEdge);
+        }
+        // 计算连通域
+        var connectiveDomains = new ArrayList<ConnectiveDomain>();
+        for (var str : vertexMap.keySet()) {
+            List<Vertex> domainVertexs = new ArrayList<>();
+            List<Edge> domainEdges = new ArrayList<>();
+            project.DFS(null, vertexMap.get(str), isChecked, domainVertexs, domainEdges);
+            if (domainVertexs.size() > 0)
+                connectiveDomains.add(new ConnectiveDomain(domainVertexs, domainEdges));
+        }
+        connectiveDomains.sort((a, b) -> {
+            return b.vertices.size() - a.vertices.size();
+        });
+        String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
+                "#8B7E66", "#8B668B", "#36648B", "#141414" };
+        int cl = colors.length;
+        for (int i = 0; i < connectiveDomains.size(); i++) {
+            connectiveDomains.get(i).color = colors[i % cl];
+        }
+        project.subgraphs.add(new Subgraph(0D, connectiveDomains));
+        return project.getProjectPo();
+    }
+
+    @Autowired
+    CallGraphMethods callGraphMethods;
+
+    @Autowired
+    ProjectData projectData;
+
+    @Autowired
+    SubgraphData subgraphData;
+
     @Override
     public ProjectAllVo addProject(String projectName, String url, long userId) {
         var project = callGraphMethods.initGraph(url, projectName);
@@ -311,8 +393,10 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        Project newProject = new Project(caller, callee, sourceCode);
-        return new ProjectAllVo();
+        var po = projectData.save(initProject(caller, callee, sourceCode, projectName, userId));
+        var newProject = new Project(po);
+        var vo = new ProjectAllVo(newProject.id, newProject.getStaticVo(), newProject.getDynamicVo());
+        return vo;
     };
 
     @Override
@@ -322,7 +406,32 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateProject(ProjectDynamicVo vo) {
-
+        var po = projectData.findById(vo.getId()).orElse(null);
+        Project project = new Project(po);
+        project.projectName = vo.getProjectName();
+        for (var v : vo.getVertices()) {
+            var vertex = project.vIdMap.get(v.getId());
+            vertex.anotation = v.getAnotation();
+            vertex.x = v.getX();
+            vertex.y = v.getY();
+        }
+        for (var e : vo.getEdges()) {
+            var edge = project.eIdMap.get(e.getId());
+            edge.anotation = e.getAnotation();
+        }
+        Map<Long, Subgraph> sIdMap = project.subgraphs.stream().collect(Collectors.toMap(s -> s.id, s -> s));
+        for (var s : vo.getSubgraphs()) {
+            var subgraph = sIdMap.get(s.getId());
+            subgraph.name = s.getName();
+            Map<Long, ConnectiveDomain> cIdMap = subgraph.connectiveDomains.stream()
+                    .collect(Collectors.toMap(c -> c.id, c -> c));
+            for (var c : s.getConnectiveDomains()) {
+                var connectiveDomain = cIdMap.get(c.getId());
+                connectiveDomain.anotation = c.getAnotation();
+                connectiveDomain.color = c.getColor();
+            }
+        }
+        projectData.save(project.getProjectPo());
     };
 
     @Override
