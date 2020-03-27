@@ -12,4 +12,6 @@ public class ConnectiveDomainDynamicVo {
     Long id;
 
     String anotation;
+
+    String color;
 }
