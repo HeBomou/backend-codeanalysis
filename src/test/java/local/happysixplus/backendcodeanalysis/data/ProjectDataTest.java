@@ -92,19 +92,19 @@ class ProjectDataTest {
         edges.add(e3);
         projectPo.setEdges(edges);
         // Subgraphs
-        var connectiveDomain1 = new ConnectiveDomainPo(null, vertices, edges, "anotation cd1");
+        var connectiveDomain1 = new ConnectiveDomainPo(null, vertices, edges, "anotation cd1", "#CDBE70");
         var cd2vSet = new HashSet<VertexPo>();
         cd2vSet.add(v1);
         cd2vSet.add(v2);
         var cd2eSet = new HashSet<EdgePo>();
         cd2eSet.add(e1);
-        var connectiveDomain2 = new ConnectiveDomainPo(null, cd2vSet, cd2eSet, "anotation cd2");
+        var connectiveDomain2 = new ConnectiveDomainPo(null, cd2vSet, cd2eSet, "anotation cd2", "#CDCDB4");
         var cd3vSet = new HashSet<VertexPo>();
         cd3vSet.add(v3);
         cd3vSet.add(v4);
         var cd3eSet = new HashSet<EdgePo>();
         cd3eSet.add(e3);
-        var connectiveDomain3 = new ConnectiveDomainPo(null, cd3vSet, cd3eSet, "anotation cd3");
+        var connectiveDomain3 = new ConnectiveDomainPo(null, cd3vSet, cd3eSet, "anotation cd3", "#CDB5CD");
         var connectiveDomains1 = new HashSet<ConnectiveDomainPo>();
         connectiveDomains1.add(connectiveDomain1);
         var connectiveDomains2 = new HashSet<ConnectiveDomainPo>();
