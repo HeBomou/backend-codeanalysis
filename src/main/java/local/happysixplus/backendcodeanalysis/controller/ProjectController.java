@@ -30,12 +30,6 @@ public class ProjectController {
         return service.getProjectAllByUserId(userId);
     }
 
-    @GetMapping(value = "/{projectId}/subgraph/{subgraphId}/subgraphShortestPath")
-    public PathVo getSubGraphShortestPath(@RequestParam Long startVertexId, @RequestParam Long endVertexId,
-            @PathVariable long projectId, @PathVariable long subgraphId) {
-        return service.getSubgraphShortestPath(projectId, subgraphId, startVertexId, endVertexId);
-    }
-
     @GetMapping(value = "/{projectId}/originalGraphShortestPath")
     public PathVo getOriginalGraphShortestPath(@RequestParam Long startVertexId, @RequestParam Long endVertexId,
             @PathVariable long projectId) {
