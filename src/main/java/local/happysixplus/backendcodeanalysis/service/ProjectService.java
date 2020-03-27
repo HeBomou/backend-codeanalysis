@@ -45,11 +45,6 @@ public interface ProjectService {
     PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId);
 
     /**
-     * 获取子图中从start出发到end的最短路
-     */
-    PathVo getSubgraphShortestPath(Long projectId, Long subgraphId, Long startVertexId, Long endVertexId);
-
-    /**
      * 获取项目中与funcName相似的函数名
      */
     List<String> getSimilarFunction(Long projectId, String funcName);

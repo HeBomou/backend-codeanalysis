@@ -491,12 +491,6 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     @Override
-    public PathVo getSubgraphShortestPath(Long projectId, Long subgraphId, Long startVertexId, Long endVertexId) {
-        //todo
-        return new PathVo();
-    };
-
-    @Override
     public List<String> getSimilarFunction(Long projectId, String funcName) {
         var res = new ArrayList<String>();
         var po = projectData.findById(projectId).orElse(null);
