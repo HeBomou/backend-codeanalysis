@@ -74,7 +74,6 @@ public class ProjectServiceImpl implements ProjectService {
         VertexDynamicVo getDynamicVo() {
             return new VertexDynamicVo(id, anotation, x, y);
         }
-
     }
 
     public class Edge {
@@ -228,7 +227,9 @@ public class ProjectServiceImpl implements ProjectService {
                 var temp = new Edge(ePo, from, to);
                 from.allEdges.add(temp);
                 from.edges.add(temp);
+                from.outDegree++;
                 to.allEdges.add(temp);
+                to.inDegree++;
                 eIdMap.put(ePo.getId(), temp);
             }
             for (var sPo : po.getSubgraphs()) {
@@ -497,9 +498,28 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId) {
-        // todo
-        return new PathVo();
+        var po = projectData.findById(projectId).orElse(null);
+        var project = new Project(po);
+        var res = new ArrayList<List<Long>>();
+        getAllPathDFS(endVertexId, project.vIdMap.get(startVertexId), new ArrayList<Long>(), res);
+        res.sort((a, b) -> {
+            return b.size() - a.size();
+        });
+        return new PathVo(res);
     };
+
+    private void getAllPathDFS(Long endVertexId, Vertex p, List<Long> path, List<List<Long>> res) {
+        if (p.id == endVertexId) {
+            res.add(path);
+        }
+        for (var edge : p.edges) {
+            if (edge.to == p)
+                continue;
+            path.add(edge.id);
+            getAllPathDFS(endVertexId, edge.to, path, res);
+            path.remove(path.size() - 1);
+        }
+    }
 
     @Override
     public List<String> getSimilarFunction(Long projectId, String funcName) {
