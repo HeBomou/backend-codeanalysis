@@ -48,7 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
         int inDegree = 0;
         int outDegree = 0;
         List<Edge> edges = new ArrayList<>();
-        List<Edge> undirectedEdge = new ArrayList<>();
+        List<Edge> allEdges = new ArrayList<>();
 
         Vertex(String name) {
             functionName = name;
@@ -75,13 +75,6 @@ public class ProjectServiceImpl implements ProjectService {
             return new VertexDynamicVo(id, anotation, x, y);
         }
 
-        void addEdge(Edge e) {
-            edges.add(e);
-        }
-
-        void addUndirectedEdge(Edge e) {
-            undirectedEdge.add(e);
-        }
     }
 
     public class Edge {
@@ -230,7 +223,12 @@ public class ProjectServiceImpl implements ProjectService {
             }
             eIdMap = new HashMap<Long, Edge>(po.getEdges().size());
             for (var ePo : po.getEdges()) {
-                var temp = new Edge(ePo, vIdMap.get(ePo.getFrom().getId()), vIdMap.get(ePo.getTo().getId()));
+                var from = vIdMap.get(ePo.getFrom().getId());
+                var to = vIdMap.get(ePo.getTo().getId());
+                var temp = new Edge(ePo, from, to);
+                from.allEdges.add(temp);
+                from.edges.add(temp);
+                to.allEdges.add(temp);
                 eIdMap.put(ePo.getId(), temp);
             }
             for (var sPo : po.getSubgraphs()) {
@@ -289,7 +287,29 @@ public class ProjectServiceImpl implements ProjectService {
             return new ProjectAllVo(id, getStaticVo(), getDynamicVo());
         }
 
-        void DFS(Edge edge, Vertex vertex, Map<String, Boolean> isChecked, List<Vertex> domainVertexs,
+        Subgraph initSubgraph(Double threshold) {
+            var connectiveDomains = new ArrayList<ConnectiveDomain>();
+            var isChecked = new HashMap<String, Boolean>(vIdMap.size());
+            for (var id : vIdMap.keySet()) {
+                List<Vertex> domainVertexs = new ArrayList<>();
+                List<Edge> domainEdges = new ArrayList<>();
+                DFS(threshold, null, vIdMap.get(id), isChecked, domainVertexs, domainEdges);
+                if (domainVertexs.size() > 0)
+                    connectiveDomains.add(new ConnectiveDomain(domainVertexs, domainEdges));
+            }
+            connectiveDomains.sort((a, b) -> {
+                return b.vertices.size() - a.vertices.size();
+            });
+            String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
+                    "#8B7E66", "#8B668B", "#36648B", "#141414" };
+            int cl = colors.length;
+            for (int i = 0; i < connectiveDomains.size(); i++) {
+                connectiveDomains.get(i).color = colors[i % cl];
+            }
+            return new Subgraph(threshold, connectiveDomains);
+        }
+
+        void DFS(Double threshold, Edge edge, Vertex vertex, Map<String, Boolean> isChecked, List<Vertex> domainVertexs,
                 List<Edge> domainEdges) {
             if (isChecked.get(vertex.functionName))
                 return;
@@ -297,9 +317,11 @@ public class ProjectServiceImpl implements ProjectService {
             domainVertexs.add(vertex);
             if (edge != null)
                 domainEdges.add(edge);
-            for (Edge e : vertex.undirectedEdge) {
+            for (Edge e : vertex.allEdges) {
+                if (e.closeness < threshold)
+                    continue;
                 Vertex anotherVertex = (e.from == vertex) ? e.to : e.from;
-                DFS(e, anotherVertex, isChecked, domainVertexs, domainEdges);
+                DFS(threshold, e, anotherVertex, isChecked, domainVertexs, domainEdges);
             }
         }
     }
@@ -339,29 +361,12 @@ public class ProjectServiceImpl implements ProjectService {
             Edge newEdge = new Edge(begin, end);
             newEdge.closeness = closeness;
             edges.add(newEdge);
-            begin.addEdge(newEdge);
-            begin.addUndirectedEdge(newEdge);
-            end.addUndirectedEdge(newEdge);
+            begin.allEdges.add(newEdge);
+            begin.edges.add(newEdge);
+            end.edges.add(newEdge);
         }
-        // 计算连通域
-        var connectiveDomains = new ArrayList<ConnectiveDomain>();
-        for (var str : vertexMap.keySet()) {
-            List<Vertex> domainVertexs = new ArrayList<>();
-            List<Edge> domainEdges = new ArrayList<>();
-            project.DFS(null, vertexMap.get(str), isChecked, domainVertexs, domainEdges);
-            if (domainVertexs.size() > 0)
-                connectiveDomains.add(new ConnectiveDomain(domainVertexs, domainEdges));
-        }
-        connectiveDomains.sort((a, b) -> {
-            return b.vertices.size() - a.vertices.size();
-        });
-        String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
-                "#8B7E66", "#8B668B", "#36648B", "#141414" };
-        int cl = colors.length;
-        for (int i = 0; i < connectiveDomains.size(); i++) {
-            connectiveDomains.get(i).color = colors[i % cl];
-        }
-        project.subgraphs.add(new Subgraph(0D, connectiveDomains));
+        var subgraph = project.initSubgraph(0D);
+        project.subgraphs.add(subgraph);
         return project.getProjectPo();
     }
 
@@ -448,8 +453,14 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public SubgraphAllVo addSubgraph(Long projectId, Double threshold) {
-        //todo
-        return new SubgraphAllVo();
+        var po = projectData.findById(projectId).orElse(null);
+        var project = new Project(po);
+        var subgraph = project.initSubgraph(threshold);
+        var sPo = subgraphData.save(new SubgraphPo(null, threshold, "", new HashSet<>()));
+        subgraph.id = sPo.getId();
+        project.subgraphs.add(subgraph);
+        projectData.save(project.getProjectPo());
+        return new SubgraphAllVo(subgraph.id, subgraph.getStaticVo(), subgraph.getDynamicVo());
     };
 
     @Override
@@ -486,7 +497,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId) {
-        //todo
+        // todo
         return new PathVo();
     };
 
