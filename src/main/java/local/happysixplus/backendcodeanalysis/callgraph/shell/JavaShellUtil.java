@@ -14,7 +14,32 @@ public class JavaShellUtil {
         }
     }
 
+    public static void ExecRm(String projectName){
+        try{
+            String command="rm -rf temp/"+projectName;
+            String[] commands=new String[]{"/bin/sh","-c",command};
+            Process process=Runtime.getRuntime().exec(commands);
+            ExecOutput(process);
 
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void ExecClone(String projectName,String url){
+        try{
+
+            String command="mkdir temp/"+projectName+" ; git clone "+url+" temp/"+projectName+" ; cd temp/"+projectName+" ;"+"mvn package";
+            String[] commands=new String[]{"/bin/sh","-c",command};
+            Process process=Runtime.getRuntime().exec(commands,null,null);
+            ExecOutput(process);
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
 
     public static void ExecCommand(String command,String parameters) {
         try {

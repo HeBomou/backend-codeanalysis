@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SourceCodeReader {
-    private static final String defaultPrePath = "src/main/resources/temp/";
+    private static final String defaultPrePath = "temp/";
     private static final String defaultSufPath = "/src/main/java/";
     private char[] c;
     private boolean commitSign1 = false;
