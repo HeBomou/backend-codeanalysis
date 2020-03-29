@@ -20,6 +20,7 @@ public class SessionServiceImpl implements SessionService {
         HttpSession session = request.getSession();
         var po = userData.findByUsername(vo.getUsername());
         if (po == null) {
+
             // 抛出该用户不存在异常
         }
         if (!po.getPwdMd5().equals(vo.getPwdMd5())) {

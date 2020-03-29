@@ -15,22 +15,22 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     private static final String rm = "src/main/resources/Scripts/rm.sh";
     private static final String clone = "src/main/resources/Scripts/clone.sh";
     private Node root;
-    public CallGraphMethodsImpl() {
+    /*public CallGraphMethodsImpl() {
         JavaShellUtil.InitCommand(rm);
         JavaShellUtil.InitCommand(clone);
-    }
+    }*/
 
     @Override
     public ProjectInfo initGraph(String githubLink, String projectName) {
         cloneProject(githubLink, projectName);
         ArrayList<String> cg = new ArrayList<>();
-        String[] list = new File("src/main/resources/temp/" + projectName + "/target").list();
+        String[] list = new File("temp/" + projectName + "/target").list();
         if (list == null)
             return null;
         for (String s : list) {
             //System.out.println(s);
             if (s.endsWith(".jar")) {
-                String[] tp = JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + s, projectName);
+                String[] tp = JCallGraph.getGraphFromJar("temp/" + projectName + "/target/" + s, projectName);
                 if (tp == null) {
                     return null;
                 }
@@ -49,7 +49,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             System.out.println("-----------------");
         }*/
 
-        File[] rootPackage0 = new File("src/main/resources/temp/" + projectName + "/src/main/java").listFiles();
+        File[] rootPackage0 = new File("temp/" + projectName + "/src/main/java").listFiles();
         File rootPackage1=null;
         if(rootPackage0==null) return null;
         for(File f:rootPackage0){
@@ -59,7 +59,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         }
         if(rootPackage1==null) return null;
         if(rootPackage1.list()==null) return null;
-        File rootPackage = new File("src/main/resources/temp/" + projectName + "/src/main/java/" + rootPackage1.getName());
+        File rootPackage = new File("temp/" + projectName + "/src/main/java/" + rootPackage1.getName());
         String rootPackageName = rootPackage.getName();
         root = new Node(rootPackageName, true);
         loadProjectStructure(root, rootPackage);
@@ -83,7 +83,8 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     }
 
     private void cloneProject(String githubLink, String projectName) {
-        JavaShellUtil.ExecCommand(clone, projectName + " " + githubLink);
+        //JavaShellUtil.ExecCommand(clone, projectName + " " + githubLink);
+        JavaShellUtil.ExecClone(projectName,githubLink);
         //System.out.println(retCode);
     }
 
@@ -94,7 +95,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     }
 
     private void loadSourceCode(Map<String,String> map, String projectName) {
-        ArrayList<String> javaFilePaths = getAllJavaFile("src/main/resources/temp/" + projectName + "/src/main/java");
+        ArrayList<String> javaFilePaths = getAllJavaFile("temp/" + projectName + "/src/main/java");
         SourceCodeReader scReader = new SourceCodeReader(projectName);
         if (javaFilePaths == null) return;
         /*for (int i = 0; i < javaFilePaths.size(); i++) {

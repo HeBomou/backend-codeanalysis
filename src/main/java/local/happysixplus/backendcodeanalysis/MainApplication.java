@@ -4,6 +4,8 @@ package local.happysixplus.backendcodeanalysis;
 
 // import org.springframework.boot.SpringApplication;
 import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethodsImpl;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //import local.happysixplus.backendcodeanalysis.cli.CLI;
@@ -14,7 +16,7 @@ import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
 //@SpringBootApplication
 public class MainApplication {
 	public static void main(String[] args) {
-		// SpringApplication.run(MainApplication.class, args);
+		//SpringApplication.run(MainApplication.class, args);
 		CallGraphMethods cgm = new CallGraphMethodsImpl();
 		cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Linux");
 		

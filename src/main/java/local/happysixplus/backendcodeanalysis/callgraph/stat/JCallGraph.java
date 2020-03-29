@@ -46,7 +46,7 @@ import org.apache.bcel.classfile.ClassParser;
  */
 public class JCallGraph {
     private static ArrayList<String> packageNames=new ArrayList<>();
-    private static String path="src/main/resources/temp/";
+    private static String path="temp/";
 
     /**
      *
