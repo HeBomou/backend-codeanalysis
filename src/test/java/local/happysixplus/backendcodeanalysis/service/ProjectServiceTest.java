@@ -30,8 +30,8 @@ public class ProjectServiceTest {
         // assertEquals(vo.getDynamicVo(), newVo.getDynamicVo());
     }
 
-    @Test
-    public void testProjectService() {
+    //@Test
+    /*public void testProjectService() {
         ProjectAllVo vo = service.addProject("Linux", "https://gitee.com/forsakenspirit/Linux", 1);
 
         vo.getDynamicVo().setProjectName("SKTFaker's Linux");
@@ -57,5 +57,5 @@ public class ProjectServiceTest {
 
         service.removeProject(projectAllVo.getId());
 
-    }
+    }*/
 }

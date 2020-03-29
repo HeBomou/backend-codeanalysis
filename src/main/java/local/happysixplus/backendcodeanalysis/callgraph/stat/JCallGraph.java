@@ -79,12 +79,12 @@ public class JCallGraph {
 
             try (JarFile jar = new JarFile(f)) {
                 Stream<JarEntry> entries = enumerationAsStream(jar.entries());
-                String[] list=new File("src/main/resources/temp/"+projectName+"/src/main/java").list();
+                String[] list=new File("temp/"+projectName+"/src/main/java").list();
                 /*System.out.println(list.length);
                 for(int i=0;i<list.length;i++)
                     System.out.println(list[i]);*/
                 for(int i=0;i<list.length;i++){
-                    if(new File("src/main/resources/temp/"+projectName+"/src/main/java/"+list[i]).isDirectory()){
+                    if(new File("temp/"+projectName+"/src/main/java/"+list[i]).isDirectory()){
                         packageNames.add(list[i]);
                     }
                 }

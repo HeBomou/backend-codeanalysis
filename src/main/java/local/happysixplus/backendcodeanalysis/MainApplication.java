@@ -4,6 +4,7 @@ package local.happysixplus.backendcodeanalysis;
 
 // import org.springframework.boot.SpringApplication;
 import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethodsImpl;
+import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,14 +13,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //import lombok.var;
 //import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
 import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
-
 //@SpringBootApplication
 public class MainApplication {
 	public static void main(String[] args) {
-		//SpringApplication.run(MainApplication.class, args);
-		CallGraphMethods cgm = new CallGraphMethodsImpl();
-		cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Linux");
-		
+		SpringApplication.run(MainApplication.class, args);
+		//CallGraphMethods cgm = new CallGraphMethodsImpl();
+		//cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Linux");
+		//JCallGraph.getGraphFromJar("temp/Linux/target/Hello-1.0-SNAPSHOT.jar","Linux");
 		// var cli = new CLI();
 		// var scanner = new Scanner(System.in);
 
