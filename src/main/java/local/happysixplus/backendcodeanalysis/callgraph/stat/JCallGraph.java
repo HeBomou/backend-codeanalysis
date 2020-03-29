@@ -111,7 +111,7 @@ public class JCallGraph {
 
 
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Error while processing jar: " + e.getMessage());
             e.printStackTrace();
             return null;
