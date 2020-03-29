@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -22,54 +24,19 @@ import java.util.*;
 class ProjectDataTest {
     @Autowired
     ProjectData data;
-    int a = 1;
-    ProjectPo ppo = new ProjectPo();
 
     @BeforeEach
     public void setUp() {
-        SubgraphPo po;
-        po = new SubgraphPo();
-        po.setName("NMSL");
-        Set<ConnectiveDomainPo> cpos = new HashSet<>();
-        for (int i = 0; i < 5; i++) {
-            ConnectiveDomainPo skt = new ConnectiveDomainPo();
-            skt.setAnotation(i + ":ruaruarua");
-            List<Long> listIds = new ArrayList<>();
-            for (int j = 0; j < 3; j++) {
-                listIds.add((long) (Math.pow(i * 3, j + 2)));
-            }
+        data.deleteAll();
+    }
 
-            // skt.setEdgeIds(listIds);
-            // skt.setVertexIds(listIds);
-            cpos.add(skt);
-        }
-        po.setConnectiveDomains(cpos);
-        po.setThreshold(0.4396);
-        Set<SubgraphPo> ssp = new HashSet<>();
-        ssp.add(po);
-        // ppo.setSubgraphs(new HashSet<>());
-        ppo.setEdges(new HashSet<>());
-        ppo.setVertices(new HashSet<>());
-        ppo.setSubgraphs(ssp);
-        ppo.setUserId(1234L);
-        ppo.setProjectName("motherfucker");
-
+    @AfterEach
+    public void tearDown() {
+        data.deleteAll();
     }
 
     @Test
-    public void insertData() {
-        /*
-         * ppo=data.findById(1L).get(); ppo.setProjectName("5345"); Set<SubgraphPo>
-         * skt=ppo.getSubgraphs(); Iterator<SubgraphPo> is=skt.iterator();
-         * if(is.hasNext()){ if(is.next().getId()==1){ is.remove(); } }
-         */
-
-        ppo = data.save(ppo);
-        data.save(ppo);
-    }
-
-    @Test
-    public void insertWholeData() {
+    public void insertTest1() {
         var projectPo = new ProjectPo(null, 1L, "projectName 1", null, null, null);
         // Vertices
         var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1", "anotation", 0f, 0f);
@@ -117,10 +84,47 @@ class ProjectDataTest {
         subgraphs.add(subgraph1);
         projectPo.setSubgraphs(subgraphs);
         data.save(projectPo);
+
+        var newPo = data.findById(projectPo.getId()).orElse(null);
+
+        assertEquals(projectPo.getUserId(), newPo.getUserId());
+        assertEquals(projectPo.getProjectName(), newPo.getProjectName());
+        assertEquals(projectPo.getEdges().size(), newPo.getEdges().size());
+        assertEquals(projectPo.getVertices().size(), newPo.getVertices().size());
+        assertEquals(projectPo.getSubgraphs().size(), newPo.getSubgraphs().size());
     }
 
-    @AfterEach
-    public void tearDown() {
+    @Test
+    public void insertTest2() {
+        var projectPo = new ProjectPo(null, 1L, "projC", null, null, null);
+        // Vertices
+        var v1 = new VertexPo(null, "v1", "dian1", "a1", 0f, 0f);
+        var v2 = new VertexPo(null, "v2", "dian2", "a2", 0f, 0f);
+        var vertices = new HashSet<VertexPo>();
+        vertices.add(v1);
+        vertices.add(v2);
+        projectPo.setVertices(vertices);
+        // Edges
+        var e1 = new EdgePo(null, v1, v2, 0.3d, "e1");
+        var edges = new HashSet<EdgePo>();
+        edges.add(e1);
+        projectPo.setEdges(edges);
+        // Subgraphs
+        var connectiveDomain1 = new ConnectiveDomainPo(null, vertices, edges, "acd1", "#CDBE70");
+        var connectiveDomains1 = new HashSet<ConnectiveDomainPo>();
+        connectiveDomains1.add(connectiveDomain1);
+        var defaultSubgraph = new SubgraphPo(null, 0d, "default subgraph", connectiveDomains1);
+        var subgraphs = new HashSet<SubgraphPo>();
+        subgraphs.add(defaultSubgraph);
+        projectPo.setSubgraphs(subgraphs);
+        data.save(projectPo);
 
+        var newPo = data.findById(projectPo.getId()).orElse(null);
+
+        assertEquals(projectPo.getUserId(), newPo.getUserId());
+        assertEquals(projectPo.getProjectName(), newPo.getProjectName());
+        assertEquals(projectPo.getEdges().size(), newPo.getEdges().size());
+        assertEquals(projectPo.getVertices().size(), newPo.getVertices().size());
+        assertEquals(projectPo.getSubgraphs().size(), newPo.getSubgraphs().size());
     }
 }
