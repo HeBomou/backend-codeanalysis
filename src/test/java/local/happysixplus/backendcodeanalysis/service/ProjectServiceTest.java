@@ -26,8 +26,7 @@ public class ProjectServiceTest {
     public void testAddProject() {
         var vo = service.addProject("Linux", "https://gitee.com/forsakenspirit/Linux", 1L);
         var newVo = service.getProjectAllByUserId(1L).get(0);
-        // assertEquals(vo.getId(), newVo.getId());
-        // assertEquals(vo.getDynamicVo(), newVo.getDynamicVo());
+        assertEquals(vo, newVo);
     }
 
     //@Test
