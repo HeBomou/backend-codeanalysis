@@ -17,8 +17,7 @@ import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
 public class MainApplication {
 	public static void main(String[] args) {
 		//SpringApplication.run(MainApplication.class, args);
-		CallGraphMethods cgm = new CallGraphMethodsImpl();
-		cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Faker");
+		CallGraphMethods cgm = new CallGraphMethodsImpl();cgm.initGraph("https://gitee.com/forsakenspirit/Linux","Faker");
 		//JCallGraph.getGraphFromJar("temp/Linux/target/Hello-1.0-SNAPSHOT.jar","Faker");
 		// var cli = new CLI();
 		// var scanner = new Scanner(System.in);

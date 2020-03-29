@@ -89,7 +89,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     }
 
     private void deleteFile(String projectName) {
-        JavaShellUtil.ExecCommand(rm, projectName);
+        JavaShellUtil.ExecRm(projectName);
         //System.out.println(retCode);
 
     }
