@@ -8,8 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import local.happysixplus.backendcodeanalysis.data.ProjectData;
+import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
@@ -19,18 +22,25 @@ import lombok.var;
 @SpringBootTest
 public class ProjectServiceTest {
 
+    @MockBean
+    ProjectData projectData;
+
+    @MockBean
+    SubgraphData subgraphData;
+
     @Autowired
     ProjectService service;
 
     @Test
     public void testAddProject() {
+        // TODO: Mockito打桩
         var vo = service.addProject("Linux", "https://gitee.com/forsakenspirit/Linux", 1L);
         var newVo = service.getProjectAllByUserId(1L).get(0);
         assertEquals(vo, newVo);
     }
 
-    //@Test
-    /*public void testProjectService() {
+    @Test
+    public void testProjectService() {
         ProjectAllVo vo = service.addProject("Linux", "https://gitee.com/forsakenspirit/Linux", 1);
 
         vo.getDynamicVo().setProjectName("SKTFaker's Linux");
@@ -56,5 +66,5 @@ public class ProjectServiceTest {
 
         service.removeProject(projectAllVo.getId());
 
-    }*/
+    }
 }

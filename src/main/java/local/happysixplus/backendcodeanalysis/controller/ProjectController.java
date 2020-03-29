@@ -51,7 +51,7 @@ public class ProjectController {
         return service.addSubgraph(projectId, threshold);
     }
 
-    @PostMapping(value = "/project")
+    @PostMapping(value = "")
     public ProjectAllVo postProject(@RequestParam String projectName, @RequestParam String url,
             @RequestParam long userId) {
         return service.addProject(projectName, url, userId);
