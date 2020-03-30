@@ -52,6 +52,7 @@ public class UserTest {
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        // 不允许用户重名
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().is5xxServerError())
                 .andReturn();
