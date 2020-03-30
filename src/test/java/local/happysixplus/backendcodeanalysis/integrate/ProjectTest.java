@@ -22,14 +22,21 @@ public class ProjectTest {
 
     @Test
     public void Test1() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux")
-                .param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "1"))
+        MvcResult resAdd = mockMvc
+                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux")
+                        .param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "1"))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+
+        MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "1"))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        System.out.println(resAdd);
+        System.out.println(resGet);
     }
 
     @Test
     public void Test2() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "1"))
+        MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "1"))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        System.out.println(resGet);
     }
 }
