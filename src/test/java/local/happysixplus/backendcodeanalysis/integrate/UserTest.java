@@ -31,17 +31,55 @@ public class UserTest {
     UserData data;
 
     @Test
-    public void addUser() throws Exception {
+    public void addUser1() throws Exception {
         data.deleteAll();
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
-                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk());
+                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         var sessionVo = new SessionVo("hello", "xxx");
         mockMvc.perform(MockMvcRequestBuilders.post("/session").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(sessionVo)))
-                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError()).andReturn();
         sessionVo.setPwdMd5("XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/session").contentType(MediaType.APPLICATION_JSON)
-                .content(JSONObject.toJSONString(sessionVo))).andExpect(MockMvcResultMatchers.status().isOk());
+                .content(JSONObject.toJSONString(sessionVo))).andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    public void addUser2() throws Exception {
+        data.deleteAll();
+        var userVo = new UserVo(null, "hello", "XXX");
+        mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                .andReturn();
+    }
+
+    @Test
+    public void deleteUser1() throws Exception {
+        data.deleteAll();
+        // 注册
+        var userVo = new UserVo(null, "hello", "XXX");
+        mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        // 登陆
+        var sessionVo = new SessionVo("hello", "XXX");
+        var res = mockMvc
+                .perform(MockMvcRequestBuilders.post("/session").contentType(MediaType.APPLICATION_JSON)
+                        .content(JSONObject.toJSONString(sessionVo)))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        Long userId = Long.valueOf(res.getResponse().getContentAsString());
+        // 删除用户
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", userId))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        // 禁止重复删除
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", userId))
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError()).andReturn();
+        // 禁止登陆
+        mockMvc.perform(MockMvcRequestBuilders.post("/session").contentType(MediaType.APPLICATION_JSON)
+                .content(JSONObject.toJSONString(sessionVo)))
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError()).andReturn();
     }
 }

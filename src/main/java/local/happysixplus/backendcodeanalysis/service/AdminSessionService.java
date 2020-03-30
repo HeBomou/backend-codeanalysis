@@ -9,7 +9,7 @@ public interface AdminSessionService {
      * 管理员登陆获取一个Session
      * @param vo
      */
-    void addSession(AdminSessionVo vo, HttpServletRequest request);
+    Long addSession(AdminSessionVo vo, HttpServletRequest request);
 
     /**
      * 管理员登出移除对应的Session

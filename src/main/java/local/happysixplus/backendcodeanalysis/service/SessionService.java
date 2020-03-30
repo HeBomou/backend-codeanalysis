@@ -11,7 +11,7 @@ public interface SessionService {
      * 
      * @param vo
      */
-    void addSession(SessionVo vo, HttpServletRequest request) throws Exception;
+    Long addSession(SessionVo vo, HttpServletRequest request) throws Exception;
 
     /**
      * 用户登出移除对应的Session

@@ -14,8 +14,8 @@ public class AdminSessionController {
     AdminSessionService service;
 
     @PostMapping(value = "")
-    public void postAdmin(@RequestBody AdminSessionVo vo, HttpServletRequest request) {
-        service.addSession(vo, request);
+    public Long postAdmin(@RequestBody AdminSessionVo vo, HttpServletRequest request) {
+        return service.addSession(vo, request);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -17,7 +17,7 @@ public class SessionServiceImpl implements SessionService {
     UserData userData;
 
     @Override
-    public void addSession(SessionVo vo, HttpServletRequest request) throws Exception {
+    public Long addSession(SessionVo vo, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         var po = userData.findByUsername(vo.getUsername());
         if (po == null)
@@ -29,6 +29,7 @@ public class SessionServiceImpl implements SessionService {
         if (value == null) {
             session.setAttribute("user", po.getId().toString());
         }
+        return po.getId();
     };
 
     @Override

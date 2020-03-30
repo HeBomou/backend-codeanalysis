@@ -12,12 +12,12 @@ import lombok.var;
 
 @Service
 public class AdminSessionServiceImpl implements AdminSessionService {
-    
+
     @Autowired
     AdminUserData adminUserData;
 
     @Override
-    public void addSession(AdminSessionVo vo, HttpServletRequest request) {
+    public Long addSession(AdminSessionVo vo, HttpServletRequest request) {
         HttpSession session = request.getSession();
         var po = adminUserData.findByUsername(vo.getUsername());
         if (po == null) {
@@ -30,6 +30,7 @@ public class AdminSessionServiceImpl implements AdminSessionService {
         if (value == null) {
             session.setAttribute("admin", po.getId().toString());
         }
+        return po.getId();
     };
 
     @Override

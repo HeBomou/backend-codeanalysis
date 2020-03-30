@@ -22,13 +22,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(UserVo vo) throws Exception {
         if (userData.findByUsername(vo.getUsername()) != null)
-            throw new MyRuntimeException("您的用户名已被注册");
+            throw new MyRuntimeException("改用户名已被注册");
         userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
     }
 
     @Override
     public void removeUser(Long id) {
-        userData.deleteById(id);
+        if (userData.existsById(id))
+            userData.deleteById(id);
+        else
+            throw new MyRuntimeException("无此用户");
     }
 
     @Override

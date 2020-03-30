@@ -14,8 +14,8 @@ public class SessionController {
     SessionService service;
 
     @PostMapping(value = "")
-    public void postSession(@RequestBody SessionVo vo, HttpServletRequest request) throws Exception {
-        service.addSession(vo, request);
+    public Long postSession(@RequestBody SessionVo vo, HttpServletRequest request) throws Exception {
+        return service.addSession(vo, request);
     }
 
     @DeleteMapping(value = "/{id}")
