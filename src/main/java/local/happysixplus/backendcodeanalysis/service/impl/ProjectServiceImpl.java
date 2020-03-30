@@ -397,7 +397,8 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        var tempPo = projectData.save(initProject(caller, callee, sourceCode, projectName, userId));
+        var vpo = initProject(caller, callee, sourceCode, projectName, userId);
+        var tempPo = projectData.save(vpo);
         var tempPro = new Project(tempPo);
         tempPro.subgraphs.add(tempPro.initSubgraph(0D));
         var po = projectData.save(tempPro.getProjectPo());
