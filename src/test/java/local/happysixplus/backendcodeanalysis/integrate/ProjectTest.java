@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,9 +123,18 @@ public class ProjectTest {
 
     @Test
     public void Test6() throws Exception{
-         MvcResult resAdd = mockMvc
-                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "HappySixDemo")
-                        .param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "2"))
-                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        projectData.deleteAll();
+        MvcResult resAdd = mockMvc
+                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "ADemo")
+                        .param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "1"))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+        var vo = JSON.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
+        var staticVo = vo.getStaticVo();
+        var dynamicVo = vo.getDynamicVo();
+        assertEquals(21, staticVo.getVertices().size());
+        assertEquals(24, staticVo.getEdges().size());
+        assertEquals(1, staticVo.getSubgraphs().size());
+        assertEquals("ADemo", dynamicVo.getProjectName());
     }
 }
