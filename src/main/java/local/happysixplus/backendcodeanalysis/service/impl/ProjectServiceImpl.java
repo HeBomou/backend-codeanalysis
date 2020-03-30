@@ -329,44 +329,44 @@ public class ProjectServiceImpl implements ProjectService {
 
     ProjectPo initProject(List<String> caller, List<String> callee, Map<String, String> sourceCode, String pn,
             long ui) {
-        Project project = new Project(pn, ui);
-        project.projectName = pn;
-        project.userId = ui;
-        List<Edge> edges = new ArrayList<Edge>();
-        Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
-        Map<String, Boolean> isChecked = new HashMap<String, Boolean>();
-        // 去重得到所有顶点集合
+        Set<EdgePo> edgePos = new HashSet<EdgePo>();
+        Set<VertexPo> vertexPos = new HashSet<VertexPo>();
+        Map<String, VertexPo> vertexMap = new HashMap<String, VertexPo>();
+        Map<String, Integer> outdegree = new HashMap<String, Integer>();
+        Map<String, Integer> indegree = new HashMap<String, Integer>();
+
         var vertexNameSet = new HashSet<String>();
         vertexNameSet.addAll(caller);
         vertexNameSet.addAll(callee);
         var vertexNames = new ArrayList<String>(vertexNameSet);
+
         for (var str : vertexNames) {
-            Vertex newVertex = new Vertex(str);
+            VertexPo vPo;
             if (sourceCode.containsKey(str))
-                newVertex.sourceCode = sourceCode.get(str);
-            vertexMap.put(str, newVertex);
-            isChecked.put(str, false);
+                vPo = new VertexPo(null, str, sourceCode.get(str), "", 0F, 0F);
+            vPo = new VertexPo(null, str, "", "", 0F, 0F);
+            vertexPos.add(vPo);
+            vertexMap.put(str, vPo);
+            outdegree.put(str, 0);
+            indegree.put(str, 0);
         }
-        // 得到每个顶点的出度入度
+
         for (int i = 0; i < caller.size(); i++) {
-            var begin = vertexMap.get(caller.get(i));
-            var end = vertexMap.get(callee.get(i));
-            begin.outDegree++;
-            end.inDegree++;
+            String startName = caller.get(i);
+            String endName = callee.get(i);
+            outdegree.put(startName, outdegree.get(startName) + 1);
+            indegree.put(endName, indegree.get(endName) + 1);
         }
-        // 为每个顶点添加边集
+
         for (int i = 0; i < caller.size(); i++) {
-            Vertex begin = vertexMap.get(caller.get(i));
-            Vertex end = vertexMap.get(callee.get(i));
-            Double closeness = 2.0 / (begin.outDegree + end.inDegree);
-            Edge newEdge = new Edge(begin, end);
-            newEdge.closeness = closeness;
-            edges.add(newEdge);
-            begin.allEdges.add(newEdge);
-            begin.edges.add(newEdge);
-            end.edges.add(newEdge);
+            String startName = caller.get(i);
+            String endName = callee.get(i);
+            VertexPo from = vertexMap.get(startName);
+            VertexPo to = vertexMap.get(endName);
+            Double closeness = 2.0 / (outdegree.get(startName) + indegree.get(endName));
+            edgePos.add(new EdgePo(null, from, to, closeness, ""));
         }
-        return project.getProjectPo();
+        return new ProjectPo(null, ui, pn, vertexPos, edgePos, new HashSet<SubgraphPo>());
     }
 
     @Autowired
