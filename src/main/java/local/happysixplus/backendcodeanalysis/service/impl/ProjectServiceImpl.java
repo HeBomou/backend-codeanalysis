@@ -40,8 +40,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     public class Vertex {
         Long id;
-        String functionName;
-        String sourceCode;
+        String functionName = "";
+        String sourceCode = "";
         String anotation = "";
         Float x = 0F;
         Float y = 0F;
@@ -78,7 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     public class Edge {
         Long id;
-        Double closeness;
+        Double closeness = 0D;
         String anotation = "";
         Vertex from;
         Vertex to;
@@ -112,9 +112,9 @@ public class ProjectServiceImpl implements ProjectService {
     public class ConnectiveDomain {
         Long id;
         String anotation = "";
-        String color;
-        List<Vertex> vertices;
-        List<Edge> edges;
+        String color = "";
+        List<Vertex> vertices = new ArrayList<Vertex>();
+        List<Edge> edges = new ArrayList<Edge>();
 
         ConnectiveDomain(List<Vertex> v, List<Edge> e) {
             edges = e;
@@ -160,7 +160,7 @@ public class ProjectServiceImpl implements ProjectService {
         Long id;
         Double threshold;
         String name = "";
-        List<ConnectiveDomain> connectiveDomains;
+        List<ConnectiveDomain> connectiveDomains = new ArrayList<ConnectiveDomain>();
 
         Subgraph(Double t, List<ConnectiveDomain> c) {
             threshold = t;
@@ -201,10 +201,10 @@ public class ProjectServiceImpl implements ProjectService {
     public class Project {
         Long id;
         Long userId;
-        String projectName;
-        List<Subgraph> subgraphs;
-        Map<Long, Vertex> vIdMap;
-        Map<Long, Edge> eIdMap;
+        String projectName = "";
+        List<Subgraph> subgraphs = new ArrayList<Subgraph>();
+        Map<Long, Vertex> vIdMap = new HashMap<Long, Vertex>();
+        Map<Long, Edge> eIdMap = new HashMap<Long, Edge>();
 
         Project(String pn, long ui) {
             projectName = pn;
@@ -291,6 +291,8 @@ public class ProjectServiceImpl implements ProjectService {
         Subgraph initSubgraph(Double threshold) {
             var connectiveDomains = new ArrayList<ConnectiveDomain>();
             var isChecked = new HashMap<String, Boolean>(vIdMap.size());
+            for (var id : vIdMap.keySet())
+                isChecked.put(vIdMap.get(id).functionName, false);
             for (var id : vIdMap.keySet()) {
                 List<Vertex> domainVertexs = new ArrayList<>();
                 List<Edge> domainEdges = new ArrayList<>();
@@ -344,7 +346,8 @@ public class ProjectServiceImpl implements ProjectService {
             VertexPo vPo;
             if (sourceCode.containsKey(str))
                 vPo = new VertexPo(null, str, sourceCode.get(str), "", 0F, 0F);
-            vPo = new VertexPo(null, str, "", "", 0F, 0F);
+            else
+                vPo = new VertexPo(null, str, "", "", 0F, 0F);
             vertexPos.add(vPo);
             vertexMap.put(str, vPo);
             outdegree.put(str, 0);
@@ -397,10 +400,10 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        var vpo = initProject(caller, callee, sourceCode, projectName, userId);
-        var tempPo = projectData.save(vpo);
+        var tempPo = projectData.save(initProject(caller, callee, sourceCode, projectName, userId));
         var tempPro = new Project(tempPo);
-        tempPro.subgraphs.add(tempPro.initSubgraph(0D));
+        var sub = tempPro.initSubgraph(0D);
+        tempPro.subgraphs.add(sub);
         var po = projectData.save(tempPro.getProjectPo());
         var newProject = new Project(po);
         var vo = new ProjectAllVo(newProject.id, newProject.getStaticVo(), newProject.getDynamicVo());
