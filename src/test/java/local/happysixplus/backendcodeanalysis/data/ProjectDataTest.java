@@ -25,15 +25,7 @@ class ProjectDataTest {
     @Autowired
     ProjectData data;
 
-    @BeforeEach
-    public void setUp() {
-        data.deleteAll();
-    }
-
-    @AfterEach
-    public void tearDown() {
-        data.deleteAll();
-    }
+    
 
     @Test
     public void insertTest1() {

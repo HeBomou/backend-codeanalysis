@@ -20,7 +20,7 @@ public class ProjectController {
         service.updateSubGraph(projectId, vo);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{projectId}")
     public void putProject(@PathVariable Long projectId, @RequestBody ProjectDynamicVo vo) {
         service.updateProject(vo);
     }
@@ -62,7 +62,7 @@ public class ProjectController {
         service.removeSubgraph(id);
     }
 
-    @DeleteMapping(value = "/project/{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteProject(@PathVariable Long id) {
         service.removeProject(id);
     }
