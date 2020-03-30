@@ -7,8 +7,9 @@ import lombok.var;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,10 +87,17 @@ class UserServiceTest {
         var uv2 = new UserVo(4L, "tester5", null);
         var uv3 = new UserVo(8L, "zyq", null);
         var uvs = Arrays.asList(uv1, uv3, uv2);
-        assertEquals(res, uvs);
+
+        assertEquals(new HashSet<>(uvs), new HashSet<>(res));
     }
 
     @Test
     void getUser() {
+        var up = new UserPo(15L, "tester100", "fsfs");
+        Mockito.when(data.findById(15L)).thenReturn(Optional.of(up));
+
+        var res = service.getUser(15L);
+        var uv = new UserVo(15L, "tester100", null);
+        assertEquals(uv, res);
     }
 }
