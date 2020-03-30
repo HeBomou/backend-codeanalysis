@@ -19,7 +19,9 @@ public class UserServiceImpl implements UserService {
     UserData userData;
 
     @Override
-    public void addUser(UserVo vo) {
+    public void addUser(UserVo vo) throws Exception {
+        if (userData.findByUsername(vo.getUsername()) != null)
+            throw new Exception("您的用户名已被注册");
         userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
     }
 

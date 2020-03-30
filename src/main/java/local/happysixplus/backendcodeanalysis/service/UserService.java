@@ -9,7 +9,7 @@ public interface UserService {
     /**
      * 用户注册
      */
-    void addUser(UserVo vo);
+    void addUser(UserVo vo) throws Exception;
 
     /**
      * 删除用户
@@ -18,12 +18,14 @@ public interface UserService {
 
     /**
      * 用户信息修改
+     * 
      * @param vo
      */
     void updateUser(UserVo vo);
 
     /**
      * 获取所有用户
+     * 
      * @return
      *
      */

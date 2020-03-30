@@ -23,7 +23,7 @@ public class UserController {
     UserService service;
 
     @PostMapping
-    public void postUser(@RequestBody UserVo vo) {
+    public void postUser(@RequestBody UserVo vo) throws Exception {
         service.addUser(vo);
     }
 

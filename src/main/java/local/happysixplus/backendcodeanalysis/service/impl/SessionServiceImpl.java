@@ -8,6 +8,7 @@ import local.happysixplus.backendcodeanalysis.service.SessionService;
 import local.happysixplus.backendcodeanalysis.vo.SessionVo;
 import lombok.var;
 import local.happysixplus.backendcodeanalysis.data.UserData;
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -16,15 +17,13 @@ public class SessionServiceImpl implements SessionService {
     UserData userData;
 
     @Override
-    public void addSession(SessionVo vo, HttpServletRequest request) {
+    public void addSession(SessionVo vo, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         var po = userData.findByUsername(vo.getUsername());
-        if (po == null) {
-
-            // 抛出该用户不存在异常
-        }
+        if (po == null)
+            throw new MyRuntimeException("该用户不存在");
         if (!po.getPwdMd5().equals(vo.getPwdMd5())) {
-            // 抛出密码错误异常
+            throw new MyRuntimeException("密码错误");
         }
         Object value = session.getAttribute("user");
         if (value == null) {
@@ -33,7 +32,7 @@ public class SessionServiceImpl implements SessionService {
     };
 
     @Override
-    public void removeSession(String id, HttpServletRequest request) {
+    public void removeSession(String id, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") != null && session.getAttribute("user").equals(id)) {
             session.removeAttribute("user");

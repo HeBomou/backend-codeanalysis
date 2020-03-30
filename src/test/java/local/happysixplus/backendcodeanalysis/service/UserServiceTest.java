@@ -41,7 +41,7 @@ class UserServiceTest {
     }
 
     @Test
-    void addUser() {
+    void addUser() throws Exception {
         // 执行
         var userVo = new UserVo(null, "tester1", "xxxx");
         service.addUser(userVo);

@@ -14,12 +14,12 @@ public class SessionController {
     SessionService service;
 
     @PostMapping(value = "")
-    public void postSession(@RequestBody SessionVo vo, HttpServletRequest request) {
+    public void postSession(@RequestBody SessionVo vo, HttpServletRequest request) throws Exception {
         service.addSession(vo, request);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteSession(@RequestParam String id, HttpServletRequest request) {
+    public void deleteSession(@RequestParam String id, HttpServletRequest request) throws Exception {
         service.removeSession(id, request);
     }
 
