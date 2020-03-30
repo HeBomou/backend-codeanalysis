@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.data.UserData;
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.po.UserPo;
 import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.UserVo;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(UserVo vo) throws Exception {
         if (userData.findByUsername(vo.getUsername()) != null)
-            throw new Exception("您的用户名已被注册");
+            throw new MyRuntimeException("您的用户名已被注册");
         userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
     }
 
