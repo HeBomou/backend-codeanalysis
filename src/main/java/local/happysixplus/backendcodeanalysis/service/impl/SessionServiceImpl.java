@@ -35,8 +35,9 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void removeSession(String id, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if (session.getAttribute("user") != null && session.getAttribute("user").equals(id)) {
+        if (session.getAttribute("user") != null && session.getAttribute("user").equals(id)) 
             session.removeAttribute("user");
-        }
+        else
+            throw new MyRuntimeException("该用户未登录");
     };
 }

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import local.happysixplus.backendcodeanalysis.data.AdminUserData;
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.service.AdminSessionService;
 import local.happysixplus.backendcodeanalysis.vo.AdminSessionVo;
 import lombok.var;
@@ -21,10 +22,10 @@ public class AdminSessionServiceImpl implements AdminSessionService {
         HttpSession session = request.getSession();
         var po = adminUserData.findByUsername(vo.getUsername());
         if (po == null) {
-            // 抛出该用户不存在异常
+            throw new MyRuntimeException("该账号不存在");
         }
         if (!po.getPwdMd5().equals(vo.getPwdMd5())) {
-            // 抛出密码错误异常
+            throw new MyRuntimeException("密码错误");
         }
         Object value = session.getAttribute("admin");
         if (value == null) {
@@ -36,8 +37,9 @@ public class AdminSessionServiceImpl implements AdminSessionService {
     @Override
     public void removeSession(String id, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (session.getAttribute("admin") != null && session.getAttribute("admin").equals(id)) {
+        if (session.getAttribute("admin") != null && session.getAttribute("admin").equals(id))
             session.removeAttribute("admin");
-        }
+        else
+            throw new MyRuntimeException("该用户未登录");
     };
 }

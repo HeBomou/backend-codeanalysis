@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(UserVo vo) throws Exception {
         if (userData.findByUsername(vo.getUsername()) != null)
-            throw new MyRuntimeException("改用户名已被注册");
+            throw new MyRuntimeException("该用户名已被注册");
         userData.save(new UserPo(null, vo.getUsername(), vo.getPwdMd5()));
     }
 
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         if (userData.existsById(id))
             userData.deleteById(id);
         else
-            throw new MyRuntimeException("无此用户");
+            throw new MyRuntimeException("该用户不存在");
     }
 
     @Override
@@ -51,6 +51,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVo getUser(Long id) {
         var po = userData.findById(id).orElse(null);
+        if (po == null)
+            throw new MyRuntimeException("该用户不存在");
         return new UserVo(po.getId(), po.getUsername(), null);
     }
 }
