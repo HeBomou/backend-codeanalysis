@@ -366,8 +366,6 @@ public class ProjectServiceImpl implements ProjectService {
             begin.edges.add(newEdge);
             end.edges.add(newEdge);
         }
-        var subgraph = project.initSubgraph(0D);
-        project.subgraphs.add(subgraph);
         return project.getProjectPo();
     }
 
@@ -399,7 +397,10 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        var po = projectData.save(initProject(caller, callee, sourceCode, projectName, userId));
+        var tempPo = projectData.save(initProject(caller, callee, sourceCode, projectName, userId));
+        var tempPro = new Project(tempPo);
+        tempPro.subgraphs.add(tempPro.initSubgraph(0D));
+        var po = projectData.save(tempPro.getProjectPo());
         var newProject = new Project(po);
         var vo = new ProjectAllVo(newProject.id, newProject.getStaticVo(), newProject.getDynamicVo());
         return vo;
