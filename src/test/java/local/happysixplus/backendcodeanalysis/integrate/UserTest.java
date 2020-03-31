@@ -3,6 +3,7 @@ package local.happysixplus.backendcodeanalysis.integrate;
 
 import com.alibaba.fastjson.JSONObject;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,9 +28,13 @@ public class UserTest {
     @Autowired
     UserData data;
 
+    @BeforeEach
+    public void init() {
+        data.deleteAll();
+    }
+
     @Test
     public void addUser1() throws Exception {
-        data.deleteAll();
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -45,7 +50,6 @@ public class UserTest {
 
     @Test
     public void addUser2() throws Exception {
-        data.deleteAll();
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -57,7 +61,6 @@ public class UserTest {
 
     @Test
     public void deleteUser1() throws Exception {
-        data.deleteAll();
         // 注册
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
@@ -83,7 +86,6 @@ public class UserTest {
 
     @Test
     public void updateUser1() throws Exception {
-        data.deleteAll();
         // 注册
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
@@ -99,8 +101,7 @@ public class UserTest {
         userVo.setId(userId);
         userVo.setPwdMd5("AAA");
         mockMvc.perform(MockMvcRequestBuilders.put("/user/{id}", userId).contentType(MediaType.APPLICATION_JSON)
-                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         // 原密码无法登陆
         mockMvc.perform(MockMvcRequestBuilders.post("/session").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(sessionVo)))
@@ -114,7 +115,6 @@ public class UserTest {
 
     @Test
     public void updateUser2() throws Exception {
-        data.deleteAll();
         // 注册
         var userVo = new UserVo(null, "hello", "XXX");
         mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON)
@@ -130,8 +130,7 @@ public class UserTest {
         userVo.setId(userId);
         userVo.setUsername("hhhh");
         mockMvc.perform(MockMvcRequestBuilders.put("/user/{id}", userId).contentType(MediaType.APPLICATION_JSON)
-                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+                .content(JSONObject.toJSONString(userVo))).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         // 原用户名无法登陆
         mockMvc.perform(MockMvcRequestBuilders.post("/session").contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(sessionVo)))

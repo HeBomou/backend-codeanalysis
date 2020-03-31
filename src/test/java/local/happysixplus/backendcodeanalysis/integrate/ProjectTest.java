@@ -6,6 +6,7 @@ import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.vo.*;
 import lombok.var;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,6 +61,12 @@ public class ProjectTest {
 
 	long getHashCodeForProjectAllVo(ProjectAllVo vo) {
 		return getHashCodeForProjectStaticVo(vo.getStaticVo()) + getHashCodeForProjectDynamicVo(vo.getDynamicVo());
+	}
+
+	@BeforeEach
+	public void init() {
+		projectData.deleteAll();
+		subgraphData.deleteAll();
 	}
 
 	@Test
