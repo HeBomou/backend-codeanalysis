@@ -1,5 +1,6 @@
 package local.happysixplus.backendcodeanalysis.po;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class VertexPo {
 
     String functionName;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     String sourceCode;
 
     String anotation;
