@@ -1,1 +1,0 @@
-rm -rf src/main/resources/temp/$1
