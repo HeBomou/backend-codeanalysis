@@ -24,6 +24,13 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     public ProjectInfo initGraph(String githubLink, String projectName) {
         deleteFile(projectName);
         cloneProject(githubLink, projectName);
+        Map<String,String> srcCode = new HashMap<>();
+        tempStrings=new ArrayList<>();
+        loadSourceCode(srcCode, projectName);
+        Set<String> rpn=new HashSet<>();
+        for(String s:srcCode.keySet()){
+            rpn.add(s.split("\\.")[0]);
+        }
         ArrayList<String> cg = new ArrayList<>();
         String[] list = new File("temp/" + projectName + "/target").list();
         if (list == null)
@@ -31,7 +38,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         for (String s : list) {
             //System.out.println(s);
             if (s.endsWith(".jar")) {
-                String[] tp = JCallGraph.getGraphFromJar("temp/" + projectName + "/target/" + s, projectName);
+                String[] tp = JCallGraph.getGraphFromJar("temp/" + projectName + "/target/" + s, rpn);
                 if (tp == null) {
                     return null;
                 }
@@ -39,10 +46,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
                 cg.addAll(tempList);
             }
         }
-        //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
-        Map<String,String> srcCode = new HashMap<>();
-        tempStrings=new ArrayList<>();
-        loadSourceCode(srcCode, projectName);
+        //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);  
         /*for(String key:srcCode.keySet()){
             System.out.println("-----------------");
             System.out.println(key);
@@ -98,7 +102,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     private ArrayList<String> tempStrings;
     private void loadSourceCode(Map<String,String> map, String projectName) {
 
-        ArrayList<String> javaFilePaths = getAllJavaFile("temp/" + projectName + "/src/main/java");
+        ArrayList<String> javaFilePaths = getAllJavaFile("temp/" + projectName + "/src");
         SourceCodeReader scReader = new SourceCodeReader(projectName);
         if (javaFilePaths == null) return;
         /*for (int i = 0; i < javaFilePaths.size(); i++) {

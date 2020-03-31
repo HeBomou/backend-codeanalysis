@@ -45,6 +45,71 @@ public class SourceCodeReader {
             int endPos;
             int num = 0;// 花括号的数量
             boolean isInClass = false;
+            StringBuilder packagePathBuilder=new StringBuilder();
+            int faker;
+            for(faker=0;faker<len-7;faker++){          
+                    //段注释结束
+                    if (commitSign2 && c[faker] == '/' && c[faker - 1] == '*') {
+                        commitSign2 = false;
+                        continue;
+                    }
+                    //行注释结束
+                    if (commitSign1 && c[faker] == '\n') {
+                        commitSign1 = false;
+                        continue;
+                    }
+                    //遇到行注释
+                if (!commitSign1 && !commitSign2 &&!stringSign &&!charSign && c[faker] == '/' && c[faker + 1] == '/') {
+                    commitSign1 = true;
+                    continue;
+                }
+
+                //遇到段注释
+                if (!commitSign1 && !commitSign2 &&!stringSign &&!charSign && c[faker] == '/' && c[faker + 1] == '*') {
+                    commitSign2 = true;
+                    continue;
+                }
+                if(!commitSign1 && !commitSign2){
+                    if(tempStr.substring(faker,faker+7).equals("package")){
+                        break;
+                    }
+                }
+            }   
+            faker+=7;
+            for(;faker<len;faker++){
+                //段注释结束
+                if (commitSign2 && c[faker] == '/' && c[faker - 1] == '*') {
+                    commitSign2 = false;
+                    continue;
+                }
+                //行注释结束
+                if (commitSign1 && c[faker] == '\n') {
+                    commitSign1 = false;
+                    continue;
+                }
+                //遇到行注释
+            if (!commitSign1 && !commitSign2 &&!stringSign &&!charSign && c[faker] == '/' && c[faker + 1] == '/') {
+                commitSign1 = true;
+                continue;
+            }
+
+            //遇到段注释
+            if (!commitSign1 && !commitSign2 &&!stringSign &&!charSign && c[faker] == '/' && c[faker + 1] == '*') {
+                commitSign2 = true;
+                continue;
+            }
+            if(!commitSign1 && !commitSign2){
+                if(c[faker]==';'){
+                    break;
+                }
+                if(c[faker]!=' '&&c[faker]!='\n'){
+                    packagePathBuilder.append(c[faker]);
+                }
+            }
+            }
+
+
+            resetSigns();
             for (int i = 0; i < len; i++) {
                 
                 //段注释结束
@@ -140,8 +205,8 @@ public class SourceCodeReader {
                     String str = getMethod(beginPos, endPos);
 
                     if (str != null){
-                        String s=filePath.replace(path, "").replaceAll("/", ".");
-                        res.put(s.substring(0,s.length()-5)+ ":" + getMethodName(str, className) + getMethodParameters(str),str);
+                        String s=packagePathBuilder.toString();
+                        res.put(s+"."+className+ ":" + getMethodName(str, className) + getMethodParameters(str),str);
                     }
                     beginPos = i + 1;
                     num = 0;
