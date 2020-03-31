@@ -168,7 +168,7 @@ public class ProjectServiceTest {
         projectPo.setSubgraphs(subgraphs);
         List<ProjectPo> dataRes = Arrays.asList(projectPo);
 
-        var projectPo1 = new ProjectPo(2L, 3L, "projC", null, null, null);
+        var projectPo1 = new ProjectPo(2L, 5L, "projC", null, null, null);
         var v11 = new VertexPo(3L, "v1", "dian1", "a1", 0f, 0f);
         var v21 = new VertexPo(4L, "v2", "dian2", "a2", 0f, 0f);
         var vertices1 = new HashSet<VertexPo>(Arrays.asList(v11, v21));
