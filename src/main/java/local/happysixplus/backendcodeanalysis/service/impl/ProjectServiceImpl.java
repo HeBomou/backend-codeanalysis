@@ -400,7 +400,10 @@ public class ProjectServiceImpl implements ProjectService {
             caller.add(edge.get(0));
             callee.add(edge.get(1));
         }
-        var tempPo = projectData.save(initProject(caller, callee, sourceCode, projectName, userId));
+        var proj = initProject(caller, callee, sourceCode, projectName, userId);
+        System.out.print(proj);
+        var tempPo = projectData.save(proj);
+        System.out.print(tempPo);
         var tempPro = new Project(tempPo);
         var sub = tempPro.initSubgraph(0D);
         tempPro.subgraphs.add(sub);
@@ -515,7 +518,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private void getAllPathDFS(Long endVertexId, Vertex p, List<Long> path, List<List<Long>> res) {
         if (p.id == endVertexId) {
-            res.add(path);
+            res.add(new ArrayList<>(path));
         }
         for (var edge : p.edges) {
             if (edge.to == p)

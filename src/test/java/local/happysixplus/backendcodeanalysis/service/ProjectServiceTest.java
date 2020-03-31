@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -71,20 +70,19 @@ public class ProjectServiceTest {
         return getHashCodeForProjectStaticVo(vo.getStaticVo()) + getHashCodeForProjectDynamicVo(vo.getDynamicVo());
     }
 
-    /*
-     * @Test public void testAddProject1() { ProjectAllVo
-     * resVo=service.addProject("Faker","https://gitee.com/forsakenspirit/Linux",2L)
-     * ; assertEquals(resVo.getStaticVo().getVertices().size(),9);
-     * assertEquals(resVo.getStaticVo().getEdges().size(),10);
-     * assertEquals(resVo.getStaticVo().getSubgraphs().size(),1);
-     * assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains()
-     * .size(),1);
-     * assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getThreshold(),0);
-     * assertEquals(resVo.getDynamicVo().getProjectName(),"Faker");
-     * assertEquals(resVo.getDynamicVo().getVertices().size(),9);
-     * assertEquals(resVo.getDynamicVo().getEdges().size(),10);
-     * assertEquals(resVo.getDynamicVo().getSubgraphs().size(),1); }
-     */
+    @Test
+    public void testAddProject1() {
+        ProjectAllVo resVo = service.addProject("Faker", "https://gitee.com/forsakenspirit/Linux", 2L);
+        assertEquals(resVo.getStaticVo().getVertices().size(), 9);
+        assertEquals(resVo.getStaticVo().getEdges().size(), 10);
+        assertEquals(resVo.getStaticVo().getSubgraphs().size(), 1);
+        assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains().size(), 1);
+        assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getThreshold(), 0);
+        assertEquals(resVo.getDynamicVo().getProjectName(), "Faker");
+        assertEquals(resVo.getDynamicVo().getVertices().size(), 9);
+        assertEquals(resVo.getDynamicVo().getEdges().size(), 10);
+        assertEquals(resVo.getDynamicVo().getSubgraphs().size(), 1);
+    }
 
     @Test
     public void testGetProject1() {
