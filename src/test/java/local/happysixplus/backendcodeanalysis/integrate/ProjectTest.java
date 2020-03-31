@@ -205,7 +205,7 @@ public class ProjectTest {
 
 	@Test
 	public void Test10() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestTDemo")
 				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 

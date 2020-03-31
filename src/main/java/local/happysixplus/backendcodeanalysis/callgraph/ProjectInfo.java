@@ -1,19 +1,15 @@
 package local.happysixplus.backendcodeanalysis.callgraph;
 
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.Scanner;
 
 
 public class ProjectInfo {
     private String[] callGraph;
     private Map<String,String> sourceCode;
-    private Node rootNode;
 
-    public ProjectInfo(String[] callGraph,Map<String,String> sourceCode,Node rootNode){
+    public ProjectInfo(String[] callGraph,Map<String,String> sourceCode){
         this.callGraph=callGraph;
         this.sourceCode=sourceCode;
-        this.rootNode=rootNode;
     }
 
     public String[] getCallGraph(){
@@ -23,8 +19,6 @@ public class ProjectInfo {
     public Map<String,String> getSourceCode(){
         return sourceCode;
     }
-
-    public Node getRootNode(){return rootNode;}
 
     /**
      * 打印这个对象，方便测试使用。

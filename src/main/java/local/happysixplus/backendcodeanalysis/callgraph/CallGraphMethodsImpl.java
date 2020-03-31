@@ -12,9 +12,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CallGraphMethodsImpl implements CallGraphMethods {
-    private static final String rm = "src/main/resources/Scripts/rm.sh";
-    private static final String clone = "src/main/resources/Scripts/clone.sh";
-    private Node root;
     /*public CallGraphMethodsImpl() {
         JavaShellUtil.InitCommand(rm);
         JavaShellUtil.InitCommand(clone);
@@ -25,7 +22,6 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         deleteFile(projectName);
         cloneProject(githubLink, projectName);
         Map<String,String> srcCode = new HashMap<>();
-        tempStrings=new ArrayList<>();
         loadSourceCode(srcCode, projectName);
         Set<String> rpn=new HashSet<>();
         for(String s:srcCode.keySet()){
@@ -55,20 +51,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             System.out.println("-----------------");
         }*/
 
-        File[] rootPackage0 = new File("temp/" + projectName + "/src/main/java").listFiles();
-        File rootPackage1=null;
-        if(rootPackage0==null) return null;
-        for(File f:rootPackage0){
-            if(f.isDirectory() && !f.getName().startsWith(".")){
-                rootPackage1=f;
-            }
-        }
-        if(rootPackage1==null) return null;
-        if(rootPackage1.list()==null) return null;
-        File rootPackage = new File("temp/" + projectName + "/src/main/java/" + rootPackage1.getName());
-        String rootPackageName = rootPackage.getName();
-        root = new Node(rootPackageName, true);
-        loadProjectStructure(root, rootPackage);
+        
         String[] callGraph=cg.toArray(new String[0]);
         //System.out.println(callGraph.length);
         /*for(String s:callGraph){
@@ -85,7 +68,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
             System.out.println("-----------------");
         }*/
 
-        return new ProjectInfo(callGraph, code, root);
+        return new ProjectInfo(callGraph, code);
     }
 
     private void cloneProject(String githubLink, String projectName) {
@@ -97,9 +80,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     private void deleteFile(String projectName) {
         JavaShellUtil.ExecRm(projectName);
         //System.out.println(retCode);
-
     }
-    private ArrayList<String> tempStrings;
     private void loadSourceCode(Map<String,String> map, String projectName) {
 
         ArrayList<String> javaFilePaths = getAllJavaFile("temp/" + projectName + "/src");
@@ -155,20 +136,6 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         return res;
     }
 
-    private void loadProjectStructure(Node node, File file) {
-        File[] sktfaker = file.listFiles();
-        if (sktfaker != null)
-            for (File f : sktfaker) {
-                String name = f.getName();
-                if (!name.startsWith(".")) {
-                    Node n = new Node(f.getName(), f.isDirectory());
-                    if (f.isDirectory()) {
-                        loadProjectStructure(n, f);
-                    }
-                    node.contents.add(n);
-                }
-            }
-    }
 
     private Map<String,String> match(String[] graph, Map<String,String> map){
         Map<String,String> res=new HashMap<>();
