@@ -129,12 +129,6 @@ public class SourceCodeReader {
                     num++;
                     continue;
                 }
-                if(i>=570){
-                    System.out.println(i);
-                }
-                if(c[i]=='}'){
-                    System.out.println("?");
-                }
                 //方法内的域结束
                 if (c[i] == '}' && isInClass && num != 1) {
                     num--;
