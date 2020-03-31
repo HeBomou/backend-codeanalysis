@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import local.happysixplus.backendcodeanalysis.callgraph.CallGraphMethods;
+import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;

@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package local.happysixplus.backendcodeanalysis.callgraph.dyn;
+package local.happysixplus.backendcodeanalysis.util.callgraph.dyn;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -5,7 +5,6 @@ import local.happysixplus.backendcodeanalysis.po.EdgePo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 
 import local.happysixplus.backendcodeanalysis.po.VertexPo;
-import local.happysixplus.backendcodeanalysis.service.impl.ProjectServiceImpl;
 import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

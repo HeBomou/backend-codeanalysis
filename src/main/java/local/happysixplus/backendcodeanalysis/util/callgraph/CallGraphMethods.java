@@ -1,4 +1,4 @@
-package local.happysixplus.backendcodeanalysis.callgraph;
+package local.happysixplus.backendcodeanalysis.util.callgraph;
 
 
 

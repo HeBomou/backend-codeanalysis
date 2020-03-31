@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package local.happysixplus.backendcodeanalysis.callgraph.dyn;
+package local.happysixplus.backendcodeanalysis.util.callgraph.dyn;
 public class Pair<A, B> {
 
     public A first;

@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package local.happysixplus.backendcodeanalysis.callgraph.dyn;
+package local.happysixplus.backendcodeanalysis.util.callgraph.dyn;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -63,9 +63,7 @@ public class MethodStack {
                     return v1.compareTo(v2);
                 });
 
-                for (Pair<String, String> key : keys) {
-                    //System.out.println(key + " " + callgraph.get(key));
-                }
+                
             }
         });
         File log = new File("calltrace.txt");

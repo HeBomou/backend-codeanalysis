@@ -1,9 +1,8 @@
-package local.happysixplus.backendcodeanalysis.callgraph;
+package local.happysixplus.backendcodeanalysis.util.callgraph;
 
-import local.happysixplus.backendcodeanalysis.callgraph.dyn.Pair;
-import local.happysixplus.backendcodeanalysis.callgraph.stat.JCallGraph;
-import local.happysixplus.backendcodeanalysis.callgraph.shell.*;
-import local.happysixplus.backendcodeanalysis.callgraph.file.*;
+import local.happysixplus.backendcodeanalysis.util.callgraph.stat.JCallGraph;
+import local.happysixplus.backendcodeanalysis.util.callgraph.shell.*;
+import local.happysixplus.backendcodeanalysis.util.callgraph.file.*;
 
 import java.io.File;
 import java.util.*;
@@ -84,7 +83,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
     private void loadSourceCode(Map<String,String> map, String projectName) {
 
         ArrayList<String> javaFilePaths = getAllJavaFile("temp/" + projectName + "/src");
-        SourceCodeReader scReader = new SourceCodeReader(projectName);
+        SourceCodeReader scReader = new SourceCodeReader();
         if (javaFilePaths == null) return;
         /*for (int i = 0; i < javaFilePaths.size(); i++) {
             ArrayList<String> tempStrings = scReader.getSourceCodeFromFile(javaFilePaths.get(i));

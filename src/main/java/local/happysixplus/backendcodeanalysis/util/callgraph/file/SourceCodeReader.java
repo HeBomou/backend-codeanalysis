@@ -1,4 +1,4 @@
-package local.happysixplus.backendcodeanalysis.callgraph.file;
+package local.happysixplus.backendcodeanalysis.util.callgraph.file;
 
 
 
@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SourceCodeReader {
-    private static final String defaultPrePath = "temp/";
-    private static final String defaultSufPath = "/src/main/java/";
     private char[] c;
     private boolean commitSign1 = false;
     private boolean commitSign2 = false;
@@ -17,16 +15,10 @@ public class SourceCodeReader {
     private boolean charSign = false;
     private boolean isInMethod = false;
     private boolean isInMember = false;
-    private String projectName;
-
-    public SourceCodeReader(String projectName) {
-        this.projectName = projectName;
-    }
-
-    //TODO:加载函数源码到数组里
+    public SourceCodeReader(){}
     public Map<String,String> getSourceCodeFromFile(String filePath) {
     
-        String path = defaultPrePath + projectName + defaultSufPath;        String className = getClassName(filePath);
+        String className = getClassName(filePath);
         Map<String,String> res=new HashMap<>();
         try {
             //将.java文件的内容加载到char数组中
@@ -37,6 +29,7 @@ public class SourceCodeReader {
                 tempStringBuilder.append(tempStr).append('\n');
             tempStr = tempStringBuilder.toString();
             int len = tempStr.length();
+            br.close();
             c = new char[len];
             for (int i = 0; i < len; i++) {
                 c[i] = tempStr.charAt(i);

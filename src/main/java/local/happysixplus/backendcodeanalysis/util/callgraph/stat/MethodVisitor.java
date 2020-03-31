@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package local.happysixplus.backendcodeanalysis.callgraph.stat;
+package local.happysixplus.backendcodeanalysis.util.callgraph.stat;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.generic.*;
 

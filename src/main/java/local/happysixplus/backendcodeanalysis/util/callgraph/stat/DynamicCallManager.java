@@ -11,7 +11,7 @@
  *     see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package local.happysixplus.backendcodeanalysis.callgraph.stat;
+package local.happysixplus.backendcodeanalysis.util.callgraph.stat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;

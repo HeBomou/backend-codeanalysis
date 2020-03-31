@@ -1,4 +1,4 @@
-package local.happysixplus.backendcodeanalysis.callgraph.shell;
+package local.happysixplus.backendcodeanalysis.util.callgraph.shell;
 
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
