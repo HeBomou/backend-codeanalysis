@@ -87,7 +87,7 @@ class ProjectDataTest {
 
     @Test
     public void insertTest1() {
-        data.save(projectPo);
+        projectPo=data.save(projectPo);
         var newPo = data.findById(projectPo.getId()).orElse(null);
         assertEquals(projectPo.getUserId(), newPo.getUserId());
         assertEquals(projectPo.getProjectName(), newPo.getProjectName());
@@ -119,7 +119,7 @@ class ProjectDataTest {
         var subgraphs = new HashSet<SubgraphPo>();
         subgraphs.add(defaultSubgraph);
         projectPo.setSubgraphs(subgraphs);
-        data.save(projectPo);
+        projectPo=data.save(projectPo);
 
         var newPo = data.findById(projectPo.getId()).orElse(null);
 
@@ -132,6 +132,7 @@ class ProjectDataTest {
 
     @Test
     public void updateTest(){
+        projectPo=data.save(projectPo);
         projectPo.setProjectName("SKTFaker");
         var v1 = new VertexPo(null, "sktfaker1", "nmbd yuanma 1", "anotation", 0f, 0f);
         var v2 = new VertexPo(null, "sktfaker2", "nmbd yuanma 2", "anotation", 0f, 0f);
@@ -168,7 +169,7 @@ class ProjectDataTest {
         var subgraphs=new HashSet<SubgraphPo>();
         subgraphs.add(defaultSubgraph);
         projectPo.setSubgraphs(subgraphs);
-        data.save(projectPo);
+        projectPo=data.save(projectPo);
         var newPo = data.findById(projectPo.getId()).orElse(null);
         assertEquals(projectPo.getUserId(), newPo.getUserId());
         assertEquals(projectPo.getProjectName(), newPo.getProjectName());
@@ -178,15 +179,15 @@ class ProjectDataTest {
     }
     @Test
     public void removeTest(){
-        data.save(projectPo);
+        projectPo=data.save(projectPo);
         data.delete(projectPo);
         assertEquals(data.findById(projectPo.getId()).orElse(null),null);
     }
 
     @Test
-    public void testFindByUserId(){
+    public void testFindByUserId() {
         projectPo.setUserId(4L);
-        data.save(projectPo);
+        projectPo=data.save(projectPo);
         var projectPo2 = new ProjectPo(null, 4L, "projC", null, null, null);
         // Vertices
         var v1 = new VertexPo(null, "v1", "dian1", "a1", 0f, 0f);
@@ -208,7 +209,7 @@ class ProjectDataTest {
         var subgraphs = new HashSet<SubgraphPo>();
         subgraphs.add(defaultSubgraph);
         projectPo2.setSubgraphs(subgraphs);
-        data.save(projectPo2);
+        projectPo2=data.save(projectPo2);
 
         var resList=data.findByUserId(4L);
         resList.sort((a,b)->(int)(a.getUserId()-b.getUserId()));
