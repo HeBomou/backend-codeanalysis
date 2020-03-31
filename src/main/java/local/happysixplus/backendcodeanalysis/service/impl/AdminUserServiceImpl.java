@@ -45,7 +45,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         var pos = adminUserData.findAll();
         var vos = new ArrayList<AdminUserVo>(pos.size());
         for (var po : pos)
-            vos.add(new AdminUserVo(po.getId(), po.getUsername(), po.getPwdMd5(), null));
+            vos.add(new AdminUserVo(po.getId(), po.getUsername(), null, null));
         return vos;
     };
 
@@ -54,6 +54,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         var po = adminUserData.findById(id).orElse(null);
         if (po == null)
             throw new MyRuntimeException("该管理员不存在");
-        return new AdminUserVo(po.getId(), po.getUsername(), po.getPwdMd5(), null);
+        return new AdminUserVo(po.getId(), po.getUsername(), null, null);
     };
 }
