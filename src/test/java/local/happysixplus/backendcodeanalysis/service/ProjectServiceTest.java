@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainData;
 import local.happysixplus.backendcodeanalysis.vo.*;
@@ -41,23 +42,49 @@ public class ProjectServiceTest {
     @MockBean
     ConnectiveDomainData connectiveDomainData;
 
-
     @Autowired
     ProjectService service;
 
-    /*@Test
-    public void testAddProject1() {
-        ProjectAllVo resVo=service.addProject("Faker","https://gitee.com/forsakenspirit/Linux",2L);
-        assertEquals(resVo.getStaticVo().getVertices().size(),9);
-        assertEquals(resVo.getStaticVo().getEdges().size(),10);
-        assertEquals(resVo.getStaticVo().getSubgraphs().size(),1);
-        assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains().size(),1);
-        assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getThreshold(),0);
-        assertEquals(resVo.getDynamicVo().getProjectName(),"Faker");
-        assertEquals(resVo.getDynamicVo().getVertices().size(),9);
-        assertEquals(resVo.getDynamicVo().getEdges().size(),10);
-        assertEquals(resVo.getDynamicVo().getSubgraphs().size(),1);
-    }*/
+    long getHashCodeForProjectStaticVo(ProjectStaticVo vo) {
+        long res = vo.getId().hashCode();
+        res += new HashSet<>(vo.getEdges()).hashCode();
+        res += new HashSet<>(vo.getVertices()).hashCode();
+        res += vo.getSubgraphs().stream().map((SubgraphStaticVo subgVo) -> {
+            return (int) subgVo.getId().hashCode() + (long) subgVo.getThreshold().hashCode()
+                    + (long) new HashSet<>(subgVo.getConnectiveDomains()).hashCode();
+        }).collect(Collectors.toSet()).hashCode();
+        return res;
+    }
+
+    long getHashCodeForProjectDynamicVo(ProjectDynamicVo vo) {
+        long res = vo.getId().hashCode();
+        res += new HashSet<>(vo.getEdges()).hashCode();
+        res += new HashSet<>(vo.getVertices()).hashCode();
+        res += vo.getSubgraphs().stream().map((SubgraphDynamicVo subgVo) -> {
+            return subgVo.getId() + (long) subgVo.getName().hashCode()
+                    + (long) new HashSet<>(subgVo.getConnectiveDomains()).hashCode();
+        }).collect(Collectors.toSet()).hashCode();
+        return res;
+    }
+
+    long getHashCodeForProjectAllVo(ProjectAllVo vo) {
+        return getHashCodeForProjectStaticVo(vo.getStaticVo()) + getHashCodeForProjectDynamicVo(vo.getDynamicVo());
+    }
+
+    /*
+     * @Test public void testAddProject1() { ProjectAllVo
+     * resVo=service.addProject("Faker","https://gitee.com/forsakenspirit/Linux",2L)
+     * ; assertEquals(resVo.getStaticVo().getVertices().size(),9);
+     * assertEquals(resVo.getStaticVo().getEdges().size(),10);
+     * assertEquals(resVo.getStaticVo().getSubgraphs().size(),1);
+     * assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains()
+     * .size(),1);
+     * assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getThreshold(),0);
+     * assertEquals(resVo.getDynamicVo().getProjectName(),"Faker");
+     * assertEquals(resVo.getDynamicVo().getVertices().size(),9);
+     * assertEquals(resVo.getDynamicVo().getEdges().size(),10);
+     * assertEquals(resVo.getDynamicVo().getSubgraphs().size(),1); }
+     */
 
     @Test
     public void testGetProject1() {
@@ -85,8 +112,6 @@ public class ProjectServiceTest {
 
         // 调用
         var resVo = service.getProjectAllByUserId(5L).get(0);
-        var resDynamicVo = resVo.getDynamicVo();
-        var resStaticVo = resVo.getStaticVo();
 
         // 验证数据生成
         var vs1 = new VertexStaticVo(3L, "v1", "dian1");
@@ -111,15 +136,10 @@ public class ProjectServiceTest {
         var subgds = Arrays.asList(subgd1);
         var expectedDynamicVo = new ProjectDynamicVo(2L, "projC", vds, eds, subgds);
         var expectedStaticVo = new ProjectStaticVo(2L, vss, ess, subgss);
+        var expectedAllVo = new ProjectAllVo(2L, expectedStaticVo, expectedDynamicVo);
 
         // 验证
-        assertEquals(expectedDynamicVo.getId(), resDynamicVo.getId());
-        assertEquals(expectedDynamicVo.getProjectName(), resDynamicVo.getProjectName());
-        assertEquals(new HashSet<>(expectedDynamicVo.getVertices()), new HashSet<>(resDynamicVo.getVertices()));
-        assertEquals(new HashSet<>(expectedDynamicVo.getEdges()), new HashSet<>(resDynamicVo.getEdges()));
-        assertEquals(expectedStaticVo.getId(), resStaticVo.getId());
-        assertEquals(new HashSet<>(expectedStaticVo.getVertices()), new HashSet<>(resStaticVo.getVertices()));
-        assertEquals(new HashSet<>(expectedStaticVo.getEdges()), new HashSet<>(resStaticVo.getEdges()));
+        assertEquals(getHashCodeForProjectAllVo(expectedAllVo), getHashCodeForProjectAllVo(resVo));
     }
 
     @Test
@@ -129,7 +149,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testUpdateProject1(){
+    public void testUpdateProject1() {
 
         // 打桩数据生成
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
@@ -150,8 +170,7 @@ public class ProjectServiceTest {
         projectPo.setSubgraphs(subgraphs);
         List<ProjectPo> dataRes = Arrays.asList(projectPo);
 
-
-        var projectPo1=new ProjectPo(2L,3L,"projC",null,null,null);
+        var projectPo1 = new ProjectPo(2L, 3L, "projC", null, null, null);
         var v11 = new VertexPo(3L, "v1", "dian1", "a1", 0f, 0f);
         var v21 = new VertexPo(4L, "v2", "dian2", "a2", 0f, 0f);
         var vertices1 = new HashSet<VertexPo>(Arrays.asList(v11, v21));
@@ -194,12 +213,11 @@ public class ProjectServiceTest {
         var projectDynamicVo = new ProjectDynamicVo(2L, "SKTFaker", vds, eds, subgds);
         service.updateProject(projectDynamicVo);
 
-
         Mockito.verify(projectData).save(projectPo1);
     }
 
     @Test
-    public void testGetSubgraph1(){
+    public void testGetSubgraph1() {
         // 打桩数据生成
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
         // Vertices
@@ -222,14 +240,12 @@ public class ProjectServiceTest {
         // 打桩
         Mockito.when(projectData.findByUserId(5L)).thenReturn(dataRes);
 
-
-        List<SubgraphPo> dataRes1= Arrays.asList(defaultSubgraph);
+        List<SubgraphPo> dataRes1 = Arrays.asList(defaultSubgraph);
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(projectPo));
 
-
         var resVos = service.getSubgraphAllByProjectId(2L);
-        assertEquals(resVos.size(),1);
-        var resVo=resVos.get(0);
+        assertEquals(resVos.size(), 1);
+        var resVo = resVos.get(0);
         // 验证数据生成
         var vs1 = new VertexStaticVo(3L, "v1", "dian1");
         var vs2 = new VertexStaticVo(4L, "v2", "dian2");
@@ -251,17 +267,16 @@ public class ProjectServiceTest {
         var subgss = Arrays.asList(subgs1);
         var subgd1 = new SubgraphDynamicVo(4L, "default subgraph", cds);
         var subgds = Arrays.asList(subgd1);
-        var subgraphAllVo=new SubgraphAllVo(0L,subgs1,subgd1);
+        var subgraphAllVo = new SubgraphAllVo(0L, subgs1, subgd1);
 
         // 验证
         assertEquals(resVo.getDynamicVo(), subgd1);
-        assertEquals(resVo.getStaticVo(),subgs1);
-
+        assertEquals(resVo.getStaticVo(), subgs1);
 
     }
 
     @Test
-    public void testAddSubgraph1(){
+    public void testAddSubgraph1() {
         // 打桩数据生成
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
         // Vertices
@@ -309,9 +324,10 @@ public class ProjectServiceTest {
         var projectAllVo = new ProjectAllVo(2L, projectStaticVo, projectDynamicVo);
         var defaultSubgraph1 = new SubgraphPo(4L, 0.5d, "default subgraph", connectiveDomains1);
 
-        projectPo.setSubgraphs(new HashSet<>(Arrays.asList(defaultSubgraph,defaultSubgraph1)));
-        Mockito.when(subgraphData.save(new SubgraphPo(null, 0.5d, "", new HashSet<>()))).thenReturn(new SubgraphPo(3L, 0.5d, "", new HashSet<>()));
-        service.addSubgraph(2L,0.5d);
+        projectPo.setSubgraphs(new HashSet<>(Arrays.asList(defaultSubgraph, defaultSubgraph1)));
+        Mockito.when(subgraphData.save(new SubgraphPo(null, 0.5d, "", new HashSet<>())))
+                .thenReturn(new SubgraphPo(3L, 0.5d, "", new HashSet<>()));
+        service.addSubgraph(2L, 0.5d);
         // 验证
         Mockito.verify(subgraphData).save(new SubgraphPo(null, 0.5d, "", new HashSet<>()));
         Mockito.verify(projectData).save(projectPo);
@@ -324,7 +340,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testGetSubgraphAllByProjectId(){
+    public void testGetSubgraphAllByProjectId() {
         // 打桩数据生成
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
         // Vertices
@@ -348,8 +364,8 @@ public class ProjectServiceTest {
 
         // 调用
         var resVo = service.getSubgraphAllByProjectId(2L);
-        assertEquals(resVo.size(),1);
-        var svo=resVo.get(0);
+        assertEquals(resVo.size(), 1);
+        var svo = resVo.get(0);
         // 验证数据生成
         var vs1 = new VertexStaticVo(3L, "v1", "dian1");
         var vs2 = new VertexStaticVo(4L, "v2", "dian2");
@@ -376,15 +392,13 @@ public class ProjectServiceTest {
         var projectAllVo = new ProjectAllVo(2L, projectStaticVo, projectDynamicVo);
 
         // 验证
-        assertEquals(svo.getStaticVo(),subgs1);
-        assertEquals(svo.getDynamicVo(),subgd1);
-
-
+        assertEquals(svo.getStaticVo(), subgs1);
+        assertEquals(svo.getDynamicVo(), subgd1);
 
     }
 
     @Test
-    public void testGetOriginalGraphShortestPath(){
+    public void testGetOriginalGraphShortestPath() {
         // 打桩数据生成
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
         // Vertices
@@ -408,20 +422,20 @@ public class ProjectServiceTest {
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.ofNullable(projectPo));
 
         // 调用
-        var resVo = service.getOriginalGraphShortestPath(2L,3L,4L);
+        var resVo = service.getOriginalGraphShortestPath(2L, 3L, 4L);
 
-        ArrayList<List<Long>> paths=new ArrayList<>();
-        ArrayList<Long> path=new ArrayList<>();
+        ArrayList<List<Long>> paths = new ArrayList<>();
+        ArrayList<Long> path = new ArrayList<>();
         path.add(3L);
         paths.add(path);
-        var pathVo=new PathVo(paths);
+        var pathVo = new PathVo(paths);
         // 验证
-        assertEquals(pathVo,resVo);
+        assertEquals(pathVo, resVo);
 
     }
 
     @Test
-    public void testGetSimilarFunction(){
+    public void testGetSimilarFunction() {
         // 打桩数据生成
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
         // Vertices
@@ -444,10 +458,11 @@ public class ProjectServiceTest {
         // 打桩
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.ofNullable(projectPo));
 
-        List<String> strs= new ArrayList<>();
-        strs.add("v1");strs.add("v2");
+        List<String> strs = new ArrayList<>();
+        strs.add("v1");
+        strs.add("v2");
 
-        var res=service.getSimilarFunction(2L,"v");
-        assertEquals(new HashSet<>(res),new HashSet<>(strs));
+        var res = service.getSimilarFunction(2L, "v");
+        assertEquals(new HashSet<>(res), new HashSet<>(strs));
     }
 }
