@@ -6,10 +6,7 @@ import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.po.ProjectPo;
 import local.happysixplus.backendcodeanalysis.service.impl.ProjectServiceImpl;
-import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
-import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
-import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
-import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.*;
 import lombok.var;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +25,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,9 +42,33 @@ public class ProjectTest {
 
     @Autowired
     SubgraphData subgraphData;
-    @BeforeEach
-    public void setUp(){
+
+    long getHashCodeForProjectStaticVo(ProjectStaticVo vo) {
+        long res = vo.getId().hashCode();
+        res += new HashSet<>(vo.getEdges()).hashCode();
+        res += new HashSet<>(vo.getVertices()).hashCode();
+        res += vo.getSubgraphs().stream().map((SubgraphStaticVo subgVo) -> {
+            return (int) subgVo.getId().hashCode() + (long) subgVo.getThreshold().hashCode()
+                    + (long) new HashSet<>(subgVo.getConnectiveDomains()).hashCode();
+        }).collect(Collectors.toSet()).hashCode();
+        return res;
     }
+
+    long getHashCodeForProjectDynamicVo(ProjectDynamicVo vo) {
+        long res = vo.getId().hashCode();
+        res += new HashSet<>(vo.getEdges()).hashCode();
+        res += new HashSet<>(vo.getVertices()).hashCode();
+        res += vo.getSubgraphs().stream().map((SubgraphDynamicVo subgVo) -> {
+            return subgVo.getId() + (long) subgVo.getName().hashCode()
+                    + (long) new HashSet<>(subgVo.getConnectiveDomains()).hashCode();
+        }).collect(Collectors.toSet()).hashCode();
+        return res;
+    }
+
+    long getHashCodeForProjectAllVo(ProjectAllVo vo) {
+        return getHashCodeForProjectStaticVo(vo.getStaticVo()) + getHashCodeForProjectDynamicVo(vo.getDynamicVo());
+    }
+
     @Test
     public void Test1() throws Exception {
         MvcResult resAdd = mockMvc
@@ -55,8 +78,10 @@ public class ProjectTest {
 
         MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "2"))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
-        System.out.println(resAdd);
-        System.out.println(resGet);
+        var resa=JSONObject.parseObject(resAdd.getResponse().getContentAsString(),ProjectAllVo.class);
+        assertEquals(resa.getDynamicVo().getVertices().size(),9);
+        assertEquals(resa.getDynamicVo().getEdges().size(),10);
+        assertEquals(resa.getDynamicVo().getProjectName(),"Linux");
     }
 
     @Test

@@ -22,6 +22,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
 
     @Override
     public ProjectInfo initGraph(String githubLink, String projectName) {
+        deleteFile(projectName);
         cloneProject(githubLink, projectName);
         ArrayList<String> cg = new ArrayList<>();
         String[] list = new File("temp/" + projectName + "/target").list();
