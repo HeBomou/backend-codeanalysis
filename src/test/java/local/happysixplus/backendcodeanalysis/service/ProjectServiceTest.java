@@ -44,29 +44,38 @@ public class ProjectServiceTest {
     @Autowired
     ProjectService service;
 
-    long getHashCodeForProjectStaticVo(ProjectStaticVo vo) {
+    static long getHashCodeForSubgraphStaticVo(SubgraphStaticVo vo) {
+        return (int) vo.getId().hashCode() + (long) vo.getThreshold().hashCode()
+                + (long) new HashSet<>(vo.getConnectiveDomains()).hashCode();
+    }
+
+    static long getHashCodeForSubgraphDynamicVo(SubgraphDynamicVo vo) {
+        return vo.getId() + (long) vo.getName().hashCode() + (long) new HashSet<>(vo.getConnectiveDomains()).hashCode();
+    }
+
+    static long getHashCodeForSubgraphAllVo(SubgraphAllVo vo) {
+        return getHashCodeForSubgraphStaticVo(vo.getStaticVo()) + getHashCodeForSubgraphDynamicVo(vo.getDynamicVo());
+    }
+
+    static long getHashCodeForProjectStaticVo(ProjectStaticVo vo) {
         long res = vo.getId().hashCode();
         res += new HashSet<>(vo.getEdges()).hashCode();
         res += new HashSet<>(vo.getVertices()).hashCode();
-        res += vo.getSubgraphs().stream().map((SubgraphStaticVo subgVo) -> {
-            return (int) subgVo.getId().hashCode() + (long) subgVo.getThreshold().hashCode()
-                    + (long) new HashSet<>(subgVo.getConnectiveDomains()).hashCode();
-        }).collect(Collectors.toSet()).hashCode();
+        res += vo.getSubgraphs().stream().map(ProjectServiceTest::getHashCodeForSubgraphStaticVo)
+                .collect(Collectors.toSet()).hashCode();
         return res;
     }
 
-    long getHashCodeForProjectDynamicVo(ProjectDynamicVo vo) {
+    static long getHashCodeForProjectDynamicVo(ProjectDynamicVo vo) {
         long res = vo.getId().hashCode();
         res += new HashSet<>(vo.getEdges()).hashCode();
         res += new HashSet<>(vo.getVertices()).hashCode();
-        res += vo.getSubgraphs().stream().map((SubgraphDynamicVo subgVo) -> {
-            return subgVo.getId() + (long) subgVo.getName().hashCode()
-                    + (long) new HashSet<>(subgVo.getConnectiveDomains()).hashCode();
-        }).collect(Collectors.toSet()).hashCode();
+        res += vo.getSubgraphs().stream().map(ProjectServiceTest::getHashCodeForSubgraphDynamicVo)
+                .collect(Collectors.toSet()).hashCode();
         return res;
     }
 
-    long getHashCodeForProjectAllVo(ProjectAllVo vo) {
+    static long getHashCodeForProjectAllVo(ProjectAllVo vo) {
         return getHashCodeForProjectStaticVo(vo.getStaticVo()) + getHashCodeForProjectDynamicVo(vo.getDynamicVo());
     }
 
@@ -227,28 +236,15 @@ public class ProjectServiceTest {
         var defaultSubgraph = new SubgraphPo(4L, 0d, "default subgraph", connectiveDomains1);
         var subgraphs = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph));
         projectPo.setSubgraphs(subgraphs);
-        List<ProjectPo> dataRes = Arrays.asList(projectPo);
 
         // 打桩
-        Mockito.when(projectData.findByUserId(5L)).thenReturn(dataRes);
-
-        List<SubgraphPo> dataRes1 = Arrays.asList(defaultSubgraph);
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(projectPo));
 
+        // 调用
         var resVos = service.getSubgraphAllByProjectId(2L);
         assertEquals(resVos.size(), 1);
         var resVo = resVos.get(0);
         // 验证数据生成
-        var vs1 = new VertexStaticVo(3L, "v1", "dian1");
-        var vs2 = new VertexStaticVo(4L, "v2", "dian2");
-        var vss = Arrays.asList(vs1, vs2);
-        var vd1 = new VertexDynamicVo(3L, "a1", 0f, 0f);
-        var vd2 = new VertexDynamicVo(4L, "a2", 0f, 0f);
-        var vds = Arrays.asList(vd1, vd2);
-        var es1 = new EdgeStaticVo(3L, 3L, 4L, 0.3d);
-        var ess = Arrays.asList(es1);
-        var ed1 = new EdgeDynamicVo(3L, "bian1");
-        var eds = Arrays.asList(ed1);
         var cs1vids = Arrays.asList(3L, 4L);
         var cs1eids = Arrays.asList(3L);
         var cs1 = new ConnectiveDomainStaticVo(2L, cs1vids, cs1eids);
@@ -256,15 +252,11 @@ public class ProjectServiceTest {
         var cd1 = new ConnectiveDomainDynamicVo(2L, "acd1", "#CDBE70");
         var cds = Arrays.asList(cd1);
         var subgs1 = new SubgraphStaticVo(4L, 0d, css);
-        var subgss = Arrays.asList(subgs1);
         var subgd1 = new SubgraphDynamicVo(4L, "default subgraph", cds);
-        var subgds = Arrays.asList(subgd1);
         var subgraphAllVo = new SubgraphAllVo(0L, subgs1, subgd1);
 
         // 验证
-        assertEquals(resVo.getDynamicVo(), subgd1);
-        assertEquals(resVo.getStaticVo(), subgs1);
-
+        assertEquals(getHashCodeForSubgraphAllVo(subgraphAllVo), getHashCodeForSubgraphAllVo(resVo));
     }
 
     @Test

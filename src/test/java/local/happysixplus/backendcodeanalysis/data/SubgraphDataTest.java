@@ -4,7 +4,6 @@ import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
