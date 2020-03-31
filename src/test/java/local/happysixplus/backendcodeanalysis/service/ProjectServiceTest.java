@@ -294,7 +294,7 @@ public class ProjectServiceTest {
 
         // 验证
         Mockito.verify(subgraphData).save(new SubgraphPo(null, 0.5d, "", new HashSet<>()));
-        Mockito.verify(projectData).save(newProjectPo);
+        Mockito.verify(projectData).save(Mockito.isA(ProjectPo.class));
     }
 
     @Test
