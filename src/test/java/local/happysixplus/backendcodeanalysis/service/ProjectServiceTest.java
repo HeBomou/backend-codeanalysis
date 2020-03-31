@@ -261,60 +261,37 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddSubgraph1() {
-        // 打桩数据生成
+        // 数据生成
+        // 原本的Project
         var projectPo = new ProjectPo(2L, 5L, "projC", null, null, null);
-        // Vertices
         var v1 = new VertexPo(3L, "v1", "dian1", "a1", 0f, 0f);
         var v2 = new VertexPo(4L, "v2", "dian2", "a2", 0f, 0f);
         var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
         projectPo.setVertices(vertices);
-        // Edges
         var e1 = new EdgePo(3L, v1, v2, 0.3d, "bian1");
         var edges = new HashSet<EdgePo>(Arrays.asList(e1));
         projectPo.setEdges(edges);
-        // Subgraphs
         var connectiveDomain1 = new ConnectiveDomainPo(2L, vertices, edges, "acd1", "#CDBE70");
         var connectiveDomains1 = new HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain1));
-        var defaultSubgraph = new SubgraphPo(4L, 0.3d, "default subgraph", connectiveDomains1);
+        var defaultSubgraph = new SubgraphPo(10L, 0.3d, "default subgraph", connectiveDomains1);
         var subgraphs = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph));
-        var subgraphs2 = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph));
         projectPo.setSubgraphs(subgraphs);
-        List<ProjectPo> dataRes = Arrays.asList(projectPo);
-        Mockito.when(projectData.findByUserId(5L)).thenReturn(dataRes);
-        Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(projectPo));
-        // 验证数据生成
-        var vs1 = new VertexStaticVo(3L, "v1", "dian1");
-        var vs2 = new VertexStaticVo(4L, "v2", "dian2");
-        var vss = Arrays.asList(vs1, vs2);
-        var vd1 = new VertexDynamicVo(3L, "a1", 0f, 0f);
-        var vd2 = new VertexDynamicVo(4L, "a2", 0f, 0f);
-        var vds = Arrays.asList(vd1, vd2);
-        var es1 = new EdgeStaticVo(3L, 3L, 4L, 0.3d);
-        var ess = Arrays.asList(es1);
-        var ed1 = new EdgeDynamicVo(3L, "bian1");
-        var eds = Arrays.asList(ed1);
-        var cs1vids = Arrays.asList(3L, 4L);
-        var cs1eids = Arrays.asList(3L);
-        var cs1 = new ConnectiveDomainStaticVo(2L, cs1vids, cs1eids);
-        var css = Arrays.asList(cs1);
-        var cd1 = new ConnectiveDomainDynamicVo(2L, "acd1", "#CDBE70");
-        var cds = Arrays.asList(cd1);
-        var subgs1 = new SubgraphStaticVo(4L, 0.3d, css);
-        var subgss = Arrays.asList(subgs1);
-        var subgd1 = new SubgraphDynamicVo(4L, "default subgraph", cds);
-        var subgds = Arrays.asList(subgd1);
-        var projectDynamicVo = new ProjectDynamicVo(2L, "projC", vds, eds, subgds);
-        var projectStaticVo = new ProjectStaticVo(2L, vss, ess, subgss);
-        var projectAllVo = new ProjectAllVo(2L, projectStaticVo, projectDynamicVo);
-        var defaultSubgraph1 = new SubgraphPo(4L, 0.5d, "default subgraph", connectiveDomains1);
+        // 添加了子图的Project
+        var newSubgraph = new SubgraphPo(15L, 0.5d, "", connectiveDomains1);
+        var newProjectPo = new ProjectPo(2L, 5L, "projC", vertices, edges, new HashSet<>(Arrays.asList(defaultSubgraph, newSubgraph)));
 
-        projectPo.setSubgraphs(new HashSet<>(Arrays.asList(defaultSubgraph, defaultSubgraph1)));
+        // 打桩
+        Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(projectPo));
         Mockito.when(subgraphData.save(new SubgraphPo(null, 0.5d, "", new HashSet<>())))
-                .thenReturn(new SubgraphPo(3L, 0.5d, "", new HashSet<>()));
+                .thenReturn(new SubgraphPo(15L, 0.5d, "", new HashSet<>()));
+        Mockito.when(projectData.save(newProjectPo)).thenReturn(newProjectPo);
+
+        // 调用
         service.addSubgraph(2L, 0.5d);
+
         // 验证
         Mockito.verify(subgraphData).save(new SubgraphPo(null, 0.5d, "", new HashSet<>()));
-        Mockito.verify(projectData).save(projectPo);
+        Mockito.verify(projectData).save(newProjectPo);
     }
 
     @Test
