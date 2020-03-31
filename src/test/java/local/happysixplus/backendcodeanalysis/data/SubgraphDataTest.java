@@ -51,14 +51,11 @@ class SubgraphDataTest {
 
     @Test
     public void insertData() {
+        int sz=data.findAll().size();
         data.save(po);
-        //assertEquals(1, data.findAll().size());
+        assertEquals(sz+1, data.findAll().size());
     }
 
-    @Test
-    public void updateData() {
-        // Set<ConnectiveDomainPo> cdpo=po.getConnectiveDomains();
-    }
 
     @AfterEach
     public void tearDown() {

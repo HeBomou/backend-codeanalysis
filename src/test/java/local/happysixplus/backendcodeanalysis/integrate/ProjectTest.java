@@ -9,6 +9,7 @@ import local.happysixplus.backendcodeanalysis.service.impl.ProjectServiceImpl;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
 import lombok.var;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +88,14 @@ public class ProjectTest {
 
     @Test
     public void Test4() throws Exception{
-        MvcResult resRemove = mockMvc.perform(MockMvcRequestBuilders.delete("/project/{id}",6))
+        MvcResult resAdd = mockMvc
+                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "RUa")
+                        .param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "2"))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        var v=resAdd.getResponse().getContentAsString();
+        var vo= (ProjectAllVo)JSONObject.parseObject(v,ProjectAllVo.class);
+        long projectId=vo.getId();
+        MvcResult resRemove = mockMvc.perform(MockMvcRequestBuilders.delete("/project/{id}",projectId))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
         System.out.print(resRemove);
     }
@@ -122,8 +130,47 @@ public class ProjectTest {
     @Test
     public void Test6() throws Exception{
          MvcResult resAdd = mockMvc
-                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "HappySixDemo")
-                        .param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "2"))
+                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSix")
+                        .param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "2"))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        var v=resAdd.getResponse().getContentAsString();
+        var vo= (ProjectAllVo)JSONObject.parseObject(v,ProjectAllVo.class);
+        long projectId=vo.getId();
+        MvcResult resGetFunction=mockMvc.perform(
+                MockMvcRequestBuilders.get("/project/{projectId}/similarFunction",projectId).param("funcName","C")
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        var var1=JSONObject.parseObject(resGetFunction.getResponse().getContentAsString(),List.class);
+        List<String> strs=new ArrayList<>();
+        for( var i:var1){
+            strs.add(i.toString());
+            System.out.println(i.toString());
+        }
     }
+    @Test
+    public void Test7() throws Exception{
+        MvcResult resAdd = mockMvc
+                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+                        .param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        var v=resAdd.getResponse().getContentAsString();
+        var vo= (ProjectAllVo)JSONObject.parseObject(v,ProjectAllVo.class);
+        long projectId=vo.getId();
+        List<VertexDynamicVo> vdvs=vo.getDynamicVo().getVertices();
+        long id1=vdvs.get(0).getId();
+        long id2=vdvs.get(vdvs.size()-1).getId();
+        MvcResult resGetFunction=mockMvc.perform(
+                MockMvcRequestBuilders.get("/project/{projectId}/originalGraphShortestPath",projectId).param("startVertexId",Long.toString(id1))
+                        .param("endVertexId",Long.toString(id2))
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+        var res=resGetFunction.getResponse().toString();
+        System.out.println(res);
+
+    }
+    /*@Test
+    public void Test8() throws Exception{
+        MvcResult resAdd = mockMvc
+                .perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+                        .param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "4396"))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+    }*/
 }
