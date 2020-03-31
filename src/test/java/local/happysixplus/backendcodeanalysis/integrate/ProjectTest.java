@@ -194,4 +194,13 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 
 	}
+
+	@Test
+	public void Test9() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+				.param("url", "https://gitee.com/Richard-Tang/funnylayer.git").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+
+	}
+	
 }
