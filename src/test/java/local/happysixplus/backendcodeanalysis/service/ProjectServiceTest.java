@@ -72,11 +72,13 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddProject1() {
-        // ProjectAllVo resVo = service.addProject("Faker", "https://gitee.com/forsakenspirit/Linux", 2L);
+        // ProjectAllVo resVo = service.addProject("Faker",
+        // "https://gitee.com/forsakenspirit/Linux", 2L);
         // assertEquals(resVo.getStaticVo().getVertices().size(), 9);
         // assertEquals(resVo.getStaticVo().getEdges().size(), 10);
         // assertEquals(resVo.getStaticVo().getSubgraphs().size(), 1);
-        // assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains().size(), 1);
+        // assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains().size(),
+        // 1);
         // assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getThreshold(), 0);
         // assertEquals(resVo.getDynamicVo().getProjectName(), "Faker");
         // assertEquals(resVo.getDynamicVo().getVertices().size(), 9);
@@ -166,52 +168,44 @@ public class ProjectServiceTest {
         var defaultSubgraph = new SubgraphPo(4L, 0d, "default subgraph", connectiveDomains1);
         var subgraphs = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph));
         projectPo.setSubgraphs(subgraphs);
-        List<ProjectPo> dataRes = Arrays.asList(projectPo);
 
-        var projectPo1 = new ProjectPo(2L, 5L, "projC", null, null, null);
-        var v11 = new VertexPo(3L, "v1", "dian1", "a1", 0f, 0f);
-        var v21 = new VertexPo(4L, "v2", "dian2", "a2", 0f, 0f);
-        var vertices1 = new HashSet<VertexPo>(Arrays.asList(v11, v21));
-        projectPo1.setVertices(vertices1);
-        // Edges
-        var e11 = new EdgePo(3L, v1, v2, 0.3d, "bian1");
-        var edges1 = new HashSet<EdgePo>(Arrays.asList(e11));
-        projectPo1.setEdges(edges1);
-        // Subgraphs
-        var connectiveDomain11 = new ConnectiveDomainPo(2L, vertices, edges, "acd1", "#CDBE70");
-        var connectiveDomains11 = new HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain11));
-        var defaultSubgraph1 = new SubgraphPo(4L, 0d, "default subgraph", connectiveDomains11);
-        var subgraphs1 = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph1));
-        projectPo1.setSubgraphs(subgraphs1);
         // 打桩
-        Mockito.when(projectData.findByUserId(5L)).thenReturn(dataRes);
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(projectPo));
 
-        // 验证数据生成
-        var vs1 = new VertexStaticVo(3L, "v1", "dian1");
-        var vs2 = new VertexStaticVo(4L, "v2", "dian2");
-        var vss = Arrays.asList(vs1, vs2);
-        var vd1 = new VertexDynamicVo(3L, "a1", 2f, 0f);
-        var vd2 = new VertexDynamicVo(4L, "a2", 0f, 3f);
+        // 输入数据
+        var vd1 = new VertexDynamicVo(3L, "a11", 2f, 0f);
+        var vd2 = new VertexDynamicVo(4L, "a22", 0f, 3f);
         var vds = Arrays.asList(vd1, vd2);
-        var es1 = new EdgeStaticVo(3L, 3L, 4L, 0.3d);
-        var ess = Arrays.asList(es1);
-        var ed1 = new EdgeDynamicVo(3L, "bian1");
+        var ed1 = new EdgeDynamicVo(3L, "bian11");
         var eds = Arrays.asList(ed1);
-        var cs1vids = Arrays.asList(3L, 4L);
-        var cs1eids = Arrays.asList(3L);
-        var cs1 = new ConnectiveDomainStaticVo(2L, cs1vids, cs1eids);
-        var css = Arrays.asList(cs1);
-        var cd1 = new ConnectiveDomainDynamicVo(2L, "acd1", "#CDBE70");
+        var cd1 = new ConnectiveDomainDynamicVo(2L, "acd11", "#CDBE70");
         var cds = Arrays.asList(cd1);
-        var subgs1 = new SubgraphStaticVo(4L, 0d, css);
-        var subgss = Arrays.asList(subgs1);
         var subgd1 = new SubgraphDynamicVo(4L, "default subgraph", cds);
         var subgds = Arrays.asList(subgd1);
         var projectDynamicVo = new ProjectDynamicVo(2L, "SKTFaker", vds, eds, subgds);
+
+        // 执行
         service.updateProject(projectDynamicVo);
 
-        Mockito.verify(projectData).save(projectPo1);
+        // 验证数据
+        var expectedProjectPo = new ProjectPo(2L, 5L, "SKTFaker", null, null, null);
+        var v11 = new VertexPo(3L, "v1", "dian1", "a11", 2f, 0f);
+        var v21 = new VertexPo(4L, "v2", "dian2", "a22", 0f, 3f);
+        var vertices1 = new HashSet<VertexPo>(Arrays.asList(v11, v21));
+        expectedProjectPo.setVertices(vertices1);
+        // Edges
+        var e11 = new EdgePo(3L, v11, v21, 0.3d, "bian11");
+        var edges1 = new HashSet<EdgePo>(Arrays.asList(e11));
+        expectedProjectPo.setEdges(edges1);
+        // Subgraphs
+        var connectiveDomain11 = new ConnectiveDomainPo(2L, vertices1, edges1, "acd11", "#CDBE70");
+        var connectiveDomains11 = new HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain11));
+        var defaultSubgraph1 = new SubgraphPo(4L, 0d, "default subgraph", connectiveDomains11);
+        var subgraphs1 = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph1));
+        expectedProjectPo.setSubgraphs(subgraphs1);
+
+        Mockito.verify(projectData).findById(2L);
+        Mockito.verify(projectData).save(expectedProjectPo);
     }
 
     @Test
