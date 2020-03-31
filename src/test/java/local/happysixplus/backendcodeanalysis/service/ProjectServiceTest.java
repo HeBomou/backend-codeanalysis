@@ -277,14 +277,17 @@ public class ProjectServiceTest {
         var subgraphs = new HashSet<SubgraphPo>(Arrays.asList(defaultSubgraph));
         projectPo.setSubgraphs(subgraphs);
         // 添加了子图的Project
-        var newSubgraph = new SubgraphPo(15L, 0.5d, "", connectiveDomains1);
-        var newProjectPo = new ProjectPo(2L, 5L, "projC", vertices, edges, new HashSet<>(Arrays.asList(defaultSubgraph, newSubgraph)));
+        var connectiveDomains2 = new HashSet<ConnectiveDomainPo>(
+                Arrays.asList(new ConnectiveDomainPo(15L, vertices, edges, "", "#000000")));
+        var newSubgraph = new SubgraphPo(15L, 0.5d, "", connectiveDomains2);
+        var newProjectPo = new ProjectPo(2L, 5L, "projC", vertices, edges,
+                new HashSet<>(Arrays.asList(defaultSubgraph, newSubgraph)));
 
         // 打桩
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(projectPo));
         Mockito.when(subgraphData.save(new SubgraphPo(null, 0.5d, "", new HashSet<>())))
                 .thenReturn(new SubgraphPo(15L, 0.5d, "", new HashSet<>()));
-        Mockito.when(projectData.save(newProjectPo)).thenReturn(newProjectPo);
+        Mockito.when(projectData.save(Mockito.isA(ProjectPo.class))).thenReturn(newProjectPo);
 
         // 调用
         service.addSubgraph(2L, 0.5d);
