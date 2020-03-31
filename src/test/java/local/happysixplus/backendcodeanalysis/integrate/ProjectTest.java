@@ -190,7 +190,7 @@ public class ProjectTest {
 	@Test
 	public void Test8() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
-				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "6324"))
+				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 
 	}
@@ -199,6 +199,14 @@ public class ProjectTest {
 	public void Test9() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
 				.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+
+	}
+
+	@Test
+	public void Test10() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 
 	}
