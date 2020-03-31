@@ -54,8 +54,8 @@ class UserServiceTest {
     @Test
     void removeUser() {
         var id = 12L;
+        Mockito.when(data.existsById(id)).thenReturn(true);
         service.removeUser(id);
-
         Mockito.verify(data).deleteById(id);
     }
 
