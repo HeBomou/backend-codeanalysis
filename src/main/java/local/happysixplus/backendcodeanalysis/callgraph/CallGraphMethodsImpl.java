@@ -41,6 +41,7 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         }
         //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);
         Map<String,String> srcCode = new HashMap<>();
+        tempStrings=new ArrayList<>();
         loadSourceCode(srcCode, projectName);
         /*for(String key:srcCode.keySet()){
             System.out.println("-----------------");
@@ -94,8 +95,9 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
         //System.out.println(retCode);
 
     }
-
+    private ArrayList<String> tempStrings;
     private void loadSourceCode(Map<String,String> map, String projectName) {
+
         ArrayList<String> javaFilePaths = getAllJavaFile("temp/" + projectName + "/src/main/java");
         SourceCodeReader scReader = new SourceCodeReader(projectName);
         if (javaFilePaths == null) return;

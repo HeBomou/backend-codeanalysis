@@ -25,8 +25,8 @@ public class SourceCodeReader {
 
     //TODO:加载函数源码到数组里
     public Map<String,String> getSourceCodeFromFile(String filePath) {
-        String path = defaultPrePath + projectName + defaultSufPath;
-        String className = getClassName(filePath);
+    
+        String path = defaultPrePath + projectName + defaultSufPath;        String className = getClassName(filePath);
         Map<String,String> res=new HashMap<>();
         try {
             //将.java文件的内容加载到char数组中
@@ -46,6 +46,7 @@ public class SourceCodeReader {
             int num = 0;// 花括号的数量
             boolean isInClass = false;
             for (int i = 0; i < len; i++) {
+                
                 //段注释结束
                 if (commitSign2 && c[i] == '/' && c[i - 1] == '*') {
                     commitSign2 = false;
@@ -82,13 +83,13 @@ public class SourceCodeReader {
                 }
 
                 //遇到行注释
-                if (!commitSign1 && !commitSign2 && c[i] == '/' && c[i + 1] == '/') {
+                if (!commitSign1 && !commitSign2 &&!stringSign &&!charSign && c[i] == '/' && c[i + 1] == '/') {
                     commitSign1 = true;
                     continue;
                 }
 
                 //遇到段注释
-                if (!commitSign1 && !commitSign2 && c[i] == '/' && c[i + 1] == '*') {
+                if (!commitSign1 && !commitSign2 &&!stringSign &&!charSign && c[i] == '/' && c[i + 1] == '*') {
                     commitSign2 = true;
                     continue;
                 }
@@ -127,6 +128,12 @@ public class SourceCodeReader {
                     }
                     num++;
                     continue;
+                }
+                if(i>=570){
+                    System.out.println(i);
+                }
+                if(c[i]=='}'){
+                    System.out.println("?");
                 }
                 //方法内的域结束
                 if (c[i] == '}' && isInClass && num != 1) {
