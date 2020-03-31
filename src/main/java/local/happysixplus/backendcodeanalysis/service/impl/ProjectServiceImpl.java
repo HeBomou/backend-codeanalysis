@@ -401,9 +401,7 @@ public class ProjectServiceImpl implements ProjectService {
             callee.add(edge.get(1));
         }
         var proj = initProject(caller, callee, sourceCode, projectName, userId);
-        System.out.print(proj);
         var tempPo = projectData.save(proj);
-        System.out.print(tempPo);
         var tempPro = new Project(tempPo);
         var sub = tempPro.initSubgraph(0D);
         tempPro.subgraphs.add(sub);
