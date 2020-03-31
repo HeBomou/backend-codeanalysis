@@ -168,11 +168,11 @@ public class ProjectTest {
         System.out.println(res);
 
     }
-    /*@Test
+    @Test
     public void Test8() throws Exception{
         MvcResult resAdd = mockMvc
                 .perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
                         .param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "4396"))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
-    }*/
+    }
 }

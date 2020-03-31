@@ -2,7 +2,12 @@ package local.happysixplus.backendcodeanalysis.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainData;
 import local.happysixplus.backendcodeanalysis.vo.*;
@@ -79,7 +84,9 @@ public class ProjectServiceTest {
         Mockito.when(projectData.findByUserId(5L)).thenReturn(dataRes);
 
         // 调用
-        var resVo = service.getProjectAllByUserId(5L);
+        var resVo = service.getProjectAllByUserId(5L).get(0);
+        var resDynamicVo = resVo.getDynamicVo();
+        var resStaticVo = resVo.getStaticVo();
 
         // 验证数据生成
         var vs1 = new VertexStaticVo(3L, "v1", "dian1");
@@ -102,12 +109,17 @@ public class ProjectServiceTest {
         var subgss = Arrays.asList(subgs1);
         var subgd1 = new SubgraphDynamicVo(4L, "default subgraph", cds);
         var subgds = Arrays.asList(subgd1);
-        var projectDynamicVo = new ProjectDynamicVo(2L, "projC", vds, eds, subgds);
-        var projectStaticVo = new ProjectStaticVo(2L, vss, ess, subgss);
-        var projectAllVo = new ProjectAllVo(2L, projectStaticVo, projectDynamicVo);
+        var expectedDynamicVo = new ProjectDynamicVo(2L, "projC", vds, eds, subgds);
+        var expectedStaticVo = new ProjectStaticVo(2L, vss, ess, subgss);
 
         // 验证
-        assertEquals(resVo, Arrays.asList(projectAllVo));
+        assertEquals(expectedDynamicVo.getId(), resDynamicVo.getId());
+        assertEquals(expectedDynamicVo.getProjectName(), resDynamicVo.getProjectName());
+        assertEquals(new HashSet<>(expectedDynamicVo.getVertices()), new HashSet<>(resDynamicVo.getVertices()));
+        assertEquals(new HashSet<>(expectedDynamicVo.getEdges()), new HashSet<>(resDynamicVo.getEdges()));
+        assertEquals(expectedStaticVo.getId(), resStaticVo.getId());
+        assertEquals(new HashSet<>(expectedStaticVo.getVertices()), new HashSet<>(resStaticVo.getVertices()));
+        assertEquals(new HashSet<>(expectedStaticVo.getEdges()), new HashSet<>(resStaticVo.getEdges()));
     }
 
     @Test
