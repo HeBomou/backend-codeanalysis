@@ -18,16 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class SubgraphDataTest {
+
     @Autowired
     SubgraphData data;
-    @Autowired
-    ProjectData projectData;
-    int a = 1;
-    SubgraphPo po;
 
-    @BeforeEach
-    public void setUp() {
-        po = new SubgraphPo();
+    @Test
+    public void insertData() {
+        data.deleteAll();
+        SubgraphPo po = new SubgraphPo();
         po.setId(1L);
         po.setName("NMSL");
         Set<ConnectiveDomainPo> cpos = new HashSet<>();
@@ -47,18 +45,8 @@ class SubgraphDataTest {
         // po.setProjectId(12345L);
         po.setThreshold(0.4396);
 
-    }
-
-    @Test
-    public void insertData() {
-        int sz=data.findAll().size();
+        int sz = data.findAll().size();
         data.save(po);
-        assertEquals(sz+1, data.findAll().size());
-    }
-
-
-    @AfterEach
-    public void tearDown() {
-
+        assertEquals(sz + 1, data.findAll().size());
     }
 }
