@@ -45,18 +45,17 @@ import org.apache.bcel.classfile.ClassParser;
  * @author Georgios Gousios <gousiosg@gmail.com>
  */
 public class JCallGraph {
-    private static ArrayList<String> packageNames=new ArrayList<>();
-    private static String path="temp/";
+    private static Set<String> packageNames=new HashSet<>();
 
     /**
      *
      * @param args 传入的jar包的路径
      * @param projectName 传入的项目名
      */
-    public static String[] getGraphFromJar(String args,String projectName) {
+    public static String[] getGraphFromJar(String args,Set<String> rootPackageNames) {
         String arg=args;
         //String arg="/Users/tianduyingcai/Desktop/GIT/SE3/backend-codeanalysis/target/backend-codeanalysis-0.0.1-SNAPSHOT.jar";
-
+        packageNames=rootPackageNames;
         Function<ClassParser, ClassVisitor> getClassVisitor = (ClassParser cp) -> {
             try {
                 return new ClassVisitor(cp.parse());
@@ -79,15 +78,9 @@ public class JCallGraph {
 
             try (JarFile jar = new JarFile(f)) {
                 Stream<JarEntry> entries = enumerationAsStream(jar.entries());
-                String[] list=new File("temp/"+projectName+"/src/main/java").list();
                 /*System.out.println(list.length);
                 for(int i=0;i<list.length;i++)
                     System.out.println(list[i]);*/
-                for(int i=0;i<list.length;i++){
-                    if(new File("temp/"+projectName+"/src/main/java/"+list[i]).isDirectory()){
-                        packageNames.add(list[i]);
-                    }
-                }
                 //System.out.println(packageNames.size());
                 String methodCalls = entries.flatMap(e -> {
                     if (e.isDirectory() || !e.getName().endsWith(".class")){
@@ -136,18 +129,15 @@ public class JCallGraph {
         //System.out.println(string);
         String str1=string.split(" ")[0].substring(2);
         String str=string.split(" ")[1].substring(3);
-        for(int i=0;i<packageNames.size();i++){
-            if(str.startsWith(packageNames.get(i))){
+        for(String s:packageNames){
+            if(str.startsWith(s)){
                 check1=true;
-                break;
             }
-        }
-        for(int i=0;i<packageNames.size();i++){
-            if(str.startsWith(packageNames.get(i))){
+            if(str1.startsWith(s)){
                 check2=true;
-                break;
             }
         }
+        
         return check1&&check2;
     }
 

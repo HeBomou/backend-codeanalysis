@@ -189,8 +189,8 @@ public class ProjectTest {
 
 	@Test
 	public void Test8() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
-				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "4396"))
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "6324"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 
 	}
