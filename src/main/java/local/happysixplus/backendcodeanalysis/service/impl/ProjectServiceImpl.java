@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
+import local.happysixplus.backendcodeanalysis.data.EdgeData;
 import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
+import local.happysixplus.backendcodeanalysis.data.VertexData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
@@ -38,6 +40,7 @@ import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexAllVo;
@@ -315,6 +318,12 @@ public class ProjectServiceImpl implements ProjectService {
     SubgraphData subgraphData;
 
     @Autowired
+    EdgeData edgeData;
+
+    @Autowired
+    VertexData vertexData;
+
+    @Autowired
     ProjectDynamicData projectDynamicData;
 
     @Autowired
@@ -385,8 +394,12 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     @Override
-    public List<ProjectDynamicVo> getProjectDynamicByUserId(Long userId) {
-        var pDPos = projectDynamicData.findByUserId(userId);
+    public List<ProjectDynamicVo> getProjectDynamic(Long userId) {
+        List<ProjectDynamicPo> pDPos;
+        if (userId == null)
+            pDPos = projectDynamicData.findAll();
+        else
+            pDPos = projectDynamicData.findByUserId(userId);
         var vos = new ArrayList<ProjectDynamicVo>(pDPos.size());
         for (var pDPo : pDPos)
             vos.add(dPoTodVo(pDPo));
@@ -413,6 +426,19 @@ public class ProjectServiceImpl implements ProjectService {
             sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap));
         // 返回
         return project.getAllVo(vDPoMap, eDPoMap, sVos, dVo);
+    }
+
+    @Override
+    public ProjectProfileVo getProjectProfile(Long id) {
+        var projPo = projectData.findById(id).orElse(null); // TODO: 应当用countBy
+        Integer vertexNum = projPo.getVertices().size();
+        Integer edgeNum = projPo.getEdges().size();
+        Integer subgraphNum = subgraphData.countByProjectId(id);
+        Integer vertexAnotationNum = vertexDynamicData.countByProjectId(id);
+        Integer edgeAnotationNum = edgeDynamicData.countByProjectId(id);
+        Integer connectiveDomainAnotationNum = connectiveDomainDynamicData.countByProjectId(id);
+        return new ProjectProfileVo(id, vertexNum, edgeNum, subgraphNum, vertexAnotationNum, edgeAnotationNum,
+                connectiveDomainAnotationNum);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 
 public interface SubgraphData extends JpaRepository<SubgraphPo, Long> {
+    Integer countByProjectId(Long projectId);
     List<SubgraphPo> findByProjectId(Long projectId);
     @Modifying
     @Transactional

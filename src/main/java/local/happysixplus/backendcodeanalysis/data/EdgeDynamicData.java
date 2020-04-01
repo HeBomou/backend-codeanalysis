@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.EdgeDynamicPo;
 
 public interface EdgeDynamicData extends JpaRepository<EdgeDynamicPo, Long> {
+    Integer countByProjectId(Long projectId);
     List<EdgeDynamicPo> findByProjectId(Long projectId);
     @Modifying
     @Transactional
