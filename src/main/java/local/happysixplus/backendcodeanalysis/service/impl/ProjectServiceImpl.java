@@ -378,8 +378,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void removeProject(Long id) {
         projectData.deleteById(id);
-        subgraphData.deleteById(id);
         projectDynamicData.deleteById(id);
+        subgraphData.deleteByProjectId(id);
         subgraphDynamicData.deleteByProjectId(id);
         connectiveDomainDynamicData.deleteByProjectId(id);
         edgeDynamicData.deleteByProjectId(id);
