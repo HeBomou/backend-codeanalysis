@@ -18,6 +18,7 @@ import local.happysixplus.backendcodeanalysis.data.EdgeData;
 import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
+import local.happysixplus.backendcodeanalysis.data.ProjectStaticAttributeData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
@@ -28,6 +29,7 @@ import local.happysixplus.backendcodeanalysis.po.EdgeDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.EdgePo;
 import local.happysixplus.backendcodeanalysis.po.ProjectDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ProjectPo;
+import local.happysixplus.backendcodeanalysis.po.ProjectStaticAttributePo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 import local.happysixplus.backendcodeanalysis.po.VertexDynamicPo;
@@ -39,6 +41,7 @@ import local.happysixplus.backendcodeanalysis.vo.EdgeAllVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectBasicAttributeVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
@@ -324,6 +327,9 @@ public class ProjectServiceImpl implements ProjectService {
     VertexData vertexData;
 
     @Autowired
+    ProjectStaticAttributeData projectStaticAttributeData;
+
+    @Autowired
     ProjectDynamicData projectDynamicData;
 
     @Autowired
@@ -364,6 +370,10 @@ public class ProjectServiceImpl implements ProjectService {
         // 生成并存入默认子图静态信息
         var subPo = project.initSubgraph(0D);
         subPo = subgraphData.save(subPo);
+        // 存入项目静态属性信息
+        var projSAPo = new ProjectStaticAttributePo(projPo.getId(), userId, projPo.getVertices().size(),
+                projPo.getEdges().size(), subPo.getConnectiveDomains().size());
+        projSAPo = projectStaticAttributeData.save(projSAPo);
         // 存入项目动态信息
         var projDPo = new ProjectDynamicPo(projPo.getId(), userId, projectName);
         projDPo = projectDynamicData.save(projDPo);
@@ -394,20 +404,29 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     @Override
-    public List<ProjectDynamicVo> getProjectDynamic(Long userId) {
+    public List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId) {
         List<ProjectDynamicPo> pDPos;
         if (userId == null)
             pDPos = projectDynamicData.findAll();
         else
             pDPos = projectDynamicData.findByUserId(userId);
-        var vos = new ArrayList<ProjectDynamicVo>(pDPos.size());
-        for (var pDPo : pDPos)
-            vos.add(dPoTodVo(pDPo));
+        List<ProjectStaticAttributePo> pSAPos;
+        if (userId == null)
+            pSAPos = projectStaticAttributeData.findAll();
+        else
+            pSAPos = projectStaticAttributeData.findByUserId(userId);
+        var pSAPoMap = pSAPos.stream().collect(Collectors.toMap(ProjectStaticAttributePo::getId, po -> po));
+        var vos = new ArrayList<ProjectBasicAttributeVo>(pDPos.size());
+        for (var pDPo : pDPos) {
+            var pSAPo = pSAPoMap.get(pDPo.getId());
+            vos.add(new ProjectBasicAttributeVo(pDPo.getId(), pDPo.getProjectName(), pSAPo.getVertexNum(),
+                    pSAPo.getEdgeNum(), pSAPo.getConnectiveDomainNum()));
+        }
         return vos;
     };
 
     @Override
-    public ProjectAllVo getProjectAllById(Long id) {
+    public ProjectAllVo getProjectAll(Long id) {
         // 项目
         var po = projectData.findById(id).orElse(null);
         var project = new Project(po);
@@ -430,15 +449,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectProfileVo getProjectProfile(Long id) {
-        var projPo = projectData.findById(id).orElse(null); // TODO: 应当用countBy
-        Integer vertexNum = projPo.getVertices().size();
-        Integer edgeNum = projPo.getEdges().size();
+        var pDPo = projectDynamicData.findById(id).orElse(null);
+        var pSAPo = projectStaticAttributeData.findById(id).orElse(null);
+        String projectName = pDPo.getProjectName();
+        Integer vertexNum = pSAPo.getVertexNum();
+        Integer edgeNum = pSAPo.getEdgeNum();
+        Integer connectiveDomainNum = pSAPo.getConnectiveDomainNum();
         Integer subgraphNum = subgraphData.countByProjectId(id);
         Integer vertexAnotationNum = vertexDynamicData.countByProjectId(id);
         Integer edgeAnotationNum = edgeDynamicData.countByProjectId(id);
         Integer connectiveDomainAnotationNum = connectiveDomainDynamicData.countByProjectId(id);
-        return new ProjectProfileVo(id, vertexNum, edgeNum, subgraphNum, vertexAnotationNum, edgeAnotationNum,
-                connectiveDomainAnotationNum);
+        return new ProjectProfileVo(id, projectName, vertexNum, edgeNum, connectiveDomainNum, subgraphNum,
+                vertexAnotationNum, edgeAnotationNum, connectiveDomainAnotationNum);
     }
 
     @Override

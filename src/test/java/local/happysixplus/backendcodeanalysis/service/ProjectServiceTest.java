@@ -173,7 +173,7 @@ public class ProjectServiceTest {
         Mockito.when(vertexDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dV1, dV2));
 
         // 调用
-        var resVo = service.getProjectAllById(2L);
+        var resVo = service.getProjectAll(2L);
 
         // 验证数据生成
         var expV1 = new VertexAllVo(3L, "v1", "dian1()", new VertexDynamicVo(3L, "a1", 0f, 0f));
@@ -269,8 +269,8 @@ public class ProjectServiceTest {
         Mockito.verify(subgraphData).save(spo1);
         Mockito.verify(subgraphDynamicData).save(sdpo1);
 
-        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(1L, 2L, 3L), Arrays.asList(6L, 1L), null);
-        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(4L, 5L), Arrays.asList(5L), null);
+        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(3L, 1L, 2L), Arrays.asList(6L, 1L), null);
+        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L, 4L), Arrays.asList(5L), null);
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new SubgraphDynamicVo(17L, "subgraphdd"));
 

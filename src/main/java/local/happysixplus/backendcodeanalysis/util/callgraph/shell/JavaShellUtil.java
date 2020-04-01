@@ -26,8 +26,8 @@ public class JavaShellUtil {
         }
     }
     public static void ExecClone(String projectName,String url){
+        String command="mkdir \"temp/"+projectName+"\" ; git clone \""+url+"\" temp/"+projectName+" ; cd \"temp/"+projectName+"\" ;"+" mvn package -DskipTests";
         try{
-            String command="mkdir \"temp/"+projectName+"\" ; git clone \""+url+"\" temp/"+projectName+" ; cd \"temp/"+projectName+"\" ;"+" mvn package -DskipTests";
             String[] commands=new String[]{"/bin/sh","-c",command};
             Process process=Runtime.getRuntime().exec(commands,null,null);
             ExecOutput(process);
