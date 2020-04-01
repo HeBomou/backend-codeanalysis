@@ -46,8 +46,8 @@ public class ProjectController {
      * 获取所有项目的名称等动态信息，如果传了用户id，就是返回该用户的所有项目，否则返回所有项目
      */
     @GetMapping
-    public List<ProjectDynamicVo> getProjectDynamic(@RequestParam(required = false) Long userId) {
-        return service.getProjectDynamic(userId);
+    public List<ProjectBasicAttributeVo> getProjectBasicAttribute(@RequestParam(required = false) Long userId) {
+        return service.getProjectBasicAttribute(userId);
     }
 
     @GetMapping(value = "/{id}/profile")
@@ -64,7 +64,7 @@ public class ProjectController {
      */
     @GetMapping(value = "/{id}")
     public ProjectAllVo getProject(@PathVariable Long id) {
-        return service.getProjectAllById(id);
+        return service.getProjectAll(id);
     }
 
     /**
