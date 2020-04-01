@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,6 +61,7 @@ public class ProjectTest {
 
 	@Test // 新建项目，根据UserID获取项目概要（动态信息）
 	public void Test2() throws Exception {
+		MvcResult resAdd=
 		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux2")
 				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -67,6 +70,8 @@ public class ProjectTest {
 		var list = JSONObject.parseArray(resGet.getResponse().getContentAsString());
 		var resa = JSONObject.parseObject(list.get(0).toString(), ProjectDynamicVo.class);
 		assertEquals(resa.getProjectName(), "Linux2");
+		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
+		assertEquals(allVo.getId(),allVo.getDynamicVo().getId());
 	}
 
 	@Test // 新建项目，更新
@@ -104,6 +109,59 @@ public class ProjectTest {
 		assertEquals(list.size(),0);
 
 	}
+
+	@Test //子图相关
+	public void Test5() throws Exception{
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test5")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "55"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
+		long projectId = allVo.getId();
+	}
+	@Test
+	public void Test6() throws Exception {
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test6")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "66"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var v = resAdd.getResponse().getContentAsString();
+		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
+		long projectId = vo.getId();
+		MvcResult resGetFunction = mockMvc
+				.perform(MockMvcRequestBuilders.get("/project/{projectId}/similarFunction", projectId).param("funcName",
+						"C"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		List<String> strs = JSONObject.parseArray(resGetFunction.getResponse().getContentAsString(), String.class);
+		Set<String> s=new HashSet<>(strs);
+		Set<String> expected=new HashSet<>();
+		expected.add("temp.C:Cmake()");
+		expected.add("temp.C:<init>()");
+		expected.add("temp.C:Cprint(int,java.lang.Integer)");
+		assertEquals(expected, s);
+	}
+
+	@Test
+	public void Test7() throws Exception {
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var v = resAdd.getResponse().getContentAsString();
+		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
+		long projectId = vo.getId();
+		List<VertexAllVo> vdvs = vo.getVertices();
+		long id1 = vdvs.get(0).getId();
+		long id2 = vdvs.get(vdvs.size() - 1).getId();
+		MvcResult resGetFunction = mockMvc
+				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphShortestPath", projectId)
+						.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var res = resGetFunction.getResponse().toString();
+		System.out.println(res);
+
+	}
+
 	// @Test // 测试新建项目
 	// public void Test8() throws Exception {
 	// 	mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
