@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 
 public interface ConnectiveDomainDynamicData extends JpaRepository<ConnectiveDomainDynamicPo, Long> {
+    Integer countByProjectId(Long projectId);
     List<ConnectiveDomainDynamicPo> findByProjectId(Long projectId);
     @Modifying
     @Transactional

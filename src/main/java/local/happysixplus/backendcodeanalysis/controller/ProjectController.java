@@ -43,12 +43,18 @@ public class ProjectController {
     }
 
     /**
-     * 根据用户id获取他所有项目的概要
+     * 获取所有项目的名称等动态信息，如果传了用户id，就是返回该用户的所有项目，否则返回所有项目
      */
     @GetMapping
-    public List<ProjectDynamicVo> getProjectByUserId(@RequestParam Long userId) {
-        return service.getProjectDynamicByUserId(userId);
+    public List<ProjectDynamicVo> getProjectDynamic(@RequestParam(required = false) Long userId) {
+        return service.getProjectDynamic(userId);
     }
+
+    @GetMapping(value = "/{id}/profile")
+    public ProjectProfileVo getProjectProfile(@PathVariable Long id) {
+        return service.getProjectProfile(id);
+    }
+    
 
     /**
      * 根据项目id获取项目的全部信息

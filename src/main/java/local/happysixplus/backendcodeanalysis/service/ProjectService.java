@@ -7,6 +7,7 @@ import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
@@ -23,7 +24,16 @@ public interface ProjectService {
 
     void removeProject(Long id);
 
-    List<ProjectDynamicVo> getProjectDynamicByUserId(Long userId);
+    /**
+     * 返回所有项目的动态信息
+     * @param userId 添加用户id的筛选条件
+     */
+    List<ProjectDynamicVo> getProjectDynamic(Long userId);
+
+    /**
+     * 返回项目的点数边数等概要信息
+     */
+    ProjectProfileVo getProjectProfile(Long id);
 
     ProjectAllVo getProjectAllById(Long id);
 

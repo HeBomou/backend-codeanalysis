@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(indexes = {@Index(columnList = "userId")})
+@Table(indexes = { @Index(columnList = "userId") })
 public class ProjectPo {
 
     @Id
@@ -25,11 +25,11 @@ public class ProjectPo {
     Long userId;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn
+    @JoinColumn()
     Set<VertexPo> vertices;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn
+    @JoinColumn()
     Set<EdgePo> edges;
 
 }

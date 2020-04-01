@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.VertexDynamicPo;
 
 public interface VertexDynamicData extends JpaRepository<VertexDynamicPo, Long> {
+    Integer countByProjectId(Long projectId);
     List<VertexDynamicPo> findByProjectId(Long projectId);
     @Modifying
     @Transactional
