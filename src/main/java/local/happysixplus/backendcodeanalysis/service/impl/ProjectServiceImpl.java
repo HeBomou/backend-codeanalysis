@@ -550,31 +550,31 @@ public class ProjectServiceImpl implements ProjectService {
 
     private static VertexDynamicVo dPoTodVo(VertexDynamicPo po) {
         if (po == null)
-            return new VertexDynamicVo();
+            return null;
         return new VertexDynamicVo(po.getId(), po.getAnotation(), po.getX(), po.getY());
     }
 
     private static EdgeDynamicVo dPoTodVo(EdgeDynamicPo po) {
         if (po == null)
-            return new EdgeDynamicVo();
+            return null;
         return new EdgeDynamicVo(po.getId(), po.getAnotation());
     }
 
     private static ConnectiveDomainDynamicVo dPoTodVo(ConnectiveDomainDynamicPo po) {
         if (po == null)
-            return new ConnectiveDomainDynamicVo();
+            return null;
         return new ConnectiveDomainDynamicVo(po.getId(), po.getAnotation(), po.getColor());
     }
 
     private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po) {
         if (po == null)
-            return new SubgraphDynamicVo();
+            return null;
         return new SubgraphDynamicVo(po.getId(), po.getName());
     }
 
     private static ProjectDynamicVo dPoTodVo(ProjectDynamicPo po) {
         if (po == null)
-            return new ProjectDynamicVo();
+            return null;
         return new ProjectDynamicVo(po.getId(), po.getProjectName());
     }
 
