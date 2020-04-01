@@ -20,7 +20,7 @@ public class ProjectController {
     /**
      * 根据创建项目
      */
-    @PostMapping(value = "")
+    @PostMapping
     public ProjectAllVo postProject(@RequestParam String projectName, @RequestParam String url,
             @RequestParam long userId) {
         return service.addProject(projectName, url, userId);
@@ -45,7 +45,7 @@ public class ProjectController {
     /**
      * 根据用户id获取他所有项目的概要
      */
-    @GetMapping(value = "")
+    @GetMapping
     public List<ProjectDynamicVo> getProjectByUserId(@RequestParam Long userId) {
         return service.getProjectDynamicByUserId(userId);
     }
