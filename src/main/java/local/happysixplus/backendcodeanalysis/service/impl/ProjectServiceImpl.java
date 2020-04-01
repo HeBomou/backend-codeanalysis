@@ -430,8 +430,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectProfileVo getProjectProfile(Long id) {
-        Integer vertexNum = vertexData.countByProjectPoId(id);
-        Integer edgeNum = edgeData.countByProjectPoId(id);
+        var projPo = projectData.findById(id).orElse(null); // TODO: 应当用countBy
+        Integer vertexNum = projPo.getVertices().size();
+        Integer edgeNum = projPo.getEdges().size();
         Integer subgraphNum = subgraphData.countByProjectId(id);
         Integer vertexAnotationNum = vertexDynamicData.countByProjectId(id);
         Integer edgeAnotationNum = edgeDynamicData.countByProjectId(id);

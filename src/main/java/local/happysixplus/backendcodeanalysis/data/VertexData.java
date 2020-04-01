@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import local.happysixplus.backendcodeanalysis.po.VertexPo;
 
 public interface VertexData extends JpaRepository<VertexPo, Long> {
-    Integer countByProjectPoId(Long projectId);
 }
