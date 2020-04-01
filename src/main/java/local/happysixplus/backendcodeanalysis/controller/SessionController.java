@@ -13,7 +13,7 @@ public class SessionController {
     @Autowired
     SessionService service;
 
-    @PostMapping(value = "")
+    @PostMapping
     public Long postSession(@RequestBody SessionVo vo, HttpServletRequest request) throws Exception {
         return service.addSession(vo, request);
     }

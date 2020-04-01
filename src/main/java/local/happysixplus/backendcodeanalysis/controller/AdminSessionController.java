@@ -13,7 +13,7 @@ public class AdminSessionController {
     @Autowired
     AdminSessionService service;
 
-    @PostMapping(value = "")
+    @PostMapping
     public Long postAdmin(@RequestBody AdminSessionVo vo, HttpServletRequest request) {
         return service.addSession(vo, request);
     }
