@@ -24,7 +24,7 @@ class SubgraphDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        po = new SubgraphDynamicPo(null, 1L, "SKTelecomT1Faker");
+        po = new SubgraphDynamicPo(737L, 1L, "SKTelecomT1Faker");
     }
 
     @AfterEach
@@ -60,8 +60,8 @@ class SubgraphDynamicDataTest {
     @Test
     public void testFindByProjectId(){
         po=data.save(po);
-        SubgraphDynamicPo po1=data.save(new SubgraphDynamicPo(null,1L,"SKTKhan"));
-        SubgraphDynamicPo po2=data.save(new SubgraphDynamicPo(null,1L,"SKTCLid"));
+        SubgraphDynamicPo po1=data.save(new SubgraphDynamicPo(765L,1L,"SKTKhan"));
+        SubgraphDynamicPo po2=data.save(new SubgraphDynamicPo(768L,1L,"SKTCLid"));
         List<SubgraphDynamicPo> list=data.findByProjectId(1L);
         list.sort((a,b)->(int)(a.getId()-b.getId()));
         assertEquals(list.get(0).getId(),po.getId());
@@ -78,8 +78,8 @@ class SubgraphDynamicDataTest {
     @Test
     public void testDeleteByProjectId(){
         po=data.save(po);
-        data.save(new SubgraphDynamicPo(null,1L,"SKTKhan"));
-        data.save(new SubgraphDynamicPo(null,1L,"SKTCLid"));
+        data.save(new SubgraphDynamicPo(765L,1L,"SKTKhan"));
+        data.save(new SubgraphDynamicPo(768L,1L,"SKTCLid"));
         data.deleteByProjectId(1L);
         List<SubgraphDynamicPo> list=data.findByProjectId(1L);
         assertEquals(list,new ArrayList<SubgraphDynamicPo>());

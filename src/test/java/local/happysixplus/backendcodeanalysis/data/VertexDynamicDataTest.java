@@ -24,7 +24,7 @@ class VertexDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        vertexDynamicPo = new VertexDynamicPo(null,1L,"SKTFaker",0f,0f);
+        vertexDynamicPo = new VertexDynamicPo(4444L,1L,"SKTFaker",0f,0f);
     }
 
     @AfterEach
@@ -65,8 +65,8 @@ class VertexDynamicDataTest {
     @Test
     public void testFindByProjectId(){
         vertexDynamicPo=data.save(vertexDynamicPo);
-        VertexDynamicPo vertexDynamicPo1=data.save(new VertexDynamicPo(null,1L,"SKTKhan",0.2f,0.2f));
-        VertexDynamicPo vertexDynamicPo2=data.save(new VertexDynamicPo(null,1L,"SKTCLid",0.3f,0.3f));
+        VertexDynamicPo vertexDynamicPo1=data.save(new VertexDynamicPo(4657L,1L,"SKTKhan",0.2f,0.2f));
+        VertexDynamicPo vertexDynamicPo2=data.save(new VertexDynamicPo(4658L,1L,"SKTCLid",0.3f,0.3f));
         List<VertexDynamicPo> list=data.findByProjectId(1L);
         list.sort((a,b)->(int)(a.getId()-b.getId()));
         assertEquals(list.get(0).getId(),vertexDynamicPo.getId());
@@ -91,8 +91,8 @@ class VertexDynamicDataTest {
     @Test
     public void testDeleteByProjectId(){
         vertexDynamicPo=data.save(vertexDynamicPo);
-        data.save(new VertexDynamicPo(null,1L,"SKTKhan",0.2f,0.2f));
-        data.save(new VertexDynamicPo(null,1L,"SKTCLid",0.4f,0.3f));
+        data.save(new VertexDynamicPo(4657L,1L,"SKTKhan",0.2f,0.2f));
+        data.save(new VertexDynamicPo(4658L,1L,"SKTCLid",0.4f,0.3f));
         data.deleteByProjectId(vertexDynamicPo.getId());
         List<VertexDynamicPo> list=data.findByProjectId(vertexDynamicPo.getId());
         assertEquals(list, new ArrayList<VertexDynamicPo>());
