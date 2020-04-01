@@ -268,10 +268,8 @@ public class ProjectServiceTest {
         Mockito.verify(subgraphData).save(spo1);
         Mockito.verify(subgraphDynamicData).save(sdpo1);
 
-        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(1L, 2L, 3L), Arrays.asList(6L, 1L),
-                new ConnectiveDomainDynamicVo(17L, "", ""));
-        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(4L, 5L), Arrays.asList(5L),
-                new ConnectiveDomainDynamicVo(17L, "", ""));
+        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(1L, 2L, 3L), Arrays.asList(6L, 1L), null);
+        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(4L, 5L), Arrays.asList(5L), null);
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new SubgraphDynamicVo(17L, "subgraphdd"));
 
