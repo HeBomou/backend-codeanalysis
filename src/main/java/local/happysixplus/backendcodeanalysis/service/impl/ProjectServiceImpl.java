@@ -162,9 +162,8 @@ public class ProjectServiceImpl implements ProjectService {
         Long userId;
         Map<Long, Vertex> vIdMap = new HashMap<Long, Vertex>();
         Map<Long, Edge> eIdMap = new HashMap<Long, Edge>();
-        List<Subgraph> subgraphs = new ArrayList<Subgraph>();
 
-        Project(ProjectPo po, List<SubgraphPo> sPos) {
+        Project(ProjectPo po) {
             id = po.getId();
             userId = po.getUserId();
             for (var vPo : po.getVertices())
@@ -172,9 +171,6 @@ public class ProjectServiceImpl implements ProjectService {
             for (var ePo : po.getEdges())
                 eIdMap.put(ePo.getId(),
                         new Edge(ePo, vIdMap.get(ePo.getFrom().getId()), vIdMap.get(ePo.getTo().getId())));
-            for (var sPo : sPos) {
-                subgraphs.add(new Subgraph(sPo));
-            }
         }
 
         ProjectPo getProjectPo() {
@@ -196,17 +192,13 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         ProjectAllVo getAllVo(Map<Long, VertexDynamicPo> vDPoMap, Map<Long, EdgeDynamicPo> eDPoMap,
-                Map<Long, SubgraphDynamicPo> sDPoMap, Map<Long, ConnectiveDomainDynamicPo> cDPoMap,
-                ProjectDynamicVo dVo) {
+                List<SubgraphAllVo> sVos, ProjectDynamicVo dVo) {
             List<VertexAllVo> vVos = new ArrayList<>();
             for (var v : vIdMap.values())
                 vVos.add(v.getAllVo(dPoTodVo(vDPoMap.get(v.id))));
             List<EdgeAllVo> eVos = new ArrayList<>();
             for (var e : eIdMap.values())
                 eVos.add(e.getAllVo(dPoTodVo(eDPoMap.get(e.id))));
-            List<SubgraphAllVo> sVos = new ArrayList<>();
-            for (var s : subgraphs)
-                sVos.add(s.getAllVo(dPoTodVo(sDPoMap.get(s.id)), cDPoMap));
             return new ProjectAllVo(id, vVos, eVos, sVos, dVo);
         }
 
@@ -359,11 +351,10 @@ public class ProjectServiceImpl implements ProjectService {
         // 生成并存入项目静态信息
         var projPo = initProject(caller, callee, sourceCode, userId);
         projPo = projectData.save(projPo);
-        var project = new Project(projPo, new ArrayList<>());
+        var project = new Project(projPo);
         // 生成并存入默认子图静态信息
         var subPo = project.initSubgraph(0D);
         subPo = subgraphData.save(subPo);
-        project = new Project(projPo, Arrays.asList(subPo));
         // 存入项目动态信息
         var projDPo = new ProjectDynamicPo(projPo.getId(), userId, projectName);
         projDPo = projectDynamicData.save(projDPo);
@@ -371,9 +362,8 @@ public class ProjectServiceImpl implements ProjectService {
         var subgDPo = new SubgraphDynamicPo(subPo.getId(), projPo.getId(), "Default subgraph");
         subgDPo = subgraphDynamicData.save(subgDPo);
         // 返回结果
-        var subgDPoMap = new HashMap<Long, SubgraphDynamicPo>(1);
-        subgDPoMap.put(subgDPo.getId(), subgDPo);
-        return project.getAllVo(new HashMap<>(), new HashMap<>(), subgDPoMap, new HashMap<>(), dPoTodVo(projDPo));
+        var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>());
+        return project.getAllVo(new HashMap<>(), new HashMap<>(), Arrays.asList(subgVo), dPoTodVo(projDPo));
     };
 
     @Override
@@ -405,30 +395,38 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectAllVo getProjectAllById(Long id) {
+        // 项目
         var po = projectData.findById(id).orElse(null);
-        var sPos = subgraphData.findByProjectId(id);
-        var project = new Project(po, sPos);
+        var project = new Project(po);
         var vDPoMap = vertexDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
         var eDPoMap = edgeDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
+        var dVo = dPoTodVo(projectDynamicData.findById(id).orElse(null));
+        // 子图
+        var sPos = subgraphData.findByProjectId(id);
         var sDPoMap = subgraphDynamicData.findByProjectId(id).stream()
                 .collect(Collectors.toMap(v -> v.getId(), v -> v));
         var cDPoMap = connectiveDomainDynamicData.findByProjectId(id).stream()
                 .collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var dVo = dPoTodVo(projectDynamicData.findById(id).orElse(null));
-        return project.getAllVo(vDPoMap, eDPoMap, sDPoMap, cDPoMap, dVo);
+        var sVos = new ArrayList<SubgraphAllVo>(sPos.size());
+        // 获取子图vo
+        for (var sPo : sPos)
+            sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap));
+        // 返回
+        return project.getAllVo(vDPoMap, eDPoMap, sVos, dVo);
     }
 
     @Override
     public SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name) {
         // 生成并存储静态信息
         var po = projectData.findById(projectId).orElse(null);
-        var sPos = subgraphData.findByProjectId(projectId);
-        var project = new Project(po, sPos);
+        var project = new Project(po);
         var newSPo = project.initSubgraph(threshold);
         newSPo = subgraphData.save(newSPo);
         // 存储动态信息
         var sDPo = new SubgraphDynamicPo(newSPo.getId(), projectId, name);
+        sDPo = subgraphDynamicData.save(sDPo);
 
+        // 返回
         var subgraph = new Subgraph(newSPo);
         return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>());
     };
@@ -462,8 +460,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
         var po = projectData.findById(projectId).orElse(null);
-        var sPos = subgraphData.findByProjectId(projectId);
-        var project = new Project(po, sPos);
+        var project = new Project(po);
         var res = new ArrayList<List<Long>>();
         getAllPathDFS(endVertexId, project.vIdMap.get(startVertexId), new ArrayList<Long>(), res);
         res.sort((a, b) -> {
