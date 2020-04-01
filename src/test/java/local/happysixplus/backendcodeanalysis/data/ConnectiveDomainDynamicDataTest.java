@@ -24,7 +24,7 @@ class ConnectiveDomainDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        connectiveDomainDynamicPo = new ConnectiveDomainDynamicPo(null,1L,"SKTFaker","#FFFFFF");
+        connectiveDomainDynamicPo = new ConnectiveDomainDynamicPo(1234L,1L,"SKTFaker","#FFFFFF");
     }
 
     @AfterEach
@@ -62,8 +62,8 @@ class ConnectiveDomainDynamicDataTest {
     @Test
     public void testFindByProjectId(){
         connectiveDomainDynamicPo=data.save(connectiveDomainDynamicPo);
-        ConnectiveDomainDynamicPo connectiveDomainDynamicPo1=data.save(new ConnectiveDomainDynamicPo(null,1L,"SKTKhan","#BBBBBB"));
-        ConnectiveDomainDynamicPo connectiveDomainDynamicPo2=data.save(new ConnectiveDomainDynamicPo(null,1L,"SKTCLid","#123456"));
+        ConnectiveDomainDynamicPo connectiveDomainDynamicPo1=data.save(new ConnectiveDomainDynamicPo(12345L,1L,"SKTKhan","#BBBBBB"));
+        ConnectiveDomainDynamicPo connectiveDomainDynamicPo2=data.save(new ConnectiveDomainDynamicPo(12346L,1L,"SKTCLid","#123456"));
         List<ConnectiveDomainDynamicPo> list=data.findByProjectId(1L);
         list.sort((a,b)->(int)(a.getId()-b.getId()));
         assertEquals(list.get(0).getId(),connectiveDomainDynamicPo.getId());
@@ -85,8 +85,8 @@ class ConnectiveDomainDynamicDataTest {
     @Test
     public void testDeleteByProjectId(){
         connectiveDomainDynamicPo=data.save(connectiveDomainDynamicPo);
-        data.save(new ConnectiveDomainDynamicPo(null,1L,"SKTKhan","#BBBBBB"));
-        data.save(new ConnectiveDomainDynamicPo(null,1L,"SKTCLid","#123456"));
+        data.save(new ConnectiveDomainDynamicPo(12347L,1L,"SKTKhan","#BBBBBB"));
+        data.save(new ConnectiveDomainDynamicPo(12348L,1L,"SKTCLid","#123456"));
         data.deleteByProjectId(connectiveDomainDynamicPo.getId());
         List<ConnectiveDomainDynamicPo> list=data.findByProjectId(connectiveDomainDynamicPo.getId());
         assertEquals(list, new ArrayList<ConnectiveDomainDynamicPo>());

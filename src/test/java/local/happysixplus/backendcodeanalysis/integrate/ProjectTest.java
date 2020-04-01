@@ -21,10 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -123,7 +123,7 @@ public class ProjectTest {
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
 	}
-	@Test
+	@Test//测试获取函数
 	public void Test6() throws Exception {
 		MvcResult resAdd = mockMvc
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test6")
@@ -145,7 +145,7 @@ public class ProjectTest {
 		assertEquals(expected, s);
 	}
 
-	@Test
+	@Test//测试获取路径
 	public void Test7() throws Exception {
 		MvcResult resAdd = mockMvc
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
@@ -158,11 +158,13 @@ public class ProjectTest {
 		vdvs.sort((a,b)->(int)(a.getId()-b.getId()));
 		long id1 = vdvs.get(0).getId();
 		long id2 = vdvs.get(vdvs.size() - 1).getId();
+		assertTrue(vdvs.get(0).getFunctionName().contains("main"));
+		assertTrue(vdvs.get(vdvs.size()-1).getFunctionName().contains("Baker"));
 		MvcResult resGetFunction = mockMvc
 				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
 						.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		var res = resGetFunction.getResponse().toString();
+		var res = resGetFunction.getResponse().getContentAsString();
 		System.out.println(res);
 
 	}

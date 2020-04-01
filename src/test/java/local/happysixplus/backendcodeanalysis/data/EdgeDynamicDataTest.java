@@ -24,7 +24,7 @@ class EdgeDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        edgeDynamicPo = new EdgeDynamicPo(null,1L,"SKTFaker");
+        edgeDynamicPo = new EdgeDynamicPo(23456L,1L,"SKTFaker");
     }
 
     @AfterEach
@@ -61,8 +61,8 @@ class EdgeDynamicDataTest {
     @Test
     public void testFindByProjectId(){
         edgeDynamicPo=data.save(edgeDynamicPo);
-        EdgeDynamicPo edgeDynamicPo1=data.save(new EdgeDynamicPo(null,1L,"SKTKhan"));
-        EdgeDynamicPo edgeDynamicPo2=data.save(new EdgeDynamicPo(null,1L,"SKTCLid"));
+        EdgeDynamicPo edgeDynamicPo1=data.save(new EdgeDynamicPo(23457L,1L,"SKTKhan"));
+        EdgeDynamicPo edgeDynamicPo2=data.save(new EdgeDynamicPo(23458L,1L,"SKTCLid"));
         List<EdgeDynamicPo> list=data.findByProjectId(1L);
         list.sort((a,b)->(int)(a.getId()-b.getId()));
         assertEquals(list.get(0).getId(),edgeDynamicPo.getId());
@@ -81,8 +81,8 @@ class EdgeDynamicDataTest {
     @Test
     public void testDeleteByProjectId(){
         edgeDynamicPo=data.save(edgeDynamicPo);
-        data.save(new EdgeDynamicPo(null,1L,"SKTKhan"));
-        data.save(new EdgeDynamicPo(null,1L,"SKTCLid"));
+        data.save(new EdgeDynamicPo(23458L,1L,"SKTKhan"));
+        data.save(new EdgeDynamicPo(23459L,1L,"SKTCLid"));
         data.deleteByProjectId(edgeDynamicPo.getId());
         List<EdgeDynamicPo> list=data.findByProjectId(edgeDynamicPo.getId());
         assertEquals(list, new ArrayList<EdgeDynamicPo>());

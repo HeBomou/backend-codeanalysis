@@ -24,7 +24,7 @@ class ProjectDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        projectDynamicPo = new ProjectDynamicPo(null, 1L, "SKTelecomT1Faker");
+        projectDynamicPo = new ProjectDynamicPo(123L, 1L, "SKTelecomT1Faker");
     }
 
     @AfterEach
@@ -60,8 +60,8 @@ class ProjectDynamicDataTest {
     @Test
     public void testFindByUserId(){
         projectDynamicPo=data.save(projectDynamicPo);
-        ProjectDynamicPo projectDynamicPo1=data.save(new ProjectDynamicPo(null,1L,"SKTKhan"));
-        ProjectDynamicPo projectDynamicPo2=data.save(new ProjectDynamicPo(null,1L,"SKTCLid"));
+        ProjectDynamicPo projectDynamicPo1=data.save(new ProjectDynamicPo(124L,1L,"SKTKhan"));
+        ProjectDynamicPo projectDynamicPo2=data.save(new ProjectDynamicPo(125L,1L,"SKTCLid"));
         List<ProjectDynamicPo> list=data.findByUserId(1L);
         list.sort((a,b)->(int)(a.getId()-b.getId()));
         assertEquals(list.get(0).getId(),projectDynamicPo.getId());
