@@ -75,9 +75,9 @@ public interface ProjectService {
     void updateVertexDynamic(Long projectId, VertexDynamicVo vo);
 
     /**
-     * 获取初始图中从start出发到end的最短路
+     * 获取初始图中从start出发到end的所有路
      */
-    PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId);
+    PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId);
 
     /**
      * 获取项目中与funcName相似的函数名

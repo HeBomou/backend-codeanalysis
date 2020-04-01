@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
@@ -461,7 +460,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PathVo getOriginalGraphShortestPath(Long projectId, Long startVertexId, Long endVertexId) {
+    public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
         var po = projectData.findById(projectId).orElse(null);
         var sPos = subgraphData.findByProjectId(projectId);
         var project = new Project(po, sPos);
@@ -470,7 +469,7 @@ public class ProjectServiceImpl implements ProjectService {
         res.sort((a, b) -> {
             return b.size() - a.size();
         });
-        return new PathVo(res);
+        return new PathVo(res.size(), res.subList(0, 50));
     };
 
     private void getAllPathDFS(Long endVertexId, Vertex p, List<Long> path, List<List<Long>> res) {

@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PathVo {
+    
+    Integer num;
+
     /**
-     * 外层是所有的路径，内层是每一条路径从起点出发到终点的所有边的Id
+     * 外层是所有的路径，内层是每一条路径从起点出发到终点的所有边的Id，至多50条
      */
     List<List<Long>> paths;
 }
