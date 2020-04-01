@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
@@ -210,37 +211,63 @@ public class ProjectServiceImpl implements ProjectService {
             return new ProjectAllVo(id, vVos, eVos, sVos, dVo);
         }
 
-        SubgraphPo initSubgraph(Double threshold) {
-            var connectiveDomains = new ArrayList<ConnectiveDomain>();
-            var isChecked = new HashMap<String, Boolean>(vIdMap.size());
-            for (var id : vIdMap.keySet())
-                isChecked.put(vIdMap.get(id).functionName, false);
-            for (var id : vIdMap.keySet()) {
-                List<Long> domainVertexs = new ArrayList<>();
-                List<Long> domainEdges = new ArrayList<>();
-                DFS(threshold, null, vIdMap.get(id), isChecked, domainVertexs, domainEdges);
-                if (domainVertexs.size() > 1)
-                    connectiveDomains.add(new ConnectiveDomain(domainVertexs, domainEdges));
+        class DfsE {
+            Long id;
+            DfsV to;
+            Double closeness;
+
+            DfsE(Long id, DfsV to, Double closeness) {
+                this.id = id;
+                this.to = to;
+                this.closeness = closeness;
             }
-            connectiveDomains.sort((a, b) -> {
-                return b.vertexIds.size() - a.vertexIds.size();
-            });
-            return new Subgraph(threshold, connectiveDomains).getSubgraphPo(id);
         }
 
-        void DFS(Double threshold, Edge edge, Vertex vertex, Map<String, Boolean> isChecked, List<Long> domainVertexs,
-                List<Long> domainEdges) {
-            if (isChecked.get(vertex.functionName))
+        class DfsV {
+            Long id;
+            List<DfsE> es = new ArrayList<>();
+
+            DfsV(Long id) {
+                this.id = id;
+            }
+        }
+
+        SubgraphPo initSubgraph(Double threshold) {
+            var resConnectiveDomains = new ArrayList<ConnectiveDomain>();
+            var isChecked = new HashSet<Long>(vIdMap.size());
+            // 点
+            var vs = new HashMap<Long, DfsV>(vIdMap.size());
+            for (var v : vIdMap.values())
+                vs.put(v.id, new DfsV(v.id));
+            // 添加双向边
+            for (var e : eIdMap.values()) {
+                vs.get(e.from.id).es.add(new DfsE(e.id, vs.get(e.to.id), e.closeness));
+                vs.get(e.to.id).es.add(new DfsE(e.id, vs.get(e.from.id), e.closeness));
+            }
+            for (var p : vs.values()) {
+                List<Long> domainVertexs = new ArrayList<>();
+                Set<Long> domainEdges = new HashSet<>();
+                Dfs(threshold, p, isChecked, domainVertexs, domainEdges);
+                if (domainVertexs.size() > 1)
+                    resConnectiveDomains.add(new ConnectiveDomain(domainVertexs, new ArrayList<>(domainEdges)));
+            }
+            resConnectiveDomains.sort((a, b) -> {
+                return b.vertexIds.size() - a.vertexIds.size();
+            });
+            return new Subgraph(threshold, resConnectiveDomains).getSubgraphPo(id);
+        }
+
+        void Dfs(Double threshold, DfsV p, Set<Long> isChecked, List<Long> domainVertexs, Set<Long> domainEdges) {
+            if (isChecked.contains(p.id))
                 return;
-            isChecked.put(vertex.functionName, true);
-            domainVertexs.add(vertex.id);
-            if (edge != null)
-                domainEdges.add(edge.id);
-            for (Edge e : vertex.allEdges) {
+            isChecked.add(p.id);
+            domainVertexs.add(p.id);
+            for (var e : p.es) {
                 if (e.closeness < threshold)
                     continue;
-                Vertex anotherVertex = (e.from == vertex) ? e.to : e.from;
-                DFS(threshold, e, anotherVertex, isChecked, domainVertexs, domainEdges);
+                domainEdges.add(e.id);
+                DfsV to = e.to;
+                Dfs(threshold, to, isChecked, domainVertexs, domainEdges);
             }
         }
     }
