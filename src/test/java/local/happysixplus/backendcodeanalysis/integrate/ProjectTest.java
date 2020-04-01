@@ -155,10 +155,11 @@ public class ProjectTest {
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
 		List<VertexAllVo> vdvs = vo.getVertices();
+		vdvs.sort((a,b)->(int)(a.getId()-b.getId()));
 		long id1 = vdvs.get(0).getId();
 		long id2 = vdvs.get(vdvs.size() - 1).getId();
 		MvcResult resGetFunction = mockMvc
-				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphShortestPath", projectId)
+				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
 						.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var res = resGetFunction.getResponse().toString();
