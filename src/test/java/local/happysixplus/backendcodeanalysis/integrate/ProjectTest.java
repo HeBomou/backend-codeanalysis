@@ -122,6 +122,46 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
+		//添加子图
+		mockMvc.perform(
+			MockMvcRequestBuilders.post("/project/{projectId}/subgraph",projectId).param("threshold", "0.3")
+			.param("name", "testSubgraphzero")
+		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		//验证结果
+		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var allVo2 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
+		var sgs=allVo2.getSubgraphs();
+		assertEquals(sgs.size(),2);
+		sgs.sort((a,b)->(int)(a.getId()-b.getId()));
+		assertEquals(sgs.get(0).getThreshold(),0d);
+		assertEquals(sgs.get(1).getThreshold(),0.3d);
+		assertEquals(sgs.get(1).getDynamicVo().getName(),"testSubgraphzero");
+		//删除子图
+		mockMvc.perform(
+			MockMvcRequestBuilders.delete("/project/{projectId}/subgraph/{id}",projectId,sgs.get(1).getId()))
+			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		//验证结果
+		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var allVo3 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
+		var sgs1=allVo3.getSubgraphs();
+		assertEquals(sgs1.size(),1);
+		//更新子图
+		SubgraphDynamicVo vo=allVo.getSubgraphs().get(0).getDynamicVo();
+		vo.setName("SKTelecomT1Faker");
+		mockMvc.perform(
+			MockMvcRequestBuilders.put("/project/{projectId}/subgraph/{id}/dynamic",projectId,sgs.get(1).getId())
+			.contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(vo)))
+			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		//验证结果
+		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var allVo4 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
+		var sgs2=allVo4.getSubgraphs();
+		assertEquals(sgs2.size(),1);
+		assertEquals(sgs2.get(0).getDynamicVo().getName(),"SKTelecomT1Faker");
+
 	}
 	@Test//测试获取函数
 	public void Test6() throws Exception {
@@ -169,28 +209,50 @@ public class ProjectTest {
 
 	}
 
-	// @Test // 测试新建项目
-	// public void Test8() throws Exception {
-	// 	mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
-	// 			.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
-	// 			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+	@Test // 测试新建项目
+	public void Test8() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
+				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-	// }
+	}
 
-	// @Test // 测试新建项目
-	// public void Test9() throws Exception {
-	// 	mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
-	// 			.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
-	// 			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+	@Test // 测试新建项目
+	public void Test9() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+				.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-	// }
+	}
 
-	// @Test // 测试新建项目
-	// public void Test10() throws Exception {
-	// 	mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestTDemo")
-	// 			.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
-	// 			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+	@Test // 测试新建项目
+	public void Test10() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestTDemo")
+				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+	}
 
-	// }
+	@Test//测试项目简介
+	public void Test11() throws Exception{
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "99"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var v = resAdd.getResponse().getContentAsString();
+		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
+
+		long projectId=vo.getId();
+		MvcResult resGet = mockMvc
+				.perform(MockMvcRequestBuilders.get("/project/{id}/profile",projectId))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var profileVo=JSONObject.parseObject(resGet.getResponse().getContentAsString(),ProjectProfileVo.class);
+		assertEquals(profileVo.getVertexNum(),9);
+		assertEquals(profileVo.getEdgeNum(),10);
+		assertEquals(profileVo.getSubgraphNum(),1);
+		assertEquals(profileVo.getConnectiveDomainAnotationNum(),0);
+		assertEquals(profileVo.getVertexAnotationNum(),0);
+		assertEquals(profileVo.getEdgeAnotationNum(),0);
+
+	}
 
 }

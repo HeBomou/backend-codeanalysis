@@ -16,7 +16,7 @@ public class JavaShellUtil {
 
     public static void ExecRm(String projectName){
         try{
-            String command="rm -rf temp/"+projectName;
+            String command="rm -rf \"temp/"+projectName+"\"";
             String[] commands=new String[]{"/bin/sh","-c",command};
             Process process=Runtime.getRuntime().exec(commands);
             ExecOutput(process);
