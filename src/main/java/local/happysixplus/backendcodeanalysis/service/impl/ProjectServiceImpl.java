@@ -458,31 +458,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
-        var po = projectData.findById(projectId).orElse(null);
-        var project = new Project(po);
-        var res = new ArrayList<List<Long>>();
-        getAllPathDFS(endVertexId, project.vIdMap.get(startVertexId), new ArrayList<Long>(), res);
-        res.sort((a, b) -> {
-            return b.size() - a.size();
-        });
-        return new PathVo(res.size(), res.subList(0, 50));
-    };
-
-    private void getAllPathDFS(Long endVertexId, Vertex p, List<Long> path, List<List<Long>> res) {
-        if (p.id == endVertexId) {
-            res.add(new ArrayList<>(path));
-        }
-        for (var edge : p.edges) {
-            if (edge.to == p)
-                continue;
-            path.add(edge.id);
-            getAllPathDFS(endVertexId, edge.to, path, res);
-            path.remove(path.size() - 1);
-        }
-    }
-
-    @Override
     public List<String> getSimilarFunction(Long projectId, String funcName) {
         var res = new ArrayList<String>();
         var po = projectData.findById(projectId).orElse(null);
@@ -491,6 +466,61 @@ public class ProjectServiceImpl implements ProjectService {
                 res.add(vPo.getFunctionName());
         return res;
     };
+
+    @Override
+    public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
+        var res = new ArrayList<List<Long>>();
+        var po = projectData.findById(projectId).orElse(null);
+        var project = new Project(po);
+        // 添加点
+        var vs = new HashMap<Long, PathV>(project.vIdMap.size());
+        for (var v : project.vIdMap.values())
+            vs.put(v.id, new PathV(v.id));
+        // 添加单向边
+        for (var e : project.eIdMap.values())
+            vs.get(e.from.id).es.add(new PathE(e.id, vs.get(e.to.id)));
+
+        getAllPathDFS(endVertexId, vs.get(startVertexId), new ArrayList<Long>(), res);
+        res.sort((a, b) -> {
+            return b.size() - a.size();
+        });
+        if (res.size() > 50)
+            return new PathVo(res.size(), res.subList(0, 50));
+        else
+            return new PathVo(res.size(), res);
+    };
+
+    private void getAllPathDFS(Long endVertexId, PathV v, List<Long> path, List<List<Long>> res) {
+        if (v.id == endVertexId) {
+            res.add(new ArrayList<>(path));
+        }
+        for (var edge : v.es) {
+            if (edge.to == v)
+                continue;
+            path.add(edge.id);
+            getAllPathDFS(endVertexId, edge.to, path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    class PathE {
+        Long id;
+        PathV to;
+
+        PathE(Long id, PathV to) {
+            this.id = id;
+            this.to = to;
+        }
+    }
+
+    class PathV {
+        Long id;
+        List<PathE> es = new ArrayList<>();
+
+        PathV(Long id) {
+            this.id = id;
+        }
+    }
 
     private static VertexDynamicVo dPoTodVo(VertexDynamicPo po) {
         if (po == null)
