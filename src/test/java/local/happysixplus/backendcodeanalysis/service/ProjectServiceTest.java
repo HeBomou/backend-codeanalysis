@@ -88,7 +88,8 @@ public class ProjectServiceTest {
         long res = vo.getId().hashCode();
         res += new HashSet<>(vo.getVertexIds()).hashCode();
         res += new HashSet<>(vo.getEdgeIds()).hashCode();
-        res += vo.getDomainDynamicVo().hashCode();
+        if (vo.getDomainDynamicVo() != null)
+            res += vo.getDomainDynamicVo().hashCode();
         return res;
     }
 
