@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectProfileVo {
+public class ProjectBasicAttributeVo {
 
     Long id;
 
@@ -31,23 +31,4 @@ public class ProjectProfileVo {
      */
     Integer connectiveDomainNum;
 
-    /**
-     * 子图数量
-     */
-    Integer subgraphNum;
-
-    /**
-     * 被标注的点数
-     */
-    Integer vertexAnotationNum;
-
-    /**
-     * 被标注的边数
-     */
-    Integer edgeAnotationNum;
-
-    /**
-     * 被标注的联通域数
-     */
-    Integer connectiveDomainAnotationNum;
 }
