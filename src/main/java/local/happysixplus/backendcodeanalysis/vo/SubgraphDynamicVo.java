@@ -1,7 +1,5 @@
 package local.happysixplus.backendcodeanalysis.vo;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +14,6 @@ public class SubgraphDynamicVo {
  
     Long id;
 
-    String name;
+    String name = "";
 
-    /**
-     * 各联通域注释
-     */
-    List<ConnectiveDomainDynamicVo> connectiveDomains;
 }

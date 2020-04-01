@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConnectiveDomainStaticVo {
+public class ConnectiveDomainAllVo {
 
     Long id;
 
     List<Long> vertexIds;
 
     List<Long> edgeIds;
+
+    ConnectiveDomainDynamicVo domainDynamicVo;
+
 }

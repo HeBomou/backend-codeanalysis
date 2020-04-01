@@ -13,14 +13,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AdminUserPo {
+public class VertexDynamicPo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    String username;
+    Long projectId;
 
-    String pwdMd5;
+    String anotation;
+
+    Float x;
+
+    Float y;
 
 }

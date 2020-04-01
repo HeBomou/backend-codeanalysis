@@ -11,5 +11,5 @@ public class EdgeDynamicVo {
 
     Long id;
 
-    String anotation;
+    String anotation = "";
 }

@@ -9,18 +9,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 用户的注释等动态信息
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AdminUserPo {
+public class ProjectDynamicPo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    String username;
+    Long userId;
 
-    String pwdMd5;
+    String projectName;
 
 }

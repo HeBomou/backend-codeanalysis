@@ -11,9 +11,9 @@ public class VertexDynamicVo {
 
     Long id;
 
-    String anotation;
+    String anotation = "";
 
-    Float x;
+    Float x = 0f;
 
-    Float y;
+    Float y = 0f;
 }

@@ -28,9 +28,10 @@ public class SubgraphPo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Double threshold;
+    // TODO: 索引
+    Long projectId;
 
-    String name;
+    Double threshold;
 
     /**
      * 联通域的点与边等信息
@@ -38,4 +39,5 @@ public class SubgraphPo {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     Set<ConnectiveDomainPo> connectiveDomains;
+
 }

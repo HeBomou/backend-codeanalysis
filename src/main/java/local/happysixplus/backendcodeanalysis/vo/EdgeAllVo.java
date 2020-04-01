@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EdgeStaticVo {
+public class EdgeAllVo {
 
     Long id;
 
@@ -16,4 +16,7 @@ public class EdgeStaticVo {
     Long toId;
 
     Double closeness;
+
+    EdgeDynamicVo dynamicVo;
+
 }

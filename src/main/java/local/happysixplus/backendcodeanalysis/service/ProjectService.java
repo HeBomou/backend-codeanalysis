@@ -2,11 +2,14 @@ package local.happysixplus.backendcodeanalysis.service;
 
 import java.util.List;
 
+import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
 
 public interface ProjectService {
 
@@ -20,9 +23,9 @@ public interface ProjectService {
 
     void removeProject(Long id);
 
-    void updateProject(ProjectDynamicVo vo);
+    List<ProjectDynamicVo> getProjectDynamicByUserId(Long userId);
 
-    List<ProjectAllVo> getProjectAllByUserId(Long userId);
+    ProjectAllVo getProjectAllById(Long id);
 
     /**
      * 根据阈值生成一张子图，预处理得到删除紧密度低于阈值的边后的图及其基本信息，不包括只有一个点的联通域
@@ -31,13 +34,45 @@ public interface ProjectService {
      * @param threshold 紧密度阈值
      * @return 子图的id
      */
-    SubgraphAllVo addSubgraph(Long projectId, Double threshold);
+    SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name);
 
     void removeSubgraph(Long id);
 
-    void updateSubGraph(Long projectId, SubgraphDynamicVo vo);
+    /**
+     * 更新一个项目的动态信息
+     * @param projectId 项目id
+     * @param vo 项目vo
+     */
+    void updateProjectDynamic(Long projectId, ProjectDynamicVo vo);
 
-    List<SubgraphAllVo> getSubgraphAllByProjectId(Long projectId);
+    /**
+     * 更新一张子图的注释等动态信息
+     * @param projectId 项目id
+     * @param vo 子图vo
+     */
+    void updateSubGraphDynamic(Long projectId, SubgraphDynamicVo vo);
+
+    /**
+     * 更新一个联通域的注释等动态信息
+     * @param projectId 项目id
+     * @param subgraphId 子图id
+     * @param vo 要更新的联通域vo
+     */
+    void updateConnectiveDomainDynamic(Long projectId, Long subgraphId, ConnectiveDomainDynamicVo vo);
+
+    /**
+     * 更新一条边的注释等动态信息
+     * @param projectId
+     * @param vo
+     */
+    void updateEdgeDynamic(Long projectId, EdgeDynamicVo vo);
+
+    /**
+     * 更新一个点的注释等动态信息
+     * @param projectId
+     * @param vo
+     */
+    void updateVertexDynamic(Long projectId, VertexDynamicVo vo);
 
     /**
      * 获取初始图中从start出发到end的最短路

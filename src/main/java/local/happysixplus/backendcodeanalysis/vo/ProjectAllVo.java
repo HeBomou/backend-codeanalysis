@@ -1,5 +1,7 @@
 package local.happysixplus.backendcodeanalysis.vo;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,20 @@ public class ProjectAllVo {
 
     Long id;
 
-    ProjectStaticVo staticVo;
+    /**
+     * 初始图的所有点
+     */
+    List<VertexAllVo> vertices;
+
+    /**
+     * 初始图的所有边
+     */
+    List<EdgeAllVo> edges;
+
+    /**
+     * 设置了阈值的所有子图，包括阈值为零的默认子图
+     */
+    List<SubgraphAllVo> subgraphs;
 
     ProjectDynamicVo dynamicVo;
 }

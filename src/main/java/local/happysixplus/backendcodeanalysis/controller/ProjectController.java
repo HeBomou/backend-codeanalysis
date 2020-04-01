@@ -15,19 +15,40 @@ public class ProjectController {
     @Autowired
     ProjectService service;
 
-    @PutMapping(value = "/{projectId}/subgraph/{id}")
-    public void putSubgraph(@PathVariable Long projectId, @RequestBody SubgraphDynamicVo vo) {
-        service.updateSubGraph(projectId, vo);
+    @PostMapping(value = "")
+    public ProjectAllVo postProject(@RequestParam String projectName, @RequestParam String url,
+            @RequestParam long userId) {
+        return service.addProject(projectName, url, userId);
     }
 
-    @PutMapping(value = "/{projectId}")
+    @DeleteMapping(value = "/{id}")
+    public void deleteProject(@PathVariable Long id) {
+        service.removeProject(id);
+    }
+
+    @PutMapping(value = "/{projectId}/dynamic")
     public void putProject(@PathVariable Long projectId, @RequestBody ProjectDynamicVo vo) {
-        service.updateProject(vo);
+        service.updateProjectDynamic(projectId, vo);
     }
 
     @GetMapping(value = "")
-    public List<ProjectAllVo> getProject(@RequestParam Long userId) {
-        return service.getProjectAllByUserId(userId);
+    public List<ProjectDynamicVo> getProject(@RequestParam Long userId) {
+        return service.getProjectDynamicByUserId(userId);
+    }
+
+    @PostMapping(value = "/{projectId}/subgraph")
+    public SubgraphAllVo postSubgraph(@PathVariable Long projectId, @RequestParam Double threshold, @RequestParam String name) {
+        return service.addSubgraph(projectId, threshold, name);
+    }
+
+    @DeleteMapping(value = "/{projectId}/subgraph/{id}")
+    public void deleteSubgraph(@PathVariable Long projectId, @PathVariable Long id) {
+        service.removeSubgraph(id);
+    }
+
+    @PutMapping(value = "/{projectId}/subgraph/{id}/dynamic")
+    public void putSubgraph(@PathVariable Long projectId, @RequestBody SubgraphDynamicVo vo) {
+        service.updateSubGraphDynamic(projectId, vo);
     }
 
     @GetMapping(value = "/{projectId}/originalGraphShortestPath")
@@ -36,35 +57,9 @@ public class ProjectController {
         return service.getOriginalGraphShortestPath(projectId, startVertexId, endVertexId);
     }
 
-    @GetMapping(value = "/{projectId}/subgraph")
-    public List<SubgraphAllVo> getSubgraph(@PathVariable Long projectId) {
-        return service.getSubgraphAllByProjectId(projectId);
-    }
-
     @GetMapping(value = "/{projectId}/similarFunction")
     public List<String> getSimilarFunction(@RequestParam String funcName, @PathVariable Long projectId) {
         return service.getSimilarFunction(projectId, funcName);
-    }
-
-    @PostMapping(value = "/{projectId}/subgraph")
-    public SubgraphAllVo postSubgraph(@RequestParam Double threshold, @PathVariable Long projectId) {
-        return service.addSubgraph(projectId, threshold);
-    }
-
-    @PostMapping(value = "")
-    public ProjectAllVo postProject(@RequestParam String projectName, @RequestParam String url,
-            @RequestParam long userId) {
-        return service.addProject(projectName, url, userId);
-    }
-
-    @DeleteMapping(value = "/{projectId}/subgraph/{id}")
-    public void deleteSubgraph(@PathVariable Long projectId, @PathVariable Long id) {
-        service.removeSubgraph(id);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public void deleteProject(@PathVariable Long id) {
-        service.removeProject(id);
     }
 
 }

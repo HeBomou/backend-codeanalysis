@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VertexStaticVo {
+public class VertexAllVo {
 
     Long id;
 
     String functionName;
 
     String sourceCode;
+
+    VertexDynamicVo dynamicVo;
 }

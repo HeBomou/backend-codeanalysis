@@ -9,18 +9,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 设置了阈值的子图，包括子图的各个联通域的点等静态信息
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AdminUserPo {
+public class SubgraphDynamicPo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    String username;
+    Long projectId;
 
-    String pwdMd5;
+    String name;
 
 }

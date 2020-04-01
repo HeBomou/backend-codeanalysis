@@ -1,14 +1,13 @@
 package local.happysixplus.backendcodeanalysis.po;
 
-import java.util.Set;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,16 +23,12 @@ public class ConnectiveDomainPo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable
-    Set<VertexPo> vertexs;
+    @Convert(converter = LongListToStringConverter.class)
+    @Column(columnDefinition = "MEDIUMTEXT")
+    List<Long> vertexIds;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable
-    Set<EdgePo> edges;
+    @Convert(converter = LongListToStringConverter.class)
+    @Column(columnDefinition = "MEDIUMTEXT")
+    List<Long> edgeIds;
 
-    String anotation;
-
-    String color;
-    
 }

@@ -25,10 +25,4 @@ public class VertexPo {
     @Column(columnDefinition = "MEDIUMTEXT")
     String sourceCode;
 
-    String anotation;
-
-    Float x;
-
-    Float y;
-
 }

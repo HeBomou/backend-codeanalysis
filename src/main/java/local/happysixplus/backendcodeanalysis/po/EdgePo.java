@@ -32,5 +32,4 @@ public class EdgePo {
 
     Double closeness;
 
-    String anotation;
 }
