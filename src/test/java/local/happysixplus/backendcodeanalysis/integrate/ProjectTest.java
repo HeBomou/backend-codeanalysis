@@ -1,14 +1,9 @@
 package local.happysixplus.backendcodeanalysis.integrate;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mysql.cj.xdevapi.JsonArray;
 
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
-import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
-import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
-import local.happysixplus.backendcodeanalysis.po.ProjectDynamicPo;
-import local.happysixplus.backendcodeanalysis.po.SubgraphDynamicPo;
 import local.happysixplus.backendcodeanalysis.vo.*;
 import lombok.var;
 
@@ -65,9 +60,9 @@ public class ProjectTest {
 
 	@Test // 新建项目，根据UserID获取项目概要（动态信息）
 	public void Test2() throws Exception {
-		MvcResult resAdd=
-		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux2")
-				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux2")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "3"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -75,7 +70,7 @@ public class ProjectTest {
 		var resa = JSONObject.parseObject(list.get(0).toString(), ProjectDynamicVo.class);
 		assertEquals(resa.getProjectName(), "Linux2");
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
-		assertEquals(allVo.getId(),allVo.getDynamicVo().getId());
+		assertEquals(allVo.getId(), allVo.getDynamicVo().getId());
 	}
 
 	@Test // 新建项目，更新
@@ -96,74 +91,73 @@ public class ProjectTest {
 		assertEquals(resa.getDynamicVo().getProjectName(), "Test3WYM");
 	}
 
-	@Test//新建项目 删除
-	public void Test4() throws Exception{
+	@Test // 新建项目 删除
+	public void Test4() throws Exception {
 		MvcResult resAdd = mockMvc
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux4")
 						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "5"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
-		mockMvc.perform(
-			MockMvcRequestBuilders.delete("/project/{id}",projectId)
-		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		mockMvc.perform(MockMvcRequestBuilders.delete("/project/{id}", projectId))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "5"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list = JSONObject.parseArray(resGet.getResponse().getContentAsString());
-		assertEquals(list.size(),0);
+		assertEquals(list.size(), 0);
 
 	}
 
-	@Test //子图相关
-	public void Test5() throws Exception{
+	@Test // 子图相关
+	public void Test5() throws Exception {
 		MvcResult resAdd = mockMvc
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test5")
 						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "55"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
-		//添加子图
-		mockMvc.perform(
-			MockMvcRequestBuilders.post("/project/{projectId}/subgraph",projectId).param("threshold", "0.3")
-			.param("name", "testSubgraphzero")
-		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		//验证结果
+		// 添加子图
+		mockMvc.perform(MockMvcRequestBuilders.post("/project/{projectId}/subgraph", projectId)
+				.param("threshold", "0.3").param("name", "testSubgraphzero"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		// 验证结果
 		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo2 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
-		var sgs=allVo2.getSubgraphs();
-		assertEquals(sgs.size(),2);
-		sgs.sort((a,b)->(int)(a.getId()-b.getId()));
-		assertEquals(sgs.get(0).getThreshold(),0d);
-		assertEquals(sgs.get(1).getThreshold(),0.3d);
-		assertEquals(sgs.get(1).getDynamicVo().getName(),"testSubgraphzero");
-		//删除子图
+		var sgs = allVo2.getSubgraphs();
+		assertEquals(sgs.size(), 2);
+		sgs.sort((a, b) -> (int) (a.getId() - b.getId()));
+		assertEquals(sgs.get(0).getThreshold(), 0d);
+		assertEquals(sgs.get(1).getThreshold(), 0.3d);
+		assertEquals(sgs.get(1).getDynamicVo().getName(), "testSubgraphzero");
+		// 删除子图
 		mockMvc.perform(
-			MockMvcRequestBuilders.delete("/project/{projectId}/subgraph/{id}",projectId,sgs.get(1).getId()))
-			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		//验证结果
+				MockMvcRequestBuilders.delete("/project/{projectId}/subgraph/{id}", projectId, sgs.get(1).getId()))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		// 验证结果
 		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo3 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
-		var sgs1=allVo3.getSubgraphs();
-		assertEquals(sgs1.size(),1);
-		//更新子图
-		SubgraphDynamicVo vo=allVo.getSubgraphs().get(0).getDynamicVo();
+		var sgs1 = allVo3.getSubgraphs();
+		assertEquals(sgs1.size(), 1);
+		// 更新子图
+		SubgraphDynamicVo vo = allVo.getSubgraphs().get(0).getDynamicVo();
 		vo.setName("SKTelecomT1Faker");
 		mockMvc.perform(
-			MockMvcRequestBuilders.put("/project/{projectId}/subgraph/{id}/dynamic",projectId,sgs.get(1).getId())
-			.contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(vo)))
-			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		//验证结果
+				MockMvcRequestBuilders.put("/project/{projectId}/subgraph/{id}/dynamic", projectId, sgs.get(1).getId())
+						.contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(vo)))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		// 验证结果
 		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo4 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
-		var sgs2=allVo4.getSubgraphs();
-		assertEquals(sgs2.size(),1);
-		assertEquals(sgs2.get(0).getDynamicVo().getName(),"SKTelecomT1Faker");
+		var sgs2 = allVo4.getSubgraphs();
+		assertEquals(sgs2.size(), 1);
+		assertEquals(sgs2.get(0).getDynamicVo().getName(), "SKTelecomT1Faker");
 
 	}
-	@Test//测试获取函数
+
+	@Test // 测试获取函数
 	public void Test6() throws Exception {
 		MvcResult resAdd = mockMvc
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test6")
@@ -172,40 +166,44 @@ public class ProjectTest {
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
-		MvcResult resGetFunction = mockMvc
-				.perform(MockMvcRequestBuilders.get("/project/{projectId}/similarFunction", projectId).param("funcName",
-						"C"))
+		MvcResult resGetFunction = mockMvc.perform(
+				MockMvcRequestBuilders.get("/project/{projectId}/similarFunction", projectId).param("funcName", "C"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		List<String> strs = JSONObject.parseArray(resGetFunction.getResponse().getContentAsString(), String.class);
-		Set<String> s=new HashSet<>(strs);
-		Set<String> expected=new HashSet<>();
+		Set<String> s = new HashSet<>(strs);
+		Set<String> expected = new HashSet<>();
 		expected.add("temp.C:Cmake()");
 		expected.add("temp.C:<init>()");
 		expected.add("temp.C:Cprint(int,java.lang.Integer)");
 		assertEquals(expected, s);
 	}
 
-	@Test//测试获取路径
+	@Test // 测试获取路径
 	public void Test7() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77"))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		var v = resAdd.getResponse().getContentAsString();
-		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
-		long projectId = vo.getId();
-		List<VertexAllVo> vdvs = vo.getVertices();
-		vdvs.sort((a,b)->(int)(a.getId()-b.getId()));
-		long id1 = vdvs.get(0).getId();
-		long id2 = vdvs.get(vdvs.size() - 1).getId();
-		assertTrue(vdvs.get(0).getFunctionName().contains("main"));
-		assertTrue(vdvs.get(vdvs.size()-1).getFunctionName().contains("Baker"));
-		MvcResult resGetFunction = mockMvc
-				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
-						.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		var res = resGetFunction.getResponse().getContentAsString();
-		System.out.println(res);
+		while (true) {
+
+			MvcResult resAdd = mockMvc
+					.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+							.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77"))
+					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+			var v = resAdd.getResponse().getContentAsString();
+			var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
+			long projectId = vo.getId();
+			List<VertexAllVo> vdvs = vo.getVertices();
+			vdvs.sort((a, b) -> (int) (a.getId() - b.getId()));
+			long id1 = vdvs.get(0).getId();
+			long id2 = vdvs.get(vdvs.size() - 1).getId();
+			assertTrue(vdvs.get(0).getFunctionName().contains("main"));
+			assertTrue(vdvs.get(vdvs.size() - 1).getFunctionName().contains("Baker"));
+			MvcResult resGetFunction = mockMvc
+					.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
+							.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
+					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+			var res = resGetFunction.getResponse().getContentAsString();
+			var path = JSONObject.parseObject(res, PathVo.class);
+			assertEquals(path.getNum(), 1);
+			System.out.println(res);
+		}
 
 	}
 
@@ -232,8 +230,8 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 	}
 
-	@Test//测试项目简介
-	public void Test11() throws Exception{
+	@Test // 测试项目简介
+	public void Test11() throws Exception {
 		MvcResult resAdd = mockMvc
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
 						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "99"))
@@ -241,17 +239,16 @@ public class ProjectTest {
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 
-		long projectId=vo.getId();
-		MvcResult resGet = mockMvc
-				.perform(MockMvcRequestBuilders.get("/project/{id}/profile",projectId))
+		long projectId = vo.getId();
+		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}/profile", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		var profileVo=JSONObject.parseObject(resGet.getResponse().getContentAsString(),ProjectProfileVo.class);
-		assertEquals(profileVo.getVertexNum(),9);
-		assertEquals(profileVo.getEdgeNum(),10);
-		assertEquals(profileVo.getSubgraphNum(),1);
-		assertEquals(profileVo.getConnectiveDomainAnotationNum(),0);
-		assertEquals(profileVo.getVertexAnotationNum(),0);
-		assertEquals(profileVo.getEdgeAnotationNum(),0);
+		var profileVo = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectProfileVo.class);
+		assertEquals(profileVo.getVertexNum(), 9);
+		assertEquals(profileVo.getEdgeNum(), 10);
+		assertEquals(profileVo.getSubgraphNum(), 1);
+		assertEquals(profileVo.getConnectiveDomainAnotationNum(), 0);
+		assertEquals(profileVo.getVertexAnotationNum(), 0);
+		assertEquals(profileVo.getEdgeAnotationNum(), 0);
 
 	}
 
