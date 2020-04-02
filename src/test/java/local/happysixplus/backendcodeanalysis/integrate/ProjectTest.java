@@ -180,30 +180,28 @@ public class ProjectTest {
 
 	@Test // 测试获取路径
 	public void Test7() throws Exception {
-		while (true) {
 
-			MvcResult resAdd = mockMvc
-					.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
-							.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77"))
-					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-			var v = resAdd.getResponse().getContentAsString();
-			var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
-			long projectId = vo.getId();
-			List<VertexAllVo> vdvs = vo.getVertices();
-			vdvs.sort((a, b) -> (int) (a.getId() - b.getId()));
-			long id1 = vdvs.get(0).getId();
-			long id2 = vdvs.get(vdvs.size() - 1).getId();
-			assertTrue(vdvs.get(0).getFunctionName().contains("main"));
-			assertTrue(vdvs.get(vdvs.size() - 1).getFunctionName().contains("Baker"));
-			MvcResult resGetFunction = mockMvc
-					.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
-							.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
-					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-			var res = resGetFunction.getResponse().getContentAsString();
-			var path = JSONObject.parseObject(res, PathVo.class);
-			assertEquals(path.getNum(), 1);
-			System.out.println(res);
-		}
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var v = resAdd.getResponse().getContentAsString();
+		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
+		long projectId = vo.getId();
+		List<VertexAllVo> vdvs = vo.getVertices();
+		vdvs.sort((a, b) -> (int) (a.getId() - b.getId()));
+		long id1 = vdvs.get(0).getId();
+		long id2 = vdvs.get(vdvs.size() - 1).getId();
+		assertTrue(vdvs.get(0).getFunctionName().contains("main"));
+		assertTrue(vdvs.get(vdvs.size() - 1).getFunctionName().contains("Baker"));
+		MvcResult resGetFunction = mockMvc
+				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
+						.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var res = resGetFunction.getResponse().getContentAsString();
+		var path = JSONObject.parseObject(res, PathVo.class);
+		assertEquals(path.getNum(), 1);
+		System.out.println(res);
 
 	}
 
@@ -252,31 +250,27 @@ public class ProjectTest {
 
 	}
 
-	@Test //测试basicattribute
-	public void Test12() throws Exception{
-		MvcResult result0=mockMvc.perform(
-			MockMvcRequestBuilders.get("/project")
-		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+	@Test // 测试basicattribute
+	public void Test12() throws Exception {
+		MvcResult result0 = mockMvc.perform(MockMvcRequestBuilders.get("/project"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list0 = JSONObject.parseArray(result0.getResponse().getContentAsString());
-		MvcResult result1=mockMvc.perform(
-			MockMvcRequestBuilders.get("/project").param("userId","4396")
-		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		MvcResult result1 = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list1 = JSONObject.parseArray(result1.getResponse().getContentAsString());
-		
-		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
-							.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
-					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		MvcResult result2=mockMvc.perform(
-			MockMvcRequestBuilders.get("/project")
-		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+		MvcResult result2 = mockMvc.perform(MockMvcRequestBuilders.get("/project"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list2 = JSONObject.parseArray(result2.getResponse().getContentAsString());
-		MvcResult result3=mockMvc.perform(
-			MockMvcRequestBuilders.get("/project").param("userId","4396")
-		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		MvcResult result3 = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "4396"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list3 = JSONObject.parseArray(result3.getResponse().getContentAsString());
-		assertEquals(list0.size()+1,list2.size());
-		assertEquals(list1.size()+1,list3.size());
+		assertEquals(list0.size() + 1, list2.size());
+		assertEquals(list1.size() + 1, list3.size());
 	}
 
 }
