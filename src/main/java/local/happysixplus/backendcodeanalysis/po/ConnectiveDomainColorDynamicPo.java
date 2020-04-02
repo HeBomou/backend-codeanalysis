@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(indexes = {@Index(columnList = "projectId")})
-public class ConnectiveDomainDynamicPo {
+public class ConnectiveDomainColorDynamicPo {
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -26,6 +26,6 @@ public class ConnectiveDomainDynamicPo {
 
     Long projectId;
 
-    String anotation;
+    String color;
     
 }

@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.List;
 
+import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainColorDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainData;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
 import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
@@ -27,6 +28,7 @@ import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
+import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
 import local.happysixplus.backendcodeanalysis.po.EdgeDynamicPo;
@@ -77,6 +79,9 @@ public class ProjectServiceTest {
 
     @MockBean
     ConnectiveDomainDynamicData connectiveDomainDynamicData;
+
+    @MockBean
+    ConnectiveDomainColorDynamicData connectiveDomainColorDynamicData;
 
     @MockBean
     EdgeDynamicData edgeDynamicData;
@@ -241,7 +246,8 @@ public class ProjectServiceTest {
         var pDV1 = new VertexPositionDynamicPo(3L, 2L, 0f, 0f);
         var pDV2 = new VertexPositionDynamicPo(4L, 2L, 0f, 0f);
         var dE1 = new EdgeDynamicPo(3L, 2L, "abian 1");
-        var dConnectiveDomain1 = new ConnectiveDomainDynamicPo(2L, 2L, "acd 1", "#CDBE70");
+        var dConnectiveDomain1 = new ConnectiveDomainDynamicPo(2L, 2L, "acd 1");
+        var dConnectiveDomainColor1 = new ConnectiveDomainColorDynamicPo(2L, 2L, "#CDBE70");
         var dsPo = new SubgraphDynamicPo(4L, 2L, "Default subgraph");
         var dPo = new ProjectDynamicPo(2L, 5L, "projC");
 
@@ -251,6 +257,7 @@ public class ProjectServiceTest {
         Mockito.when(projectDynamicData.findById(2L)).thenReturn(Optional.of(dPo));
         Mockito.when(subgraphDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dsPo));
         Mockito.when(connectiveDomainDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dConnectiveDomain1));
+        Mockito.when(connectiveDomainColorDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dConnectiveDomainColor1));
         Mockito.when(edgeDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dE1));
         Mockito.when(vertexDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dV1, dV2));
         Mockito.when(vertexPositionDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(pDV1, pDV2));
@@ -416,7 +423,8 @@ public class ProjectServiceTest {
     @Test
     public void testUpdateConnectiveDomainDynamic1() {
         service.updateConnectiveDomainDynamic(2L, 1L, new ConnectiveDomainDynamicVo(3L, "best", "#555555"));
-        Mockito.verify(connectiveDomainDynamicData).save(new ConnectiveDomainDynamicPo(3L, 2L, "best", "#555555"));
+        Mockito.verify(connectiveDomainDynamicData).save(new ConnectiveDomainDynamicPo(3L, 2L, "best"));
+        Mockito.verify(connectiveDomainColorDynamicData).save(new ConnectiveDomainColorDynamicPo(3L, 2L, "#555555"));
     }
 
     @Test

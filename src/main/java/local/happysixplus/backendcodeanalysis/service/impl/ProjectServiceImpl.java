@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
+import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainColorDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
 import local.happysixplus.backendcodeanalysis.data.EdgeData;
 import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
@@ -24,6 +25,7 @@ import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
+import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
 import local.happysixplus.backendcodeanalysis.po.EdgeDynamicPo;
@@ -156,10 +158,11 @@ public class ProjectServiceImpl implements ProjectService {
             return new SubgraphPo(id, projectId, threshold, cPo);
         }
 
-        SubgraphAllVo getAllVo(SubgraphDynamicVo dVo, Map<Long, ConnectiveDomainDynamicPo> cDPoMap) {
+        SubgraphAllVo getAllVo(SubgraphDynamicVo dVo, Map<Long, ConnectiveDomainDynamicPo> cDPoMap,
+                Map<Long, ConnectiveDomainColorDynamicPo> cColorDPoMap) {
             var cdVos = new ArrayList<ConnectiveDomainAllVo>(connectiveDomains.size());
             for (var c : connectiveDomains)
-                cdVos.add(c.getAllVo(dPoTodVo(cDPoMap.get(c.id))));
+                cdVos.add(c.getAllVo(dPoTodVo(cDPoMap.get(c.id), cColorDPoMap.get(c.id))));
             return new SubgraphAllVo(id, threshold, cdVos, dVo);
         }
 
@@ -348,6 +351,9 @@ public class ProjectServiceImpl implements ProjectService {
     VertexDynamicData vertexDynamicData;
 
     @Autowired
+    ConnectiveDomainColorDynamicData connectiveDomainColorDynamicData;
+
+    @Autowired
     VertexPositionDynamicData vertexPositionDynamicData;
 
     @Override
@@ -387,7 +393,8 @@ public class ProjectServiceImpl implements ProjectService {
         var subgDPo = new SubgraphDynamicPo(subPo.getId(), projPo.getId(), "Default subgraph");
         subgDPo = subgraphDynamicData.save(subgDPo);
         // 返回结果
-        var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>());
+        var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>(),
+                new HashMap<>(/* TODO: 随机生成颜色 */));
         return project.getAllVo(new HashMap<>(), new HashMap<>(/* TODO: 服务端生成初始点的位置 */), new HashMap<>(),
                 Arrays.asList(subgVo), dPoTodVo(projDPo));
     };
@@ -448,10 +455,12 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toMap(v -> v.getId(), v -> v));
         var cDPoMap = connectiveDomainDynamicData.findByProjectId(id).stream()
                 .collect(Collectors.toMap(v -> v.getId(), v -> v));
+        var cCDPoMap = connectiveDomainColorDynamicData.findByProjectId(id).stream()
+                .collect(Collectors.toMap(v -> v.getId(), v -> v));
         var sVos = new ArrayList<SubgraphAllVo>(sPos.size());
         // 获取子图vo
         for (var sPo : sPos)
-            sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap));
+            sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap, cCDPoMap));
         // 返回
         return project.getAllVo(vDPoMap, vPDPoMap, eDPoMap, sVos, dVo);
     }
@@ -485,7 +494,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 返回
         var subgraph = new Subgraph(newSPo);
-        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>());
+        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>(), new HashMap<>(/* TODO: 生成随机颜色 */));
     };
 
     @Override
@@ -500,8 +509,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateConnectiveDomainDynamic(Long projectId, Long subgraphId, ConnectiveDomainDynamicVo vo) {
-        connectiveDomainDynamicData
-                .save(new ConnectiveDomainDynamicPo(vo.getId(), projectId, vo.getAnotation(), vo.getColor()));
+        if (vo.getAnotation() != null)
+            connectiveDomainDynamicData.save(new ConnectiveDomainDynamicPo(vo.getId(), projectId, vo.getAnotation()));
+        if (vo.getColor() != null)
+            connectiveDomainColorDynamicData.save(new ConnectiveDomainColorDynamicPo(vo.getId(), projectId, vo.getColor()));
     }
 
     @Override
@@ -609,10 +620,20 @@ public class ProjectServiceImpl implements ProjectService {
         return new EdgeDynamicVo(po.getId(), po.getAnotation());
     }
 
-    private static ConnectiveDomainDynamicVo dPoTodVo(ConnectiveDomainDynamicPo po) {
-        if (po == null)
+    private static ConnectiveDomainDynamicVo dPoTodVo(ConnectiveDomainDynamicPo po,
+            ConnectiveDomainColorDynamicPo cPo) {
+        if (po == null && cPo == null)
             return null;
-        return new ConnectiveDomainDynamicVo(po.getId(), po.getAnotation(), po.getColor());
+        var res = new ConnectiveDomainDynamicVo();
+        if (po != null) {
+            res.setId(po.getId());
+            res.setAnotation(po.getAnotation());
+        }
+        if (cPo != null) {
+            res.setId(cPo.getId());
+            res.setColor(cPo.getColor());
+        }
+        return res;
     }
 
     private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po) {
