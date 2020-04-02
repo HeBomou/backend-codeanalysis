@@ -543,8 +543,6 @@ public class ProjectServiceImpl implements ProjectService {
             res.add(new ArrayList<>(path));
         }
         for (var edge : v.es) {
-            if (edge.to == v)
-                continue;
             path.add(edge.id);
             getAllPathDFS(endVertexId, edge.to, path, res);
             path.remove(path.size() - 1);
