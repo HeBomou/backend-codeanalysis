@@ -261,12 +261,12 @@ public class ProjectTest {
 		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}/profile", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var profileVo = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectProfileVo.class);
-		assertEquals(profileVo.getVertexNum(), 9);
-		assertEquals(profileVo.getEdgeNum(), 10);
-		assertEquals(profileVo.getSubgraphNum(), 1);
-		assertEquals(profileVo.getConnectiveDomainAnotationNum(), 0);
-		assertEquals(profileVo.getVertexAnotationNum(), 0);
-		assertEquals(profileVo.getEdgeAnotationNum(), 0);
+		assertEquals(9, profileVo.getVertexNum());
+		assertEquals(9, profileVo.getEdgeNum());
+		assertEquals(1, profileVo.getSubgraphNum());
+		assertEquals(0, profileVo.getConnectiveDomainAnotationNum());
+		assertEquals(0, profileVo.getVertexAnotationNum());
+		assertEquals(0, profileVo.getEdgeAnotationNum());
 
 	}
 
