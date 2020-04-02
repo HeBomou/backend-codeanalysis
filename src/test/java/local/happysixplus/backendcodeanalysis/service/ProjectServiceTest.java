@@ -1,6 +1,7 @@
 package local.happysixplus.backendcodeanalysis.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.isA;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -131,52 +132,116 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddProject1() {
-        service.addProject("Faker", "https://gitee.com/HeBomou/simple", 2L);
+        // 打桩数据生成
+        // project
+        var v1 = new VertexPo(1L, "top.hebomou.App:main(java.lang.String[])",
+                "public static void main( String[] args )");
+        var v2 = new VertexPo(2L, "top.hebomou.ClassA:<init>()", "public ClassA()");
+        var v3 = new VertexPo(3L, "top.hebomou.ClassA:funcA2()", "public void funcA2()");
+        var v4 = new VertexPo(4L, "top.hebomou.ClassB:<init>(char)", "public ClassB(char temp)");
+        var v5 = new VertexPo(5L, "top.hebomou.ClassB:funcB2(char)", "public void funcB2(char temp)");
+        var v6 = new VertexPo(6L, "top.hebomou.ClassC:<init>()", "public ClassC()");
+        var v7 = new VertexPo(7L, "top.hebomou.ClassC:funcC1(top.hebomou.ClassB,char)",
+                "public void funcC1(ClassB obj, char temp)");
+        var v8 = new VertexPo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()");
+        var v9 = new VertexPo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()");
+        var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5, v6, v7, v8, v9));
+        var e1 = new EdgePo(1L, v1, v2, 1d);
+        var e2 = new EdgePo(2L, v4, v7, 0.5d);
+        var e3 = new EdgePo(3L, v4, v6, 0.5d);
+        var e4 = new EdgePo(4L, v8, v9, 1d);
+        var e5 = new EdgePo(5L, v2, v4, 1d);
+        var e6 = new EdgePo(6L, v7, v5, 0.666667d);
+        var e7 = new EdgePo(7L, v3, v6, 0.666667d);
+        var e8 = new EdgePo(8L, v7, v7, 0.5d);
+        var edges = new HashSet<EdgePo>(Arrays.asList(e1, e2, e3, e4, e5, e6, e7, e8));
+        var po = new ProjectPo(23333L, 2L, vertices, edges);
+        // subgraph
+        var connectiveDomain1 = new ConnectiveDomainPo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L));
+        var connectiveDomain2 = new ConnectiveDomainPo(444445L, Arrays.asList(1L, 2L, 5L, 3L, 7L, 6L, 4L),
+                Arrays.asList(1L, 3L, 2L, 7L, 5L, 8L, 6L));
+        var connectiveDomainsPo = new HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain1, connectiveDomain2));
+        var sPo = new SubgraphPo(123456789L, 2L, 0d, connectiveDomainsPo);
+        // static attribute
+        var saPo = new ProjectStaticAttributePo(23333L, 2L, 9, 8, 2);
+        // project dynamic
+        var dPo = new ProjectDynamicPo(23333L, 2L, "Test Faker");
+        // subgraph dynamic
+        var dsPo = new SubgraphDynamicPo(123456789L, 23333L, "Default subgraph");
 
-        // ProjectAllVo resVo = service.addProject("Faker",
-        // "https://gitee.com/forsakenspirit/Linux", 2L);
-        // assertEquals(resVo.getStaticVo().getVertices().size(), 9);
-        // assertEquals(resVo.getStaticVo().getEdges().size(), 10);
-        // assertEquals(resVo.getStaticVo().getSubgraphs().size(), 1);
-        // assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getConnectiveDomains().size(),
-        // 1);
-        // assertEquals(resVo.getStaticVo().getSubgraphs().get(0).getThreshold(), 0);
-        // assertEquals(resVo.getDynamicVo().getProjectName(), "Faker");
-        // assertEquals(resVo.getDynamicVo().getVertices().size(), 9);
-        // assertEquals(resVo.getDynamicVo().getEdges().size(), 10);
-        // assertEquals(resVo.getDynamicVo().getSubgraphs().size(), 1);
+        // 打桩
+        Mockito.when(projectData.save(isA(ProjectPo.class))).thenReturn(po);
+        Mockito.when(subgraphData.save(isA(SubgraphPo.class))).thenReturn(sPo);
+        Mockito.when(projectStaticAttributeData.save(isA(ProjectStaticAttributePo.class))).thenReturn(saPo);
+        Mockito.when(projectDynamicData.save(isA(ProjectDynamicPo.class))).thenReturn(dPo);
+        Mockito.when(subgraphDynamicData.save(isA(SubgraphDynamicPo.class))).thenReturn(dsPo);
+
+        // 执行
+        var resVo = service.addProject("Test Faker", "https://gitee.com/HeBomou/simple", 2L);
+
+        // 测试数据生成
+        var vVo1 = new VertexAllVo(1L, "top.hebomou.App:main(java.lang.String[])",
+                "public static void main( String[] args )", null);
+        var vVo2 = new VertexAllVo(2L, "top.hebomou.ClassA:<init>()", "public ClassA()", null);
+        var vVo3 = new VertexAllVo(3L, "top.hebomou.ClassA:funcA2()", "public void funcA2()", null);
+        var vVo4 = new VertexAllVo(4L, "top.hebomou.ClassB:<init>(char)", "public ClassB(char temp)", null);
+        var vVo5 = new VertexAllVo(5L, "top.hebomou.ClassB:funcB2(char)", "public void funcB2(char temp)", null);
+        var vVo6 = new VertexAllVo(6L, "top.hebomou.ClassC:<init>()", "public ClassC()", null);
+        var vVo7 = new VertexAllVo(7L, "top.hebomou.ClassC:funcC1(top.hebomou.ClassB,char)",
+                "public void funcC1(ClassB obj, char temp)", null);
+        var vVo8 = new VertexAllVo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()", null);
+        var vVo9 = new VertexAllVo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()", null);
+        var verticesVo = Arrays.asList(vVo1, vVo2, vVo3, vVo4, vVo5, vVo6, vVo7, vVo8, vVo9);
+        var eVo1 = new EdgeAllVo(1L, 1L, 2L, 1d, null);
+        var eVo2 = new EdgeAllVo(2L, 4L, 7L, 0.5d, null);
+        var eVo3 = new EdgeAllVo(3L, 4L, 6L, 0.5d, null);
+        var eVo4 = new EdgeAllVo(4L, 8L, 9L, 1d, null);
+        var eVo5 = new EdgeAllVo(5L, 2L, 4L, 1d, null);
+        var eVo6 = new EdgeAllVo(6L, 7L, 5L, 0.666667d, null);
+        var eVo7 = new EdgeAllVo(7L, 3L, 6L, 0.666667d, null);
+        var eVo8 = new EdgeAllVo(8L, 7L, 7L, 0.5d, null);
+        var edgesVo = Arrays.asList(eVo1, eVo2, eVo3, eVo4, eVo5, eVo6, eVo7, eVo8);
+        var connectiveDomainVo1 = new ConnectiveDomainAllVo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L), null);
+        var connectiveDomainVo2 = new ConnectiveDomainAllVo(444445L, Arrays.asList(1L, 2L, 5L, 3L, 7L, 6L, 4L),
+                Arrays.asList(1L, 3L, 2L, 7L, 5L, 8L, 6L), null);
+        var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
+        var sVo = Arrays.asList(new SubgraphAllVo(123456789L, 0d, connectiveDomainsVo,
+                new SubgraphDynamicVo(123456789L, "Default subgraph")));
+        var pVo = new ProjectAllVo(23333L, verticesVo, edgesVo, sVo, new ProjectDynamicVo(23333L, "Test Faker"));
+
+        // 测试
+        assertEquals(getHashCodeForProjectAllVo(pVo), getHashCodeForProjectAllVo(resVo));
     }
 
     @Test
     public void testGetProjectAll1() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, null, null);
-        // Vertices
+        // project
         var v1 = new VertexPo(3L, "v1", "dian1()");
         var v2 = new VertexPo(4L, "v2", "dian2()");
         var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
-        po.setVertices(vertices);
-        // Edges
         var e1 = new EdgePo(3L, v1, v2, 0.3d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1));
-        po.setEdges(edges);
+        var po = new ProjectPo(2L, 233L, vertices, edges);
+
         // Subgraphs
         var connectiveDomain1 = new ConnectiveDomainPo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L));
         var connectiveDomains1 = new HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain1));
-        var defaultSubgraph = new SubgraphPo(4L, 2L, 0d, connectiveDomains1);
+        var sPo = new SubgraphPo(4L, 2L, 0d, connectiveDomains1);
+
         // Dynamic Pos
         var dV1 = new VertexDynamicPo(3L, 2L, "a1", 0f, 0f);
         var dV2 = new VertexDynamicPo(4L, 2L, "a2", 0f, 0f);
         var dE1 = new EdgeDynamicPo(3L, 2L, "abian 1");
         var dConnectiveDomain1 = new ConnectiveDomainDynamicPo(2L, 2L, "acd 1", "#CDBE70");
-        var dDefaultSubgraph = new SubgraphDynamicPo(4L, 2L, "Default subgraph");
+        var dsPo = new SubgraphDynamicPo(4L, 2L, "Default subgraph");
         var dPo = new ProjectDynamicPo(2L, 5L, "projC");
 
         // 打桩
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
-        Mockito.when(subgraphData.findByProjectId(2L)).thenReturn(Arrays.asList(defaultSubgraph));
+        Mockito.when(subgraphData.findByProjectId(2L)).thenReturn(Arrays.asList(sPo));
         Mockito.when(projectDynamicData.findById(2L)).thenReturn(Optional.of(dPo));
-        Mockito.when(subgraphDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dDefaultSubgraph));
+        Mockito.when(subgraphDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dsPo));
         Mockito.when(connectiveDomainDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dConnectiveDomain1));
         Mockito.when(edgeDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dE1));
         Mockito.when(vertexDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dV1, dV2));
