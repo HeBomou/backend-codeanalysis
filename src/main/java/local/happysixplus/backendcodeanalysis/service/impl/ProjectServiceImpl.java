@@ -10,6 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.shape.random.RandomPointsBuilder;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -433,10 +436,46 @@ public class ProjectServiceImpl implements ProjectService {
                     .save(new ConnectiveDomainColorDynamicPo(cd.getId(), project.id, color));
             cDPoMap.put(cd.getId(), cDPo);
         }
+        // 生成节点初始位置并存储
+        var cdList = new ArrayList<>(subPo.getConnectiveDomains());
+        cdList.sort((a, b) -> {
+            return a.getVertexIds().size() - b.getVertexIds().size();
+        });
+        var vPosPoMap = new HashMap<Long, VertexPositionDynamicPo>(cdList.size());
+        class Util {
+            HashMap<Long, VertexPositionDynamicPo> map;
+            Long projectId;
+
+            Util(HashMap<Long, VertexPositionDynamicPo> map, Long projectId) {
+                this.map = map;
+            }
+
+            void calcPosForCD(Coordinate center, List<Long> vIds) {
+                int radius = (int) (100 * Math.sqrt((double) vIds.size()));
+                var fact = new GeometricShapeFactory();
+                fact.setCentre(center);
+                fact.setSize(radius * 2);
+                fact.setNumPoints(radius / 10);
+                var g = fact.createCircle();
+                var pb = new RandomPointsBuilder();
+                pb.setExtent(g);
+                pb.setNumPoints(50);
+                var randRes = pb.getGeometry().getCoordinates();
+                for (int i = 0; i < vIds.size(); i++) {
+                    map.put(vIds.get(i), new VertexPositionDynamicPo(vIds.get(i), projectId, (float) randRes[i].x,
+                            (float) randRes[i].y));
+                }
+            }
+        }
+        Util util = new Util(vPosPoMap, project.id);
+        if (cdList.size() > 0) {
+            var center = new Coordinate(800, 800);
+            util.calcPosForCD(center, cdList.get(0).getVertexIds());
+            // TODO: 处理同心圆
+        }
         // 返回结果
         var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>(), cDPoMap);
-        return project.getAllVo(new HashMap<>(), new HashMap<>(/* TODO: 服务端生成初始点的位置 */), new HashMap<>(),
-                Arrays.asList(subgVo), dPoTodVo(projDPo));
+        return project.getAllVo(new HashMap<>(), vPosPoMap, new HashMap<>(), Arrays.asList(subgVo), dPoTodVo(projDPo));
     };
 
     @Override
