@@ -18,6 +18,9 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
 
     @Override
     public ProjectInfo initGraph(String githubLink, String projectName) {
+        if(projectName.equals("")){
+            projectName="ruaraurauraurauraruauruauruaurauruhasudhausdhuaduasgdagsdyuag";
+        }
         deleteFile(projectName);
         cloneProject(githubLink, projectName);
         Map<String,String> srcCode = new HashMap<>();
