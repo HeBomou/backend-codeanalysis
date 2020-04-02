@@ -539,7 +539,7 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     private void getAllPathDFS(Long endVertexId, PathV v, List<Long> path, List<List<Long>> res) {
-        if (v.id == endVertexId) {
+        if (v.id.equals(endVertexId)) {
             res.add(new ArrayList<>(path));
         }
         for (var edge : v.es) {
