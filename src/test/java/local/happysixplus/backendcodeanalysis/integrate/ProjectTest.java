@@ -208,8 +208,9 @@ public class ProjectTest {
 
 	@Test // 测试新建项目
 	public void Test8() throws Exception {
-		var res = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
-				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
+		var res = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
+						.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
 		assertNotEquals(vo.getId(), null);
@@ -221,8 +222,9 @@ public class ProjectTest {
 
 	@Test // 测试新建项目
 	public void Test9() throws Exception {
-		var res = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
-				.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
+		var res = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+						.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
 		assertNotEquals(vo.getId(), null);
@@ -234,8 +236,9 @@ public class ProjectTest {
 
 	@Test // 测试新建项目
 	public void Test10() throws Exception {
-		var res = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestT Demo")
-				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
+		var res = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestT Demo")
+						.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
 		assertNotEquals(vo.getId(), null);
@@ -290,10 +293,11 @@ public class ProjectTest {
 		assertEquals(list1.size() + 1, list3.size());
 	}
 
-	@Test // 测试新建项目
+	@Test // 测试依赖图有环
 	public void Test13() throws Exception {
-		var res = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test Simple")
-				.param("url", "https://gitee.com/HeBomou/simple.git").param("userId", "4396"))
+		var res = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test Simple")
+						.param("url", "https://gitee.com/HeBomou/simple.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
 		assertNotEquals(vo.getId(), null);
@@ -302,6 +306,19 @@ public class ProjectTest {
 		assertEquals(vo.getEdges().size(), 8);
 		assertEquals(vo.getSubgraphs().size(), 1);
 		assertEquals(vo.getSubgraphs().get(0).getConnectiveDomains().size(), 2);
+
+		for (int i = 0; i < 20; i++) {
+			Long id1 = vo.getVertices().get((int) (Math.random() * vo.getVertices().size())).getId();
+			Long id2 = vo.getVertices().get((int) (Math.random() * vo.getVertices().size())).getId();
+			MvcResult resGetFunction = mockMvc
+					.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", vo.getId())
+							.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
+					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+			var pathVo = JSONObject.parseObject(resGetFunction.getResponse().getContentAsString(), PathVo.class);
+			System.out.print(pathVo.getNum());
+			for (var path : pathVo.getPaths())
+				assertEquals(path.size(), new HashSet<>(path).size());
+		}
 	}
 
 }

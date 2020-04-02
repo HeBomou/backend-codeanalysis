@@ -332,7 +332,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     ProjectDynamicData projectDynamicData;
- 
+
     @Autowired
     SubgraphDynamicData subgraphDynamicData;
 
@@ -516,6 +516,27 @@ public class ProjectServiceImpl implements ProjectService {
         return res;
     };
 
+    class PathE {
+        long id;
+        PathV to;
+
+        PathE(long id, PathV to) {
+            this.id = id;
+            this.to = to;
+        }
+    }
+
+    class PathV {
+        long id;
+        boolean inPath;
+        List<PathE> es = new ArrayList<>();
+
+        PathV(Long id) {
+            this.id = id;
+            this.inPath = false;
+        }
+    }
+
     @Override
     public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
         var res = new ArrayList<List<Long>>();
@@ -540,33 +561,19 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     private void getAllPathDFS(Long endVertexId, PathV v, List<Long> path, List<List<Long>> res) {
-        if (v.id.equals(endVertexId)) {
+        if (v.inPath)
+            return;
+        if (v.id == endVertexId) {
             res.add(new ArrayList<>(path));
+            return;
         }
+        v.inPath = true;
         for (var edge : v.es) {
             path.add(edge.id);
             getAllPathDFS(endVertexId, edge.to, path, res);
             path.remove(path.size() - 1);
         }
-    }
-
-    class PathE {
-        Long id;
-        PathV to;
-
-        PathE(Long id, PathV to) {
-            this.id = id;
-            this.to = to;
-        }
-    }
-
-    class PathV {
-        Long id;
-        List<PathE> es = new ArrayList<>();
-
-        PathV(Long id) {
-            this.id = id;
-        }
+        v.inPath = false;
     }
 
     private static VertexDynamicVo dPoTodVo(VertexDynamicPo po) {
