@@ -22,6 +22,11 @@ public class ProjectAllVo {
     List<VertexAllVo> vertices;
 
     /**
+     * 包结构根节点，是一棵树
+     */
+    PackageNodeVo packageRoot;
+
+    /**
      * 初始图的所有边
      */
     List<EdgeAllVo> edges;

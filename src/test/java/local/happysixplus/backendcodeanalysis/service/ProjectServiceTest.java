@@ -46,6 +46,7 @@ import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeAllVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.PackageNodeVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectBasicAttributeVo;
@@ -117,10 +118,19 @@ public class ProjectServiceTest {
         return vo.getId() + (long) vo.getName().hashCode();
     }
 
+    static long getHashCodeForPackageNode(PackageNodeVo vo) {
+        long res = vo.getStr().hashCode();
+        res += new HashSet<>(vo.getFunctions()).hashCode();
+        for (var chr : vo.getChildren())
+            res += getHashCodeForPackageNode(chr);
+        return res;
+    }
+
     static long getHashCodeForProjectAllVo(ProjectAllVo vo) {
         long res = vo.getId().hashCode();
         res += new HashSet<>(vo.getEdges()).hashCode();
         res += new HashSet<>(vo.getVertices()).hashCode();
+        res += getHashCodeForPackageNode(vo.getPackageRoot());
         res += vo.getSubgraphs().stream().map(ProjectServiceTest::getHashCodeForSubgraphAllVo)
                 .collect(Collectors.toSet()).hashCode();
         res += getHashCodeForProjectDynamicVo(vo.getDynamicVo());
@@ -214,6 +224,14 @@ public class ProjectServiceTest {
         var vVo8 = new VertexAllVo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()", null);
         var vVo9 = new VertexAllVo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()", null);
         var verticesVo = Arrays.asList(vVo1, vVo2, vVo3, vVo4, vVo5, vVo6, vVo7, vVo8, vVo9);
+        var nVo1 = new PackageNodeVo("App", new ArrayList<>(), Arrays.asList(1L));
+        var nVo2 = new PackageNodeVo("ClassA", new ArrayList<>(), Arrays.asList(2L, 3L));
+        var nVo3 = new PackageNodeVo("ClassB", new ArrayList<>(), Arrays.asList(4L, 5L));
+        var nVo4 = new PackageNodeVo("ClassC", new ArrayList<>(), Arrays.asList(6L, 7L));
+        var nVo5 = new PackageNodeVo("ClassD", new ArrayList<>(), Arrays.asList(8L, 9L));
+        var nVo6 = new PackageNodeVo("hebomou", Arrays.asList(nVo1, nVo2, nVo3, nVo4, nVo5), new ArrayList<>());
+        var nVo7 = new PackageNodeVo("top", Arrays.asList(nVo6), new ArrayList<>());
+        var nVoRoot = new PackageNodeVo("src", Arrays.asList(nVo7), new ArrayList<>());
         var eVo1 = new EdgeAllVo(1L, 1L, 2L, 1d, null);
         var eVo2 = new EdgeAllVo(2L, 4L, 7L, 0.5d, null);
         var eVo3 = new EdgeAllVo(3L, 4L, 6L, 0.5d, null);
@@ -230,7 +248,7 @@ public class ProjectServiceTest {
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var sVo = Arrays.asList(new SubgraphAllVo(123456789L, 0d, connectiveDomainsVo,
                 new SubgraphDynamicVo(123456789L, "Default subgraph")));
-        var pVo = new ProjectAllVo(23333L, verticesVo, edgesVo, sVo, new ProjectDynamicVo(23333L, "Test Faker"));
+        var pVo = new ProjectAllVo(23333L, verticesVo, nVoRoot, edgesVo, sVo, new ProjectDynamicVo(23333L, "Test Faker"));
 
         // 测试
         assertEquals(getHashCodeForProjectAllVo(pVo), getHashCodeForProjectAllVo(resVo));
@@ -240,8 +258,8 @@ public class ProjectServiceTest {
     public void testGetProjectAll1() {
         // 打桩数据生成
         // project
-        var v1 = new VertexPo(3L, "v1", "dian1()");
-        var v2 = new VertexPo(4L, "v2", "dian2()");
+        var v1 = new VertexPo(3L, "edu.itrust.BeanBuilder:v1(java.util.Map,java.lang.Object)", "dian1()");
+        var v2 = new VertexPo(4L, "edu.itrust.BeanSBer:v2(java.util.Map,java.lang.Object)", "dian2()");
         var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
         var e1 = new EdgePo(3L, v1, v2, 0.3d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1));
@@ -278,14 +296,21 @@ public class ProjectServiceTest {
         // 调用
         var resVo = service.getProjectAll(2L);
         // 验证数据生成
-        var expV1 = new VertexAllVo(3L, "v1", "dian1()", new VertexDynamicVo(3L, "a1", 0f, 0f));
-        var expV2 = new VertexAllVo(4L, "v2", "dian2()", new VertexDynamicVo(4L, "a2", 0f, 0f));
+        var expV1 = new VertexAllVo(3L, "edu.itrust.BeanBuilder:v1(java.util.Map,java.lang.Object)", "dian1()",
+                new VertexDynamicVo(3L, "a1", 0f, 0f));
+        var expV2 = new VertexAllVo(4L, "edu.itrust.BeanSBer:v2(java.util.Map,java.lang.Object)", "dian2()",
+                new VertexDynamicVo(4L, "a2", 0f, 0f));
+        var expPNode1 = new PackageNodeVo("BeanBuilder", new ArrayList<>(), Arrays.asList(3L));
+        var expPNode2 = new PackageNodeVo("BeanSBer", new ArrayList<>(), Arrays.asList(4L));
+        var expPNode3 = new PackageNodeVo("itrust", Arrays.asList(expPNode1, expPNode2), new ArrayList<>());
+        var expPNode4 = new PackageNodeVo("edu", Arrays.asList(expPNode3), new ArrayList<>());
+        var expPNode5 = new PackageNodeVo("src", Arrays.asList(expPNode4), new ArrayList<>());
         var expE1 = new EdgeAllVo(3L, 3L, 4L, 0.3d, new EdgeDynamicVo(3L, "abian 1"));
         var expC1 = new ConnectiveDomainAllVo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L),
                 new ConnectiveDomainDynamicVo(2L, "acd 1", "#CDBE70"));
         var expS1 = new SubgraphAllVo(4L, 0d, Arrays.asList(expC1), new SubgraphDynamicVo(4L, "Default subgraph"));
-        var expP = new ProjectAllVo(2L, Arrays.asList(expV1, expV2), Arrays.asList(expE1), Arrays.asList(expS1),
-                new ProjectDynamicVo(2L, "projC"));
+        var expP = new ProjectAllVo(2L, Arrays.asList(expV1, expV2), expPNode5, Arrays.asList(expE1),
+                Arrays.asList(expS1), new ProjectDynamicVo(2L, "projC"));
         // 验证
         assertEquals(getHashCodeForProjectAllVo(expP), getHashCodeForProjectAllVo(resVo));
     }

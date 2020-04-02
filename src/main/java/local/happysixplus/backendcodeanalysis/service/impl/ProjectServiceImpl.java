@@ -43,6 +43,7 @@ import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeAllVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.PackageNodeVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectBasicAttributeVo;
@@ -202,15 +203,52 @@ public class ProjectServiceImpl implements ProjectService {
             return new ProjectPo(id, userId, vPo, ePo);
         }
 
+        class PackageNode {
+            String str;
+            Map<String, PackageNode> chrs = new HashMap<>();
+            List<Long> funcs = new ArrayList<>();
+
+            PackageNode(String str) {
+                this.str = str;
+            }
+
+            void insertFunc(long id, String partName) {
+                if (partName == null) {
+                    funcs.add(id);
+                    return;
+                }
+                var partNameSplit = partName.split("\\.", 2);
+                var nextStr = partNameSplit[0];
+                var nextPartName = partNameSplit.length == 1 ? null : partNameSplit[1];
+                var chr = chrs.get(nextStr);
+                if (chr == null) {
+                    chr = new PackageNode(nextStr);
+                    chrs.put(nextStr, chr);
+                }
+                chr.insertFunc(id, nextPartName);
+            }
+
+            PackageNodeVo getVo() {
+                var chrVos = new ArrayList<PackageNodeVo>(chrs.size());
+                for (var chr : chrs.values())
+                    chrVos.add(chr.getVo());
+                return new PackageNodeVo(str, chrVos, funcs);
+            }
+        }
+
         ProjectAllVo getAllVo(Map<Long, VertexDynamicPo> vDPoMap, Map<Long, VertexPositionDynamicPo> cPDPoMap,
                 Map<Long, EdgeDynamicPo> eDPoMap, List<SubgraphAllVo> sVos, ProjectDynamicVo dVo) {
+            PackageNode root = new PackageNode("src");
             List<VertexAllVo> vVos = new ArrayList<>();
-            for (var v : vIdMap.values())
+            for (var v : vIdMap.values()) {
                 vVos.add(v.getAllVo(dPoTodVo(vDPoMap.get(v.id), cPDPoMap.get(v.id))));
+                root.insertFunc(v.id, v.functionName.split(":", 2)[0]);
+            }
+            var rootVo = root.getVo();
             List<EdgeAllVo> eVos = new ArrayList<>();
             for (var e : eIdMap.values())
                 eVos.add(e.getAllVo(dPoTodVo(eDPoMap.get(e.id))));
-            return new ProjectAllVo(id, vVos, eVos, sVos, dVo);
+            return new ProjectAllVo(id, vVos, rootVo, eVos, sVos, dVo);
         }
 
         class DfsE {
