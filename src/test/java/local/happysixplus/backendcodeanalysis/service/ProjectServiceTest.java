@@ -17,6 +17,7 @@ import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -186,9 +187,19 @@ public class ProjectServiceTest {
         Mockito.when(projectStaticAttributeData.save(isA(ProjectStaticAttributePo.class))).thenReturn(saPo);
         Mockito.when(projectDynamicData.save(isA(ProjectDynamicPo.class))).thenReturn(dPo);
         Mockito.when(subgraphDynamicData.save(isA(SubgraphDynamicPo.class))).thenReturn(dsPo);
+        Mockito.when(connectiveDomainColorDynamicData.save(Mockito.any(ConnectiveDomainColorDynamicPo.class)))
+                .thenAnswer((Answer<ConnectiveDomainColorDynamicPo>) invocation -> {
+                    return (ConnectiveDomainColorDynamicPo) invocation.getArgument(0);
+                });
 
         // 执行
         var resVo = service.addProject("Test Faker", "https://gitee.com/HeBomou/simple", 2L);
+        for (var cd : resVo.getSubgraphs().get(0).getConnectiveDomains()) {
+            assertEquals(cd.getDomainDynamicVo().getColor().charAt(0), '#');
+            assertEquals(cd.getDomainDynamicVo().getColor().length(), 7);
+            // 忽略颜色
+            cd.getDomainDynamicVo().setColor(null);
+        }
 
         // 测试数据生成
         var vVo1 = new VertexAllVo(1L, "top.hebomou.App:main(java.lang.String[])",
@@ -212,9 +223,10 @@ public class ProjectServiceTest {
         var eVo7 = new EdgeAllVo(7L, 3L, 6L, 0.666667d, null);
         var eVo8 = new EdgeAllVo(8L, 7L, 7L, 0.5d, null);
         var edgesVo = Arrays.asList(eVo1, eVo2, eVo3, eVo4, eVo5, eVo6, eVo7, eVo8);
-        var connectiveDomainVo1 = new ConnectiveDomainAllVo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L), null);
+        var connectiveDomainVo1 = new ConnectiveDomainAllVo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L),
+                new ConnectiveDomainDynamicVo(444444L, "", null));
         var connectiveDomainVo2 = new ConnectiveDomainAllVo(444445L, Arrays.asList(1L, 2L, 5L, 3L, 7L, 6L, 4L),
-                Arrays.asList(1L, 3L, 2L, 7L, 5L, 8L, 6L), null);
+                Arrays.asList(1L, 3L, 2L, 7L, 5L, 8L, 6L), new ConnectiveDomainDynamicVo(444445L, "", null));
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var sVo = Arrays.asList(new SubgraphAllVo(123456789L, 0d, connectiveDomainsVo,
                 new SubgraphDynamicVo(123456789L, "Default subgraph")));
@@ -257,7 +269,8 @@ public class ProjectServiceTest {
         Mockito.when(projectDynamicData.findById(2L)).thenReturn(Optional.of(dPo));
         Mockito.when(subgraphDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dsPo));
         Mockito.when(connectiveDomainDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dConnectiveDomain1));
-        Mockito.when(connectiveDomainColorDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dConnectiveDomainColor1));
+        Mockito.when(connectiveDomainColorDynamicData.findByProjectId(2L))
+                .thenReturn(Arrays.asList(dConnectiveDomainColor1));
         Mockito.when(edgeDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dE1));
         Mockito.when(vertexDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dV1, dV2));
         Mockito.when(vertexPositionDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(pDV1, pDV2));
@@ -393,15 +406,28 @@ public class ProjectServiceTest {
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
         Mockito.when(subgraphData.save(spo1)).thenReturn(spo2);
         Mockito.when(subgraphDynamicData.save(sdpo1)).thenReturn(sdpo2);
+        Mockito.when(connectiveDomainColorDynamicData.save(Mockito.any(ConnectiveDomainColorDynamicPo.class)))
+                .thenAnswer((Answer<ConnectiveDomainColorDynamicPo>) invocation -> {
+                    return (ConnectiveDomainColorDynamicPo) invocation.getArgument(0);
+                });
         // 调用
         var res = service.addSubgraph(2L, 0.555d, "subgraphdd");
+        for (var cd : res.getConnectiveDomains()) {
+            assertEquals(cd.getDomainDynamicVo().getColor().charAt(0), '#');
+            assertEquals(cd.getDomainDynamicVo().getColor().length(), 7);
+            // 忽略颜色
+            cd.getDomainDynamicVo().setColor(null);
+        }
+
         // 验证
         Mockito.verify(projectData).findById(2L);
         Mockito.verify(subgraphData).save(spo1);
         Mockito.verify(subgraphDynamicData).save(sdpo1);
 
-        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(3L, 1L, 2L), Arrays.asList(6L, 1L), null);
-        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L, 4L), Arrays.asList(5L), null);
+        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(3L, 1L, 2L), Arrays.asList(6L, 1L),
+                new ConnectiveDomainDynamicVo(1L, "", null));
+        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L, 4L), Arrays.asList(5L),
+                new ConnectiveDomainDynamicVo(2L, "", null));
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new SubgraphDynamicVo(17L, "subgraphdd"));
         assertEquals(getHashCodeForSubgraphAllVo(svo), getHashCodeForSubgraphAllVo(res));

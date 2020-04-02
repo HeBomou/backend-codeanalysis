@@ -392,9 +392,18 @@ public class ProjectServiceImpl implements ProjectService {
         // 存入子图动态信息
         var subgDPo = new SubgraphDynamicPo(subPo.getId(), projPo.getId(), "Default subgraph");
         subgDPo = subgraphDynamicData.save(subgDPo);
+        // 生成联通域初始颜色并存储
+        var cDPoMap = new HashMap<Long, ConnectiveDomainColorDynamicPo>(subPo.getConnectiveDomains().size());
+        String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
+                "#8B7E66", "#8B668B", "#36648B", "#141414" };
+        for (var cd : subPo.getConnectiveDomains()) {
+            var color = colors[((int) (Math.random() * colors.length))];
+            var cDPo = connectiveDomainColorDynamicData
+                    .save(new ConnectiveDomainColorDynamicPo(cd.getId(), projPo.getId(), color));
+            cDPoMap.put(cd.getId(), cDPo);
+        }
         // 返回结果
-        var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>(),
-                new HashMap<>(/* TODO: 随机生成颜色 */));
+        var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>(), cDPoMap);
         return project.getAllVo(new HashMap<>(), new HashMap<>(/* TODO: 服务端生成初始点的位置 */), new HashMap<>(),
                 Arrays.asList(subgVo), dPoTodVo(projDPo));
     };
@@ -491,10 +500,20 @@ public class ProjectServiceImpl implements ProjectService {
         // 存储动态信息
         var sDPo = new SubgraphDynamicPo(newSPo.getId(), projectId, name);
         sDPo = subgraphDynamicData.save(sDPo);
+        // 生成联通域初始颜色并存储
+        var cDPoMap = new HashMap<Long, ConnectiveDomainColorDynamicPo>(newSPo.getConnectiveDomains().size());
+        String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
+                "#8B7E66", "#8B668B", "#36648B", "#141414" };
+        for (var cd : newSPo.getConnectiveDomains()) {
+            var color = colors[((int) (Math.random() * colors.length))];
+            var cDPo = connectiveDomainColorDynamicData
+                    .save(new ConnectiveDomainColorDynamicPo(cd.getId(), projectId, color));
+            cDPoMap.put(cd.getId(), cDPo);
+        }
 
         // 返回
         var subgraph = new Subgraph(newSPo);
-        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>(), new HashMap<>(/* TODO: 生成随机颜色 */));
+        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>(), cDPoMap);
     };
 
     @Override
@@ -512,7 +531,8 @@ public class ProjectServiceImpl implements ProjectService {
         if (vo.getAnotation() != null)
             connectiveDomainDynamicData.save(new ConnectiveDomainDynamicPo(vo.getId(), projectId, vo.getAnotation()));
         if (vo.getColor() != null)
-            connectiveDomainColorDynamicData.save(new ConnectiveDomainColorDynamicPo(vo.getId(), projectId, vo.getColor()));
+            connectiveDomainColorDynamicData
+                    .save(new ConnectiveDomainColorDynamicPo(vo.getId(), projectId, vo.getColor()));
     }
 
     @Override
@@ -622,17 +642,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     private static ConnectiveDomainDynamicVo dPoTodVo(ConnectiveDomainDynamicPo po,
             ConnectiveDomainColorDynamicPo cPo) {
-        if (po == null && cPo == null)
-            return null;
-        var res = new ConnectiveDomainDynamicVo();
-        if (po != null) {
-            res.setId(po.getId());
+        // 初始一定有Color
+        var res = new ConnectiveDomainDynamicVo(cPo.getId(), "", cPo.getColor());
+        if (po != null)
             res.setAnotation(po.getAnotation());
-        }
-        if (cPo != null) {
-            res.setId(cPo.getId());
-            res.setColor(cPo.getColor());
-        }
         return res;
     }
 
@@ -647,11 +660,4 @@ public class ProjectServiceImpl implements ProjectService {
             return null;
         return new ProjectDynamicVo(po.getId(), po.getProjectName());
     }
-
-    // private static String getRandomColor() {
-    // String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E",
-    // "#9ACD32", "#CD4F39", "#8B3E2F",
-    // "#8B7E66", "#8B668B", "#36648B", "#141414" };
-    // return colors[((int) (Math.random() * colors.length))];
-    // } TODO: 应当为联通域随机生成DPo
 }
