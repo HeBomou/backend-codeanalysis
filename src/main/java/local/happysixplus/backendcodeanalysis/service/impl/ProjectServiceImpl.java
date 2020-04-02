@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,12 +55,14 @@ import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexAllVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.var;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    public class Vertex {
+    static public class Vertex {
         Long id;
         String functionName = "";
         String sourceCode = "";
@@ -82,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    public class Edge {
+    static public class Edge {
         Long id;
         Double closeness = 0D;
         Vertex from;
@@ -105,7 +109,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    public class ConnectiveDomain {
+    static public class ConnectiveDomain {
         Long id;
         List<Long> vertexIds = new ArrayList<Long>();
         List<Long> edgeIds = new ArrayList<Long>();
@@ -133,7 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    public class Subgraph {
+    static public class Subgraph {
         Long id;
         Double threshold;
         List<ConnectiveDomain> connectiveDomains = new ArrayList<ConnectiveDomain>();
@@ -169,11 +173,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
-    public class Project {
+    static public class Project {
         Long id;
         Long userId;
         Map<Long, Vertex> vIdMap = new HashMap<Long, Vertex>();
         Map<Long, Edge> eIdMap = new HashMap<Long, Edge>();
+        String packageStructureJSON;
 
         Project(ProjectPo po) {
             id = po.getId();
@@ -183,68 +188,15 @@ public class ProjectServiceImpl implements ProjectService {
             for (var ePo : po.getEdges())
                 eIdMap.put(ePo.getId(),
                         new Edge(ePo, vIdMap.get(ePo.getFrom().getId()), vIdMap.get(ePo.getTo().getId())));
-        }
-
-        ProjectPo getProjectPo() {
-            var vPo = new HashSet<VertexPo>(vIdMap.size());
-            var vMap = new HashMap<String, VertexPo>(vIdMap.size());
-            for (var v : vIdMap.values()) {
-                var temp = v.getVertexPo();
-                vPo.add(temp);
-                vMap.put(v.functionName, temp);
-            }
-            var ePo = new HashSet<EdgePo>(eIdMap.size());
-            var eMap = new HashMap<String, EdgePo>(eIdMap.size());
-            for (var e : eIdMap.values()) {
-                var temp = e.getEdgePo(vMap);
-                ePo.add(temp);
-                eMap.put(e.from.functionName + e.to.functionName, temp);
-            }
-            return new ProjectPo(id, userId, vPo, ePo);
-        }
-
-        class PackageNode {
-            String str;
-            Map<String, PackageNode> chrs = new HashMap<>();
-            List<Long> funcs = new ArrayList<>();
-
-            PackageNode(String str) {
-                this.str = str;
-            }
-
-            void insertFunc(long id, String partName) {
-                if (partName == null) {
-                    funcs.add(id);
-                    return;
-                }
-                var partNameSplit = partName.split("\\.", 2);
-                var nextStr = partNameSplit[0];
-                var nextPartName = partNameSplit.length == 1 ? null : partNameSplit[1];
-                var chr = chrs.get(nextStr);
-                if (chr == null) {
-                    chr = new PackageNode(nextStr);
-                    chrs.put(nextStr, chr);
-                }
-                chr.insertFunc(id, nextPartName);
-            }
-
-            PackageNodeVo getVo() {
-                var chrVos = new ArrayList<PackageNodeVo>(chrs.size());
-                for (var chr : chrs.values())
-                    chrVos.add(chr.getVo());
-                return new PackageNodeVo(str, chrVos, funcs);
-            }
+            packageStructureJSON = po.getPackageStructure();
         }
 
         ProjectAllVo getAllVo(Map<Long, VertexDynamicPo> vDPoMap, Map<Long, VertexPositionDynamicPo> cPDPoMap,
                 Map<Long, EdgeDynamicPo> eDPoMap, List<SubgraphAllVo> sVos, ProjectDynamicVo dVo) {
-            PackageNode root = new PackageNode("src");
             List<VertexAllVo> vVos = new ArrayList<>();
-            for (var v : vIdMap.values()) {
+            for (var v : vIdMap.values())
                 vVos.add(v.getAllVo(dPoTodVo(vDPoMap.get(v.id), cPDPoMap.get(v.id))));
-                root.insertFunc(v.id, v.functionName.split(":", 2)[0]);
-            }
-            var rootVo = root.getVo();
+            var rootVo = JSONObject.parseObject(packageStructureJSON, PackageNode.class).getVo();
             List<EdgeAllVo> eVos = new ArrayList<>();
             for (var e : eIdMap.values())
                 eVos.add(e.getAllVo(dPoTodVo(eDPoMap.get(e.id))));
@@ -313,7 +265,42 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    ProjectPo initProject(List<String> caller, List<String> callee, Map<String, String> sourceCode, Long userId) {
+    @Data
+    @NoArgsConstructor
+    static class PackageNode {
+        String str;
+        Map<String, PackageNode> chrs = new HashMap<>();
+        List<Long> funcs = new ArrayList<>();
+
+        PackageNode(String str) {
+            this.str = str;
+        }
+
+        void insertFunc(long id, String partName) {
+            if (partName == null) {
+                funcs.add(id);
+                return;
+            }
+            var partNameSplit = partName.split("\\.", 2);
+            var nextStr = partNameSplit[0];
+            var nextPartName = partNameSplit.length == 1 ? null : partNameSplit[1];
+            var chr = chrs.get(nextStr);
+            if (chr == null) {
+                chr = new PackageNode(nextStr);
+                chrs.put(nextStr, chr);
+            }
+            chr.insertFunc(id, nextPartName);
+        }
+
+        PackageNodeVo getVo() {
+            var chrVos = new ArrayList<PackageNodeVo>(chrs.size());
+            for (var chr : chrs.values())
+                chrVos.add(chr.getVo());
+            return new PackageNodeVo(str, chrVos, funcs);
+        }
+    }
+
+    Project initAndSaveProject(List<String> caller, List<String> callee, Map<String, String> sourceCode, Long userId) {
         Set<EdgePo> edgePos = new HashSet<EdgePo>();
         Set<VertexPo> vertexPos = new HashSet<VertexPo>();
         Map<String, VertexPo> vertexMap = new HashMap<String, VertexPo>();
@@ -352,7 +339,15 @@ public class ProjectServiceImpl implements ProjectService {
             Double closeness = 2.0 / (outdegree.get(startName) + indegree.get(endName));
             edgePos.add(new EdgePo(null, from, to, closeness));
         }
-        return new ProjectPo(null, userId, vertexPos, edgePos);
+
+        var projPo = projectData.save(new ProjectPo(null, userId, vertexPos, edgePos, ""));
+        var vMap = projPo.getVertices().stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
+        PackageNode root = new PackageNode("src");
+        for (var v : vMap.values())
+            root.insertFunc(v.getId(), v.getFunctionName().split(":", 2)[0]);
+        projPo.setPackageStructure(JSONObject.toJSONString(root));
+        projPo = projectData.save(projPo);
+        return new Project(projPo);
     }
 
     @Autowired
@@ -414,21 +409,19 @@ public class ProjectServiceImpl implements ProjectService {
             callee.add(edge.get(1));
         }
         // 生成并存入项目静态信息
-        var projPo = initProject(caller, callee, sourceCode, userId);
-        projPo = projectData.save(projPo);
-        var project = new Project(projPo);
+        var project = initAndSaveProject(caller, callee, sourceCode, userId);
         // 生成并存入默认子图静态信息
         var subPo = project.initSubgraph(0D);
         subPo = subgraphData.save(subPo);
         // 存入项目静态属性信息
-        var projSAPo = new ProjectStaticAttributePo(projPo.getId(), userId, projPo.getVertices().size(),
-                projPo.getEdges().size(), subPo.getConnectiveDomains().size());
+        var projSAPo = new ProjectStaticAttributePo(project.id, userId, project.vIdMap.size(), project.vIdMap.size(),
+                subPo.getConnectiveDomains().size());
         projSAPo = projectStaticAttributeData.save(projSAPo);
         // 存入项目动态信息
-        var projDPo = new ProjectDynamicPo(projPo.getId(), userId, projectName);
+        var projDPo = new ProjectDynamicPo(project.id, userId, projectName);
         projDPo = projectDynamicData.save(projDPo);
         // 存入子图动态信息
-        var subgDPo = new SubgraphDynamicPo(subPo.getId(), projPo.getId(), "Default subgraph");
+        var subgDPo = new SubgraphDynamicPo(subPo.getId(), project.id, "Default subgraph");
         subgDPo = subgraphDynamicData.save(subgDPo);
         // 生成联通域初始颜色并存储
         var cDPoMap = new HashMap<Long, ConnectiveDomainColorDynamicPo>(subPo.getConnectiveDomains().size());
@@ -437,7 +430,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (var cd : subPo.getConnectiveDomains()) {
             var color = colors[((int) (Math.random() * colors.length))];
             var cDPo = connectiveDomainColorDynamicData
-                    .save(new ConnectiveDomainColorDynamicPo(cd.getId(), projPo.getId(), color));
+                    .save(new ConnectiveDomainColorDynamicPo(cd.getId(), project.id, color));
             cDPoMap.put(cd.getId(), cDPo);
         }
         // 返回结果
@@ -596,7 +589,7 @@ public class ProjectServiceImpl implements ProjectService {
         return res;
     };
 
-    class PathE {
+    static class PathE {
         long id;
         PathV to;
 
@@ -606,7 +599,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    class PathV {
+    static class PathV {
         long id;
         boolean inPath;
         List<PathE> es = new ArrayList<>();

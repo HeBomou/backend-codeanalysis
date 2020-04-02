@@ -27,7 +27,7 @@ class ProjectDataTest {
     void init() {
         data.deleteAll();
 
-        projectPo = new ProjectPo(null, 1L, null, null);
+        projectPo = new ProjectPo(null, 1L, null, null, "ssss");
         projectPo = data.save(projectPo);
         // Vertices
         var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");

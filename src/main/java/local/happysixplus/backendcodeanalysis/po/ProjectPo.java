@@ -32,4 +32,6 @@ public class ProjectPo {
     @JoinColumn()
     Set<EdgePo> edges;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
+    String packageStructure;
 }

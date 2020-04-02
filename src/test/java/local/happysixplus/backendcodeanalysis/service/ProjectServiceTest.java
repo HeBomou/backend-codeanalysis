@@ -177,7 +177,7 @@ public class ProjectServiceTest {
         var e7 = new EdgePo(7L, v3, v6, 0.666667d);
         var e8 = new EdgePo(8L, v7, v7, 0.5d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1, e2, e3, e4, e5, e6, e7, e8));
-        var po = new ProjectPo(23333L, 2L, vertices, edges);
+        var po = new ProjectPo(23333L, 2L, vertices, edges, "{\"chrs\":{\"top\":{\"chrs\":{\"hebomou\":{\"chrs\":{\"App\":{\"chrs\":{},\"funcs\":[1],\"str\":\"App\"},\"ClassD\":{\"chrs\":{},\"funcs\":[8,9],\"str\":\"ClassD\"},\"ClassA\":{\"chrs\":{},\"funcs\":[2,3],\"str\":\"ClassA\"},\"ClassB\":{\"chrs\":{},\"funcs\":[4,5],\"str\":\"ClassB\"},\"ClassC\":{\"chrs\":{},\"funcs\":[6,7],\"str\":\"ClassC\"}},\"funcs\":[],\"str\":\"hebomou\"}},\"funcs\":[],\"str\":\"top\"}},\"funcs\":[],\"str\":\"src\"}");
         // subgraph
         var connectiveDomain1 = new ConnectiveDomainPo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L));
         var connectiveDomain2 = new ConnectiveDomainPo(444445L, Arrays.asList(1L, 2L, 5L, 3L, 7L, 6L, 4L),
@@ -263,7 +263,7 @@ public class ProjectServiceTest {
         var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
         var e1 = new EdgePo(3L, v1, v2, 0.3d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1));
-        var po = new ProjectPo(2L, 233L, vertices, edges);
+        var po = new ProjectPo(2L, 233L, vertices, edges, "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}"); // TODO:
 
         // Subgraphs
         var connectiveDomain1 = new ConnectiveDomainPo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L));
@@ -392,7 +392,7 @@ public class ProjectServiceTest {
     @Test
     public void testAddSubgraph1() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, null, null);
+        var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
 
         var v1 = new VertexPo(1L, "v1", "dian1()");
         var v2 = new VertexPo(2L, "v2", "dian2()");
@@ -494,7 +494,7 @@ public class ProjectServiceTest {
     @Test
     public void testGetOriginalGraphPath() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, null, null);
+        var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
         var v1 = new VertexPo(1L, "v1", "dian1()");
         var v2 = new VertexPo(2L, "v2", "dian2()");
         var v3 = new VertexPo(3L, "v3", "dian3()");
@@ -527,7 +527,7 @@ public class ProjectServiceTest {
     @Test
     public void testGetSimilarFunction() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 2333L, null, null);
+        var po = new ProjectPo(2L, 2333L, null, null, "zheli xjb xie ye meishi");
         var v1 = new VertexPo(1L, "v1", "dian1()");
         var v2 = new VertexPo(2L, "v2", "dian2()");
         var v3 = new VertexPo(3L, "v3", "dian3()");
