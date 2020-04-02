@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
+import local.happysixplus.backendcodeanalysis.data.ProjectStaticAttributeData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
@@ -29,6 +30,7 @@ import local.happysixplus.backendcodeanalysis.po.EdgeDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.EdgePo;
 import local.happysixplus.backendcodeanalysis.po.ProjectDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ProjectPo;
+import local.happysixplus.backendcodeanalysis.po.ProjectStaticAttributePo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 import local.happysixplus.backendcodeanalysis.po.VertexDynamicPo;
@@ -39,6 +41,7 @@ import local.happysixplus.backendcodeanalysis.vo.EdgeAllVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectBasicAttributeVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
@@ -60,6 +63,9 @@ public class ProjectServiceTest {
 
     @MockBean
     ProjectDynamicData projectDynamicData;
+
+    @MockBean
+    ProjectStaticAttributeData projectStaticAttributeData;
 
     @MockBean
     SubgraphDynamicData subgraphDynamicData;
@@ -124,6 +130,8 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddProject1() {
+        service.addProject("Faker", "https://gitee.com/forsakenspirit/Linux", 2L);
+
         // ProjectAllVo resVo = service.addProject("Faker",
         // "https://gitee.com/forsakenspirit/Linux", 2L);
         // assertEquals(resVo.getStaticVo().getVertices().size(), 9);
@@ -139,7 +147,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testGetProject1() {
+    public void testGetProjectAll1() {
         // 打桩数据生成
         var po = new ProjectPo(2L, 233L, null, null);
         // Vertices
@@ -174,7 +182,6 @@ public class ProjectServiceTest {
 
         // 调用
         var resVo = service.getProjectAll(2L);
-
         // 验证数据生成
         var expV1 = new VertexAllVo(3L, "v1", "dian1()", new VertexDynamicVo(3L, "a1", 0f, 0f));
         var expV2 = new VertexAllVo(4L, "v2", "dian2()", new VertexDynamicVo(4L, "a2", 0f, 0f));
@@ -184,9 +191,36 @@ public class ProjectServiceTest {
         var expS1 = new SubgraphAllVo(4L, 0d, Arrays.asList(expC1), new SubgraphDynamicVo(4L, "Default subgraph"));
         var expP = new ProjectAllVo(2L, Arrays.asList(expV1, expV2), Arrays.asList(expE1), Arrays.asList(expS1),
                 new ProjectDynamicVo(2L, "projC"));
-
         // 验证
         assertEquals(getHashCodeForProjectAllVo(expP), getHashCodeForProjectAllVo(resVo));
+    }
+
+    @Test
+    public void testGetProjectBasicAttribute() {
+        // 打桩数据生成
+        var dPo1 = new ProjectDynamicPo(10000L, 55555L, "One project");
+        var dPo2 = new ProjectDynamicPo(10001L, 55555L, "Two project");
+        var dPo3 = new ProjectDynamicPo(10002L, 55555L, "Three project");
+        var dPos = Arrays.asList(dPo1, dPo2, dPo3);
+        var sPo1 = new ProjectStaticAttributePo(10000L, 55555L, 34, 56, 4);
+        var sPo2 = new ProjectStaticAttributePo(10001L, 55555L, 2333, 6000, 68);
+        var sPo3 = new ProjectStaticAttributePo(10002L, 55555L, 2, 1, 1);
+        var sPos = Arrays.asList(sPo1, sPo2, sPo3);
+        // 打桩
+        Mockito.when(projectDynamicData.findByUserId(55555L)).thenReturn(dPos);
+        Mockito.when(projectStaticAttributeData.findByUserId(55555L)).thenReturn(sPos);
+        // 验证数据生成
+        var vo1=new ProjectBasicAttributeVo(10000L,"One project",34, 56, 4);
+        var vo2=new ProjectBasicAttributeVo(10001L,"Two project", 2333, 6000, 68);
+        var vo3=new ProjectBasicAttributeVo(10002L,"Three project", 2, 1, 1);
+        var vos=Arrays.asList(vo1,vo2,vo3);
+        // 执行
+        var res=service.getProjectBasicAttribute(55555L);
+        // 测试
+        Mockito.verify(projectDynamicData).findByUserId(55555L);
+        Mockito.verify(projectStaticAttributeData).findByUserId(55555L);
+        
+        assertEquals(vos, res);
     }
 
     @Test
@@ -198,21 +232,16 @@ public class ProjectServiceTest {
 
     @Test
     public void testUpdateProjectDynamic1() {
-
         // 打桩数据生成
         var originDPo = new ProjectDynamicPo(256L, 15L, "Hello");
         var dPoToSave = new ProjectDynamicPo(256L, 15L, "Bye");
-
         // 打桩
         Mockito.when(projectDynamicData.findById(256L)).thenReturn(Optional.of(originDPo));
         Mockito.when(projectDynamicData.save(dPoToSave)).thenReturn(dPoToSave);
-
         // 输入数据
         var vo = new ProjectDynamicVo(256L, "Bye");
-
         // 执行
         service.updateProjectDynamic(256L, vo);
-
         // 验证
         Mockito.verify(projectDynamicData).findById(256L);
         Mockito.verify(projectDynamicData).save(dPoToSave);
@@ -260,10 +289,8 @@ public class ProjectServiceTest {
         Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
         Mockito.when(subgraphData.save(spo1)).thenReturn(spo2);
         Mockito.when(subgraphDynamicData.save(sdpo1)).thenReturn(sdpo2);
-
         // 调用
         var res = service.addSubgraph(2L, 0.555d, "subgraphdd");
-
         // 验证
         Mockito.verify(projectData).findById(2L);
         Mockito.verify(subgraphData).save(spo1);
@@ -273,7 +300,6 @@ public class ProjectServiceTest {
         var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L, 4L), Arrays.asList(5L), null);
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new SubgraphDynamicVo(17L, "subgraphdd"));
-
         assertEquals(getHashCodeForSubgraphAllVo(svo), getHashCodeForSubgraphAllVo(res));
 
     }

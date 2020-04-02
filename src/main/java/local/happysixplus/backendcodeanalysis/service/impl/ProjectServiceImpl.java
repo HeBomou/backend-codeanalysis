@@ -332,7 +332,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     ProjectDynamicData projectDynamicData;
-
+ 
     @Autowired
     SubgraphDynamicData subgraphDynamicData;
 
