@@ -26,6 +26,7 @@ import local.happysixplus.backendcodeanalysis.data.ProjectStaticAttributeData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
+import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
 import local.happysixplus.backendcodeanalysis.po.EdgeDynamicPo;
@@ -37,6 +38,7 @@ import local.happysixplus.backendcodeanalysis.po.SubgraphDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 import local.happysixplus.backendcodeanalysis.po.VertexDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.VertexPo;
+import local.happysixplus.backendcodeanalysis.po.VertexPositionDynamicPo;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeAllVo;
@@ -81,6 +83,9 @@ public class ProjectServiceTest {
 
     @MockBean
     VertexDynamicData vertexDynamicData;
+
+    @MockBean
+    VertexPositionDynamicData vertexPositionDynamicData;
 
     @Autowired
     ProjectService service;
@@ -231,8 +236,10 @@ public class ProjectServiceTest {
         var sPo = new SubgraphPo(4L, 2L, 0d, connectiveDomains1);
 
         // Dynamic Pos
-        var dV1 = new VertexDynamicPo(3L, 2L, "a1", 0f, 0f);
-        var dV2 = new VertexDynamicPo(4L, 2L, "a2", 0f, 0f);
+        var dV1 = new VertexDynamicPo(3L, 2L, "a1");
+        var dV2 = new VertexDynamicPo(4L, 2L, "a2");
+        var pDV1 = new VertexPositionDynamicPo(3L, 2L, 0f, 0f);
+        var pDV2 = new VertexPositionDynamicPo(4L, 2L, 0f, 0f);
         var dE1 = new EdgeDynamicPo(3L, 2L, "abian 1");
         var dConnectiveDomain1 = new ConnectiveDomainDynamicPo(2L, 2L, "acd 1", "#CDBE70");
         var dsPo = new SubgraphDynamicPo(4L, 2L, "Default subgraph");
@@ -246,6 +253,7 @@ public class ProjectServiceTest {
         Mockito.when(connectiveDomainDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dConnectiveDomain1));
         Mockito.when(edgeDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dE1));
         Mockito.when(vertexDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(dV1, dV2));
+        Mockito.when(vertexPositionDynamicData.findByProjectId(2L)).thenReturn(Arrays.asList(pDV1, pDV2));
 
         // 调用
         var resVo = service.getProjectAll(2L);
@@ -420,7 +428,8 @@ public class ProjectServiceTest {
     @Test
     public void testUpdateVertexDynamic1() {
         service.updateVertexDynamic(27L, new VertexDynamicVo(456L, "this is a vertex", 45.5f, 92.2f));
-        Mockito.verify(vertexDynamicData).save(new VertexDynamicPo(456L, 27L, "this is a vertex", 45.5f, 92.2f));
+        Mockito.verify(vertexDynamicData).save(new VertexDynamicPo(456L, 27L, "this is a vertex"));
+        Mockito.verify(vertexPositionDynamicData).save(new VertexPositionDynamicPo(456L, 27L, 45.5f, 92.2f));
     }
 
     @Test

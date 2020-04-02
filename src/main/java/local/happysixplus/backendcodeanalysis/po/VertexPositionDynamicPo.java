@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(indexes = {@Index(columnList = "projectId")})
-public class VertexDynamicPo {
+public class VertexPositionDynamicPo {
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -26,6 +26,8 @@ public class VertexDynamicPo {
 
     Long projectId;
 
-    String anotation;
+    Float x;
+
+    Float y;
 
 }

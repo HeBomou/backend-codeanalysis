@@ -24,7 +24,7 @@ class VertexDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        vertexDynamicPo = new VertexDynamicPo(4444L,1L,"SKTFaker",0f,0f);
+        vertexDynamicPo = new VertexDynamicPo(4444L, 1L, "SKTFaker");
     }
 
     @AfterEach
@@ -33,69 +33,62 @@ class VertexDynamicDataTest {
     }
 
     @Test
-    public void testInsert(){
-        vertexDynamicPo=data.save(vertexDynamicPo);
-        VertexDynamicPo resPo=data.findById(vertexDynamicPo.getId()).get();
-        assertEquals(resPo.getId(),vertexDynamicPo.getId());
-        assertEquals(resPo.getProjectId(),vertexDynamicPo.getProjectId());
-        assertEquals(resPo.getAnotation(),vertexDynamicPo.getAnotation());
-        assertEquals(resPo.getX(),vertexDynamicPo.getX());
-        assertEquals(resPo.getY(),vertexDynamicPo.getY());
+    public void testInsert() {
+        vertexDynamicPo = data.save(vertexDynamicPo);
+        VertexDynamicPo resPo = data.findById(vertexDynamicPo.getId()).get();
+        assertEquals(resPo.getId(), vertexDynamicPo.getId());
+        assertEquals(resPo.getProjectId(), vertexDynamicPo.getProjectId());
+        assertEquals(resPo.getAnotation(), vertexDynamicPo.getAnotation());
     }
+
     @Test
-    public void testUpdate(){
-        vertexDynamicPo=data.save(vertexDynamicPo);
-        vertexDynamicPo=new VertexDynamicPo(vertexDynamicPo.getId(),4396L,"Mother fucker",0.1f,0.1f); 
-        vertexDynamicPo=data.save(vertexDynamicPo);
-        VertexDynamicPo resPo=data.findById(vertexDynamicPo.getId()).get();
-        assertEquals(resPo.getId(),vertexDynamicPo.getId());
-        assertEquals(resPo.getProjectId(),vertexDynamicPo.getProjectId());
-        assertEquals(resPo.getAnotation(),vertexDynamicPo.getAnotation());
-        assertEquals(resPo.getX(),vertexDynamicPo.getX());
-        assertEquals(resPo.getY(),vertexDynamicPo.getY());
+    public void testUpdate() {
+        vertexDynamicPo = data.save(vertexDynamicPo);
+        vertexDynamicPo = new VertexDynamicPo(vertexDynamicPo.getId(), 4396L, "Mother fucker");
+        vertexDynamicPo = data.save(vertexDynamicPo);
+        VertexDynamicPo resPo = data.findById(vertexDynamicPo.getId()).get();
+        assertEquals(resPo.getId(), vertexDynamicPo.getId());
+        assertEquals(resPo.getProjectId(), vertexDynamicPo.getProjectId());
+        assertEquals(resPo.getAnotation(), vertexDynamicPo.getAnotation());
 
     }
+
     @Test
-    public void testRemove(){
-        vertexDynamicPo=data.save(vertexDynamicPo);
+    public void testRemove() {
+        vertexDynamicPo = data.save(vertexDynamicPo);
         data.deleteById(vertexDynamicPo.getId());
-        var res=data.findById(vertexDynamicPo.getId()).orElse(null);
+        var res = data.findById(vertexDynamicPo.getId()).orElse(null);
         assertEquals(res, null);
     }
-    @Test
-    public void testFindByProjectId(){
-        vertexDynamicPo=data.save(vertexDynamicPo);
-        VertexDynamicPo vertexDynamicPo1=data.save(new VertexDynamicPo(4657L,1L,"SKTKhan",0.2f,0.2f));
-        VertexDynamicPo vertexDynamicPo2=data.save(new VertexDynamicPo(4658L,1L,"SKTCLid",0.3f,0.3f));
-        List<VertexDynamicPo> list=data.findByProjectId(1L);
-        list.sort((a,b)->(int)(a.getId()-b.getId()));
-        assertEquals(list.get(0).getId(),vertexDynamicPo.getId());
-        assertEquals(list.get(0).getProjectId(),vertexDynamicPo.getProjectId());
-        assertEquals(list.get(0).getAnotation(),vertexDynamicPo.getAnotation());
-        assertEquals(list.get(0).getX(),vertexDynamicPo.getX());
-        assertEquals(list.get(0).getY(),vertexDynamicPo.getY());
 
-        assertEquals(list.get(1).getId(),vertexDynamicPo1.getId());
-        assertEquals(list.get(1).getProjectId(),vertexDynamicPo1.getProjectId());
-        assertEquals(list.get(1).getAnotation(),vertexDynamicPo1.getAnotation());
-        assertEquals(list.get(1).getX(),vertexDynamicPo1.getX());
-        assertEquals(list.get(1).getY(),vertexDynamicPo1.getY());
-        
-        assertEquals(list.get(2).getId(),vertexDynamicPo2.getId());
-        assertEquals(list.get(2).getProjectId(),vertexDynamicPo2.getProjectId());
-        assertEquals(list.get(2).getAnotation(),vertexDynamicPo2.getAnotation());
-        assertEquals(list.get(2).getX(),vertexDynamicPo2.getX());
-        assertEquals(list.get(2).getY(),vertexDynamicPo2.getY());
+    @Test
+    public void testFindByProjectId() {
+        vertexDynamicPo = data.save(vertexDynamicPo);
+        VertexDynamicPo vertexDynamicPo1 = data.save(new VertexDynamicPo(4657L, 1L, "SKTKhan"));
+        VertexDynamicPo vertexDynamicPo2 = data.save(new VertexDynamicPo(4658L, 1L, "SKTCLid"));
+        List<VertexDynamicPo> list = data.findByProjectId(1L);
+        list.sort((a, b) -> (int) (a.getId() - b.getId()));
+        assertEquals(list.get(0).getId(), vertexDynamicPo.getId());
+        assertEquals(list.get(0).getProjectId(), vertexDynamicPo.getProjectId());
+        assertEquals(list.get(0).getAnotation(), vertexDynamicPo.getAnotation());
+
+        assertEquals(list.get(1).getId(), vertexDynamicPo1.getId());
+        assertEquals(list.get(1).getProjectId(), vertexDynamicPo1.getProjectId());
+        assertEquals(list.get(1).getAnotation(), vertexDynamicPo1.getAnotation());
+
+        assertEquals(list.get(2).getId(), vertexDynamicPo2.getId());
+        assertEquals(list.get(2).getProjectId(), vertexDynamicPo2.getProjectId());
+        assertEquals(list.get(2).getAnotation(), vertexDynamicPo2.getAnotation());
     }
 
     @Test
-    public void testDeleteByProjectId(){
-        vertexDynamicPo=data.save(vertexDynamicPo);
-        data.save(new VertexDynamicPo(4657L,1L,"SKTKhan",0.2f,0.2f));
-        data.save(new VertexDynamicPo(4658L,1L,"SKTCLid",0.4f,0.3f));
+    public void testDeleteByProjectId() {
+        vertexDynamicPo = data.save(vertexDynamicPo);
+        data.save(new VertexDynamicPo(4657L, 1L, "SKTKhan"));
+        data.save(new VertexDynamicPo(4658L, 1L, "SKTCLid"));
         data.deleteByProjectId(vertexDynamicPo.getId());
-        List<VertexDynamicPo> list=data.findByProjectId(vertexDynamicPo.getId());
+        List<VertexDynamicPo> list = data.findByProjectId(vertexDynamicPo.getId());
         assertEquals(list, new ArrayList<VertexDynamicPo>());
     }
-    
+
 }
