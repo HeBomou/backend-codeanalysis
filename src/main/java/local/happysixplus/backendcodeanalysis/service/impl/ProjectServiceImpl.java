@@ -209,11 +209,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         class DfsE {
-            Long id;
+            long id;
             DfsV to;
-            Double closeness;
+            double closeness;
 
-            DfsE(Long id, DfsV to, Double closeness) {
+            DfsE(long id, DfsV to, double closeness) {
                 this.id = id;
                 this.to = to;
                 this.closeness = closeness;
@@ -221,17 +221,18 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         class DfsV {
-            Long id;
+            long id;
+            boolean vst;
             List<DfsE> es = new ArrayList<>();
 
-            DfsV(Long id) {
+            DfsV(long id) {
                 this.id = id;
+                this.vst = false;
             }
         }
 
         SubgraphPo initSubgraph(Double threshold) {
             var resConnectiveDomains = new ArrayList<ConnectiveDomain>();
-            var isChecked = new HashSet<Long>(vIdMap.size());
             // 点
             var vs = new HashMap<Long, DfsV>(vIdMap.size());
             for (var v : vIdMap.values())
@@ -244,7 +245,7 @@ public class ProjectServiceImpl implements ProjectService {
             for (var p : vs.values()) {
                 List<Long> domainVertexs = new ArrayList<>();
                 Set<Long> domainEdges = new HashSet<>();
-                Dfs(threshold, p, isChecked, domainVertexs, domainEdges);
+                Dfs(threshold, p, domainVertexs, domainEdges);
                 if (domainVertexs.size() > 1)
                     resConnectiveDomains.add(new ConnectiveDomain(domainVertexs, new ArrayList<>(domainEdges)));
             }
@@ -254,17 +255,17 @@ public class ProjectServiceImpl implements ProjectService {
             return new Subgraph(threshold, resConnectiveDomains).getSubgraphPo(id);
         }
 
-        void Dfs(Double threshold, DfsV p, Set<Long> isChecked, List<Long> domainVertexs, Set<Long> domainEdges) {
-            if (isChecked.contains(p.id))
+        void Dfs(double threshold, DfsV p, List<Long> domainVertexs, Set<Long> domainEdges) {
+            if (p.vst)
                 return;
-            isChecked.add(p.id);
+            p.vst = true;
             domainVertexs.add(p.id);
             for (var e : p.es) {
                 if (e.closeness < threshold)
                     continue;
                 domainEdges.add(e.id);
                 DfsV to = e.to;
-                Dfs(threshold, to, isChecked, domainVertexs, domainEdges);
+                Dfs(threshold, to, domainVertexs, domainEdges);
             }
         }
     }
