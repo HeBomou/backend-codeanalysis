@@ -90,5 +90,12 @@ class VertexDynamicDataTest {
         List<VertexDynamicPo> list = data.findByProjectId(vertexDynamicPo.getId());
         assertEquals(list, new ArrayList<VertexDynamicPo>());
     }
-
+    @Test
+    public void testCountByProjectId(){
+        vertexDynamicPo = data.save(vertexDynamicPo);
+        data.save(new VertexDynamicPo(4657L, 1L, "SKTKhan"));
+        data.save(new VertexDynamicPo(4658L, 1L, "SKTCLid"));
+        int count=data.countByProjectId(1L);
+        assertEquals(3,count);
+    }
 }

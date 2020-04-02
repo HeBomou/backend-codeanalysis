@@ -103,5 +103,12 @@ class SubgraphDataTest {
         List<SubgraphPo> pos=data.findByProjectId(1L);
         assertEquals(pos, new ArrayList<SubgraphPo>());
     }
+    @Test
+    public void testCountByProjectId() {
+        po=data.save(po);
+        po1=data.save(po1);
+        int count=data.countByProjectId(1L);
+        assertEquals(count,2);
+    }
 
 }

@@ -87,5 +87,14 @@ class EdgeDynamicDataTest {
         List<EdgeDynamicPo> list=data.findByProjectId(edgeDynamicPo.getId());
         assertEquals(list, new ArrayList<EdgeDynamicPo>());
     }
+
+    @Test
+    public void testCountByProjectId() {
+        edgeDynamicPo=data.save(edgeDynamicPo);
+        data.save(new EdgeDynamicPo(23458L,1L,"SKTKhan"));
+        data.save(new EdgeDynamicPo(23459L,1L,"SKTCLid"));
+        int count=data.countByProjectId(1L);
+        assertEquals(3,count);
+    }
     
 }

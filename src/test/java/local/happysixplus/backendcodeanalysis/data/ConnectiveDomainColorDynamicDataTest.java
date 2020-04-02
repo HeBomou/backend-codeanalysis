@@ -98,8 +98,7 @@ class ConnectiveDomainColorDynamicDataTest {
         connectiveDomainColorDynamicPo = data.save(connectiveDomainColorDynamicPo);
         data.save(new ConnectiveDomainColorDynamicPo(12347L, 1L, "SKTKhan"));
         data.save(new ConnectiveDomainColorDynamicPo(12348L, 1L, "SKTCLid"));
-        data.deleteByProjectId(connectiveDomainColorDynamicPo.getId());
-        List<ConnectiveDomainColorDynamicPo> list = data.findByProjectId(connectiveDomainColorDynamicPo.getId());
-        assertEquals(list, new ArrayList<ConnectiveDomainColorDynamicPo>());
+        int count=data.countByProjectId(1L);
+        assertEquals(3,count);
     }
 }

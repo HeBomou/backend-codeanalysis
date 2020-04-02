@@ -95,11 +95,12 @@ class VertexPositionDynamicDataTest {
         List<VertexPositionDynamicPo> list = data.findByProjectId(vertexPositionDynamicPo.getId());
         assertEquals(list, new ArrayList<VertexPositionDynamicPo>());
     }
+    @Test
     public void testCountByProjectId(){
         vertexPositionDynamicPo = data.save(vertexPositionDynamicPo);
         data.save(new VertexPositionDynamicPo(4657L, 1L, 0.5f,0.5f));
         data.save(new VertexPositionDynamicPo(4658L, 1L, 0.7f,0.7f));
         int count=data.countByProjectId(1L);
-        assertEquals(1,count);
+        assertEquals(3,count);
     }
 }
