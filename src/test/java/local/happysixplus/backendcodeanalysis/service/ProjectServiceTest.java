@@ -43,6 +43,7 @@ import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectBasicAttributeVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.ProjectProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexAllVo;
@@ -130,7 +131,7 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddProject1() {
-        service.addProject("Faker", "https://gitee.com/forsakenspirit/Linux", 2L);
+        service.addProject("Faker", "https://gitee.com/HeBomou/simple", 2L);
 
         // ProjectAllVo resVo = service.addProject("Faker",
         // "https://gitee.com/forsakenspirit/Linux", 2L);
@@ -210,17 +211,39 @@ public class ProjectServiceTest {
         Mockito.when(projectDynamicData.findByUserId(55555L)).thenReturn(dPos);
         Mockito.when(projectStaticAttributeData.findByUserId(55555L)).thenReturn(sPos);
         // 验证数据生成
-        var vo1=new ProjectBasicAttributeVo(10000L,"One project",34, 56, 4);
-        var vo2=new ProjectBasicAttributeVo(10001L,"Two project", 2333, 6000, 68);
-        var vo3=new ProjectBasicAttributeVo(10002L,"Three project", 2, 1, 1);
-        var vos=Arrays.asList(vo1,vo2,vo3);
+        var vo1 = new ProjectBasicAttributeVo(10000L, "One project", 34, 56, 4);
+        var vo2 = new ProjectBasicAttributeVo(10001L, "Two project", 2333, 6000, 68);
+        var vo3 = new ProjectBasicAttributeVo(10002L, "Three project", 2, 1, 1);
+        var vos = Arrays.asList(vo1, vo2, vo3);
         // 执行
-        var res=service.getProjectBasicAttribute(55555L);
+        var res = service.getProjectBasicAttribute(55555L);
         // 测试
         Mockito.verify(projectDynamicData).findByUserId(55555L);
         Mockito.verify(projectStaticAttributeData).findByUserId(55555L);
-        
+
         assertEquals(vos, res);
+    }
+
+    @Test
+    public void testGetProjectProfile() {
+        // 打桩数据生成
+        var dPo = new ProjectDynamicPo(10000L, 55555L, "One project");
+        var sPo = new ProjectStaticAttributePo(10000L, 55555L, 34, 56, 4);
+        // 打桩
+        Mockito.when(projectDynamicData.findById(10000L)).thenReturn(Optional.of(dPo));
+        Mockito.when(projectStaticAttributeData.findById(10000L)).thenReturn(Optional.of(sPo));
+        Mockito.when(subgraphData.countByProjectId(10000L)).thenReturn(2020);
+        Mockito.when(vertexDynamicData.countByProjectId(10000L)).thenReturn(20);
+        Mockito.when(edgeDynamicData.countByProjectId(10000L)).thenReturn(20);
+        Mockito.when(connectiveDomainDynamicData.countByProjectId(10000L)).thenReturn(0);
+        // 验证数据
+        var vo = new ProjectProfileVo(10000L, "One project", 34, 56, 4, 2020, 20, 20, 0);
+        // 执行
+        var res = service.getProjectProfile(10000L);
+        // 测试
+        Mockito.verify(projectDynamicData).findById(10000L);
+        Mockito.verify(projectStaticAttributeData).findById(10000L);
+        assertEquals(vo, res);
     }
 
     @Test
