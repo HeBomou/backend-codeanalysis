@@ -210,16 +210,16 @@ public class ProjectServiceTest {
         Mockito.when(projectDynamicData.findByUserId(55555L)).thenReturn(dPos);
         Mockito.when(projectStaticAttributeData.findByUserId(55555L)).thenReturn(sPos);
         // 验证数据生成
-        var vo1=new ProjectBasicAttributeVo(10000L,"One project",34, 56, 4);
-        var vo2=new ProjectBasicAttributeVo(10001L,"Two project", 2333, 6000, 68);
-        var vo3=new ProjectBasicAttributeVo(10002L,"Three project", 2, 1, 1);
-        var vos=Arrays.asList(vo1,vo2,vo3);
+        var vo1 = new ProjectBasicAttributeVo(10000L, "One project", 34, 56, 4);
+        var vo2 = new ProjectBasicAttributeVo(10001L, "Two project", 2333, 6000, 68);
+        var vo3 = new ProjectBasicAttributeVo(10002L, "Three project", 2, 1, 1);
+        var vos = Arrays.asList(vo1, vo2, vo3);
         // 执行
-        var res=service.getProjectBasicAttribute(55555L);
+        var res = service.getProjectBasicAttribute(55555L);
         // 测试
         Mockito.verify(projectDynamicData).findByUserId(55555L);
         Mockito.verify(projectStaticAttributeData).findByUserId(55555L);
-        
+
         assertEquals(vos, res);
     }
 
