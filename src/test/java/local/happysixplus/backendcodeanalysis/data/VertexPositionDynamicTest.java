@@ -78,12 +78,12 @@ class VertexPositionDynamicDataTest {
         assertEquals(list.get(1).getId(), vertexPositionDynamicPo1.getId());
         assertEquals(list.get(1).getProjectId(), vertexPositionDynamicPo1.getProjectId());
         assertEquals(list.get(1).getX(), vertexPositionDynamicPo1.getX());
-        assertEquals(list.get(0).getY(), vertexPositionDynamicPo1.getY());
+        assertEquals(list.get(1).getY(), vertexPositionDynamicPo1.getY());
 
         assertEquals(list.get(2).getId(), vertexPositionDynamicPo2.getId());
         assertEquals(list.get(2).getProjectId(), vertexPositionDynamicPo2.getProjectId());
         assertEquals(list.get(2).getX(), vertexPositionDynamicPo2.getX());
-        assertEquals(list.get(0).getY(), vertexPositionDynamicPo2.getY());
+        assertEquals(list.get(2).getY(), vertexPositionDynamicPo2.getY());
     }
 
     @Test
