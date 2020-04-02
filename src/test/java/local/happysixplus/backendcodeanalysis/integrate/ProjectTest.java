@@ -252,4 +252,31 @@ public class ProjectTest {
 
 	}
 
+	@Test //测试basicattribute
+	public void Test12() throws Exception{
+		MvcResult result0=mockMvc.perform(
+			MockMvcRequestBuilders.get("/project")
+		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var list0 = JSONObject.parseArray(result0.getResponse().getContentAsString());
+		MvcResult result1=mockMvc.perform(
+			MockMvcRequestBuilders.get("/project").param("userId","4396")
+		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var list1 = JSONObject.parseArray(result1.getResponse().getContentAsString());
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
+							.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
+					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+		MvcResult result2=mockMvc.perform(
+			MockMvcRequestBuilders.get("/project")
+		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var list2 = JSONObject.parseArray(result2.getResponse().getContentAsString());
+		MvcResult result3=mockMvc.perform(
+			MockMvcRequestBuilders.get("/project").param("userId","4396")
+		).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+		var list3 = JSONObject.parseArray(result3.getResponse().getContentAsString());
+		assertEquals(list0.size()+1,list2.size());
+		assertEquals(list1.size()+1,list3.size());
+	}
+
 }
