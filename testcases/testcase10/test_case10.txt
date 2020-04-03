@@ -1,5 +1,0 @@
-testcases/testcase10/test_data10.txt
-1
-N
-haha
-N

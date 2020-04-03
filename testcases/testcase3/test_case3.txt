@@ -1,6 +1,0 @@
-M:edu.ncsu.csc.itrust.testutils.ActionTestWithMocks:createFactoryExpectations() (M)edu.ncsu.csc.itrust.dao.DAOFactory:getRiskDAO()
-M:edu.ncsu.csc.itrust.testutils.ActionTestWithMocks:createFactoryExpectations() (M)edu.ncsu.csc.itrust.dao.DAOFactory:getSurveyDAO()
-M:edu.ncsu.csc.itrust.testutils.ActionTestWithMocks:createFactoryExpectations() (M)edu.ncsu.csc.itrust.dao.DAOFactory:getSurveyResultDAO()
-M:edu.ncsu.csc.itrust.testutils.ActionTestWithMocks:createFactoryExpectations() (M)edu.ncsu.csc.itrust.dao.DAOFactory:getTransactionDAO()
-M:edu.ncsu.csc.itrust.testutils.JUnitiTrustUtils:assertTransactionOnly(edu.ncsu.csc.itrust.enums.TransactionType,long,long,java.lang.String) (S)edu.ncsu.csc.itrust.testutils.JUnitiTrustUtils:assertEquals(java.lang.String,int,int)
-M:edu.ncsu.csc.itrust.testutils.JUnitiTrustUtils:assertTransactionOnly(edu.ncsu.csc.itrust.enums.TransactionType,long,long,java.lang.String) (S)edu.ncsu.csc.itrust.testutils.JUnitiTrustUtils:assertTransaction(edu.ncsu.csc.itrust.enums.TransactionType,long,long,java.lang.String,edu.ncsu.csc.itrust.beans.TransactionBean)

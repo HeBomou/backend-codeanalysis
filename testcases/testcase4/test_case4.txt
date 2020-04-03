@@ -1,7 +1,0 @@
-testcases/testcase4/test_data4.txt
-1
-N
-haha
-y
-basic-attribute
-quit

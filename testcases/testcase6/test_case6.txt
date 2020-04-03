@@ -1,5 +1,0 @@
-testcases/testcase6/test_data6.txt
-0.45
-y
-1
-N
