@@ -446,6 +446,7 @@ public class ProjectServiceImpl implements ProjectService {
         class Util {
             HashMap<Long, VertexPositionDynamicPo> map;
             Long projectId;
+            // TODO: 可以根据前端显示效果修改该值，也可以让前端把(0, 0)作为中心
             double centerX = 800;
             double centerY = 800;
 
@@ -455,10 +456,12 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             double calcRadius(int size) {
+                // TODO: 应当根据前端显示效果修改半径系数
                 return (30 * Math.sqrt((double) size));
             }
 
             void calcPosForCD(Coordinate center, double radius, List<Long> vIds) {
+                AffineTransformation.translationInstance(centerX, centerY).transform(center, center);
                 var fact = new GeometricShapeFactory();
                 fact.setCentre(center);
                 fact.setSize(radius * 2);
