@@ -28,9 +28,9 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = { BindException.class })
     @ResponseBody
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseBean<String> badRequest(BindException e) {
+    public ErrorBean badRequest(BindException e) {
         logger.error("occurs error when execute method ,message {}", e.getMessage());
-        return new ResponseBean<>(false, ResponseEnums.BAD_REQUEST);
+        return new ErrorBean("错误的请求参数");
     }
 
     /**
@@ -42,9 +42,9 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = { NoHandlerFoundException.class })
     @ResponseBody
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseBean<String> badRequestNotFound(BindException e) {
+    public ErrorBean badRequestNotFound(BindException e) {
         logger.error("occurs error when execute method ,message {}", e.getMessage());
-        return new ResponseBean<>(false, null, ResponseEnums.NOT_FOUND);
+        return new ErrorBean("找不到请求路径");
     }
 
     /**
@@ -57,10 +57,10 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = { MyRuntimeException.class })
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public <T> ResponseBean<T> sendError(MyRuntimeException exception, HttpServletRequest request) {
+    public ErrorBean sendError(MyRuntimeException exception, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        logger.error("occurs error when execute url ={} ,message {}", requestURI, exception.getMsg());
-        return new ResponseBean<>(false, exception.getCode(), exception.getMsg());
+        logger.error("occurs error when execute url ={} ,message {}", requestURI, exception.getMessage());
+        return new ErrorBean(exception.getMessage());
     }
 
     /**
@@ -72,9 +72,9 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = { SQLException.class, DataAccessException.class })
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseBean<String> systemError(Exception e) {
+    public ErrorBean systemError(Exception e) {
         logger.error("occurs error when execute method ,message {}", e.getMessage());
-        return new ResponseBean<>(false, ResponseEnums.DATABASE_ERROR);
+        return new ErrorBean("数据库异常");
     }
 
     /**
@@ -86,17 +86,17 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = { ConnectException.class })
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseBean<String> connect(Exception e) {
+    public ErrorBean connect(Exception e) {
         logger.error("occurs error when execute method ,message {}", e.getMessage());
-        return new ResponseBean<>(false, ResponseEnums.CONNECTION_ERROR);
+        return new ErrorBean("网络连接请求失败");
     }
 
     @ExceptionHandler(value = { Exception.class })
     @ResponseBody
     @ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED)
-    public ResponseBean<String> notAllowed(Exception e) {
+    public ErrorBean notAllowed(Exception e) {
         logger.error("occurs error when execute method ,message {}", e.getMessage());
-        return new ResponseBean<>(false, ResponseEnums.METHOD_NOT_ALLOWED);
+        return new ErrorBean("不合法的请求方式");
     }
 
 }
