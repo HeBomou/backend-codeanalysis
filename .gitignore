@@ -32,3 +32,6 @@ build/
 .vscode/
 .DS_Store
 src/main/java/local/happysixplus/backendcodeanalysis/.DS_Store
+
+### Project temp file
+temp/
