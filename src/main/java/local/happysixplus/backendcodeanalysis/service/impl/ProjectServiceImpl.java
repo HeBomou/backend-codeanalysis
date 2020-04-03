@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.util.AffineTransformation;
 import com.vividsolutions.jts.shape.random.RandomPointsBuilder;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 
@@ -436,30 +437,36 @@ public class ProjectServiceImpl implements ProjectService {
                     .save(new ConnectiveDomainColorDynamicPo(cd.getId(), project.id, color));
             cDPoMap.put(cd.getId(), cDPo);
         }
-        // 生成节点初始位置并存储
+        // 生成节点初始位置
         var cdList = new ArrayList<>(subPo.getConnectiveDomains());
         cdList.sort((a, b) -> {
-            return a.getVertexIds().size() - b.getVertexIds().size();
+            return b.getVertexIds().size() - a.getVertexIds().size();
         });
         var vPosPoMap = new HashMap<Long, VertexPositionDynamicPo>(cdList.size());
         class Util {
             HashMap<Long, VertexPositionDynamicPo> map;
             Long projectId;
+            double centerX = 800;
+            double centerY = 800;
 
             Util(HashMap<Long, VertexPositionDynamicPo> map, Long projectId) {
                 this.map = map;
+                this.projectId = projectId;
             }
 
-            void calcPosForCD(Coordinate center, List<Long> vIds) {
-                int radius = (int) (100 * Math.sqrt((double) vIds.size()));
+            double calcRadius(int size) {
+                return (30 * Math.sqrt((double) size));
+            }
+
+            void calcPosForCD(Coordinate center, double radius, List<Long> vIds) {
                 var fact = new GeometricShapeFactory();
                 fact.setCentre(center);
                 fact.setSize(radius * 2);
-                fact.setNumPoints(radius / 10);
+                fact.setNumPoints((int) (radius / 10));
                 var g = fact.createCircle();
                 var pb = new RandomPointsBuilder();
                 pb.setExtent(g);
-                pb.setNumPoints(50);
+                pb.setNumPoints(vIds.size());
                 var randRes = pb.getGeometry().getCoordinates();
                 for (int i = 0; i < vIds.size(); i++) {
                     map.put(vIds.get(i), new VertexPositionDynamicPo(vIds.get(i), projectId, (float) randRes[i].x,
@@ -469,10 +476,40 @@ public class ProjectServiceImpl implements ProjectService {
         }
         Util util = new Util(vPosPoMap, project.id);
         if (cdList.size() > 0) {
-            var center = new Coordinate(800, 800);
-            util.calcPosForCD(center, cdList.get(0).getVertexIds());
-            // TODO: 处理同心圆
+            var it = cdList.iterator();
+            var cd = it.next();
+            var radius = util.calcRadius(cd.getVertexIds().size());
+            // 中心联通域
+            util.calcPosForCD(new Coordinate(), radius, cd.getVertexIds());
+            while (it.hasNext()) {
+                // 确定半径
+                double centerR;
+                double r;
+                double theta;
+                Coordinate p;
+                // 第一个
+                cd = it.next();
+                r = util.calcRadius(cd.getVertexIds().size());
+                centerR = radius + r;
+                theta = Math.asin(r / centerR) * 2;
+                radius += r * 2;
+                p = new Coordinate(0, centerR);
+                util.calcPosForCD(p, r, cd.getVertexIds());
+                // 其余的几个
+                int num = (int) (6.28 / theta);
+                for (int i = 1; i < num; i++) {
+                    if (it.hasNext())
+                        cd = it.next();
+                    else
+                        break;
+                    AffineTransformation.rotationInstance(theta).transform(p, p);
+                    util.calcPosForCD(p, r, cd.getVertexIds());
+                }
+            }
         }
+        // 存储节点初始位置
+        for (var vp : vPosPoMap.values())
+            vertexPositionDynamicData.save(vp);
         // 返回结果
         var subgVo = new Subgraph(subPo).getAllVo(dPoTodVo(subgDPo), new HashMap<>(), cDPoMap);
         return project.getAllVo(new HashMap<>(), vPosPoMap, new HashMap<>(), Arrays.asList(subgVo), dPoTodVo(projDPo));
@@ -689,18 +726,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private static VertexDynamicVo dPoTodVo(VertexDynamicPo po, VertexPositionDynamicPo posPo) {
-        if (po == null && posPo == null)
-            return null;
-        var res = new VertexDynamicVo();
-        if (po != null) {
-            res.setId(po.getId());
+        // 初始一定有Pos
+        var res = new VertexDynamicVo(posPo.getId(), "", posPo.getX(), posPo.getY());
+        if (po != null)
             res.setAnotation(po.getAnotation());
-        }
-        if (posPo != null) {
-            res.setId(posPo.getId());
-            res.setX(posPo.getX());
-            res.setY(posPo.getY());
-        }
         return res;
     }
 

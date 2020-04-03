@@ -129,6 +129,10 @@ public class ProjectServiceTest {
     static long getHashCodeForProjectAllVo(ProjectAllVo vo) {
         long res = vo.getId().hashCode();
         res += new HashSet<>(vo.getEdges()).hashCode();
+        vo.getVertices().forEach(v -> {
+            v.getDynamicVo().setX(null);
+            v.getDynamicVo().setY(null);
+        });
         res += new HashSet<>(vo.getVertices()).hashCode();
         res += getHashCodeForPackageNode(vo.getPackageRoot());
         res += vo.getSubgraphs().stream().map(ProjectServiceTest::getHashCodeForSubgraphAllVo)
@@ -177,7 +181,8 @@ public class ProjectServiceTest {
         var e7 = new EdgePo(7L, v3, v6, 0.666667d);
         var e8 = new EdgePo(8L, v7, v7, 0.5d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1, e2, e3, e4, e5, e6, e7, e8));
-        var po = new ProjectPo(23333L, 2L, vertices, edges, "{\"chrs\":{\"top\":{\"chrs\":{\"hebomou\":{\"chrs\":{\"App\":{\"chrs\":{},\"funcs\":[1],\"str\":\"App\"},\"ClassD\":{\"chrs\":{},\"funcs\":[8,9],\"str\":\"ClassD\"},\"ClassA\":{\"chrs\":{},\"funcs\":[2,3],\"str\":\"ClassA\"},\"ClassB\":{\"chrs\":{},\"funcs\":[4,5],\"str\":\"ClassB\"},\"ClassC\":{\"chrs\":{},\"funcs\":[6,7],\"str\":\"ClassC\"}},\"funcs\":[],\"str\":\"hebomou\"}},\"funcs\":[],\"str\":\"top\"}},\"funcs\":[],\"str\":\"src\"}");
+        var po = new ProjectPo(23333L, 2L, vertices, edges,
+                "{\"chrs\":{\"top\":{\"chrs\":{\"hebomou\":{\"chrs\":{\"App\":{\"chrs\":{},\"funcs\":[1],\"str\":\"App\"},\"ClassD\":{\"chrs\":{},\"funcs\":[8,9],\"str\":\"ClassD\"},\"ClassA\":{\"chrs\":{},\"funcs\":[2,3],\"str\":\"ClassA\"},\"ClassB\":{\"chrs\":{},\"funcs\":[4,5],\"str\":\"ClassB\"},\"ClassC\":{\"chrs\":{},\"funcs\":[6,7],\"str\":\"ClassC\"}},\"funcs\":[],\"str\":\"hebomou\"}},\"funcs\":[],\"str\":\"top\"}},\"funcs\":[],\"str\":\"src\"}");
         // subgraph
         var connectiveDomain1 = new ConnectiveDomainPo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L));
         var connectiveDomain2 = new ConnectiveDomainPo(444445L, Arrays.asList(1L, 2L, 5L, 3L, 7L, 6L, 4L),
@@ -193,6 +198,10 @@ public class ProjectServiceTest {
 
         // 打桩
         Mockito.when(projectData.save(isA(ProjectPo.class))).thenReturn(po);
+        Mockito.when(vertexPositionDynamicData.save(Mockito.any(VertexPositionDynamicPo.class)))
+                .thenAnswer((Answer<VertexPositionDynamicPo>) invocation -> {
+                    return (VertexPositionDynamicPo) invocation.getArgument(0);
+                });
         Mockito.when(subgraphData.save(isA(SubgraphPo.class))).thenReturn(sPo);
         Mockito.when(projectStaticAttributeData.save(isA(ProjectStaticAttributePo.class))).thenReturn(saPo);
         Mockito.when(projectDynamicData.save(isA(ProjectDynamicPo.class))).thenReturn(dPo);
@@ -213,16 +222,23 @@ public class ProjectServiceTest {
 
         // 测试数据生成
         var vVo1 = new VertexAllVo(1L, "top.hebomou.App:main(java.lang.String[])",
-                "public static void main( String[] args )", null);
-        var vVo2 = new VertexAllVo(2L, "top.hebomou.ClassA:<init>()", "public ClassA()", null);
-        var vVo3 = new VertexAllVo(3L, "top.hebomou.ClassA:funcA2()", "public void funcA2()", null);
-        var vVo4 = new VertexAllVo(4L, "top.hebomou.ClassB:<init>(char)", "public ClassB(char temp)", null);
-        var vVo5 = new VertexAllVo(5L, "top.hebomou.ClassB:funcB2(char)", "public void funcB2(char temp)", null);
-        var vVo6 = new VertexAllVo(6L, "top.hebomou.ClassC:<init>()", "public ClassC()", null);
+                "public static void main( String[] args )", new VertexDynamicVo(1L, "", null, null));
+        var vVo2 = new VertexAllVo(2L, "top.hebomou.ClassA:<init>()", "public ClassA()",
+                new VertexDynamicVo(2L, "", null, null));
+        var vVo3 = new VertexAllVo(3L, "top.hebomou.ClassA:funcA2()", "public void funcA2()",
+                new VertexDynamicVo(3L, "", null, null));
+        var vVo4 = new VertexAllVo(4L, "top.hebomou.ClassB:<init>(char)", "public ClassB(char temp)",
+                new VertexDynamicVo(4L, "", null, null));
+        var vVo5 = new VertexAllVo(5L, "top.hebomou.ClassB:funcB2(char)", "public void funcB2(char temp)",
+                new VertexDynamicVo(5L, "", null, null));
+        var vVo6 = new VertexAllVo(6L, "top.hebomou.ClassC:<init>()", "public ClassC()",
+                new VertexDynamicVo(6L, "", null, null));
         var vVo7 = new VertexAllVo(7L, "top.hebomou.ClassC:funcC1(top.hebomou.ClassB,char)",
-                "public void funcC1(ClassB obj, char temp)", null);
-        var vVo8 = new VertexAllVo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()", null);
-        var vVo9 = new VertexAllVo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()", null);
+                "public void funcC1(ClassB obj, char temp)", new VertexDynamicVo(7L, "", null, null));
+        var vVo8 = new VertexAllVo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()",
+                new VertexDynamicVo(8L, "", null, null));
+        var vVo9 = new VertexAllVo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()",
+                new VertexDynamicVo(9L, "", null, null));
         var verticesVo = Arrays.asList(vVo1, vVo2, vVo3, vVo4, vVo5, vVo6, vVo7, vVo8, vVo9);
         var nVo1 = new PackageNodeVo("App", new ArrayList<>(), Arrays.asList(1L));
         var nVo2 = new PackageNodeVo("ClassA", new ArrayList<>(), Arrays.asList(2L, 3L));
@@ -248,7 +264,8 @@ public class ProjectServiceTest {
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
         var sVo = Arrays.asList(new SubgraphAllVo(123456789L, 0d, connectiveDomainsVo,
                 new SubgraphDynamicVo(123456789L, "Default subgraph")));
-        var pVo = new ProjectAllVo(23333L, verticesVo, nVoRoot, edgesVo, sVo, new ProjectDynamicVo(23333L, "Test Faker"));
+        var pVo = new ProjectAllVo(23333L, verticesVo, nVoRoot, edgesVo, sVo,
+                new ProjectDynamicVo(23333L, "Test Faker"));
 
         // 测试
         assertEquals(getHashCodeForProjectAllVo(pVo), getHashCodeForProjectAllVo(resVo));
@@ -263,7 +280,8 @@ public class ProjectServiceTest {
         var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
         var e1 = new EdgePo(3L, v1, v2, 0.3d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1));
-        var po = new ProjectPo(2L, 233L, vertices, edges, "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}"); // TODO:
+        var po = new ProjectPo(2L, 233L, vertices, edges,
+                "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}"); // TODO:
 
         // Subgraphs
         var connectiveDomain1 = new ConnectiveDomainPo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L));
