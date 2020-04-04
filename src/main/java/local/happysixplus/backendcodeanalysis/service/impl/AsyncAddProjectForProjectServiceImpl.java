@@ -6,11 +6,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.util.AffineTransformation;
+import com.vividsolutions.jts.shape.random.RandomPointsBuilder;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
@@ -39,17 +45,13 @@ import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 import local.happysixplus.backendcodeanalysis.po.VertexDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.VertexPo;
 import local.happysixplus.backendcodeanalysis.po.VertexPositionDynamicPo;
-import local.happysixplus.backendcodeanalysis.service.ProjectService;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainAllVo;
 import local.happysixplus.backendcodeanalysis.vo.ConnectiveDomainDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeAllVo;
 import local.happysixplus.backendcodeanalysis.vo.EdgeDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.PackageNodeVo;
-import local.happysixplus.backendcodeanalysis.vo.PathVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectAllVo;
-import local.happysixplus.backendcodeanalysis.vo.ProjectBasicAttributeVo;
 import local.happysixplus.backendcodeanalysis.vo.ProjectDynamicVo;
-import local.happysixplus.backendcodeanalysis.vo.ProjectProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexAllVo;
@@ -59,7 +61,7 @@ import lombok.NoArgsConstructor;
 import lombok.var;
 
 @Service
-public class ProjectServiceImpl implements ProjectService {
+public class AsyncAddProjectForProjectServiceImpl {
 
     static public class Vertex {
         Long id;
@@ -338,231 +340,186 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     VertexPositionDynamicData vertexPositionDynamicData;
 
-    @Autowired
-    AsyncAddProjectForProjectServiceImpl asyncAddProjectForProjectServiceImpl;
+    @Async("AddProjectExecutor")
+    public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
+        try {
+            var projectInfo = callGraphMethods.initGraph(url, projectName);
+            String[] callGraph = projectInfo.getCallGraph();
+            var sourceCode = projectInfo.getSourceCode();
+            List<String> caller = new ArrayList<>();
+            List<String> callee = new ArrayList<>();
+            Set<List<String>> edgeSet = new HashSet<>();
+            for (var str : callGraph) {
+                List<String> tempList = new ArrayList<>();
+                String[] temp = str.split(" ");
+                tempList.add(temp[0].substring(2));
+                tempList.add(temp[1].substring(3));
+                edgeSet.add(tempList);
+            }
+            callGraph = null;
+            projectInfo = null;
+            for (var edge : edgeSet) {
+                caller.add(edge.get(0));
+                callee.add(edge.get(1));
+            }
+            // 生成并存入项目静态信息
+            var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId);
+            sourceCode = null;
+            // 生成并存入默认子图静态信息
+            var subPo = project.initSubgraph(0D);
+            subPo = subgraphData.save(subPo);
+            // 存入项目静态属性信息
+            var projSAPo = new ProjectStaticAttributePo(project.id, userId, project.vIdMap.size(),
+                    project.vIdMap.size(), subPo.getConnectiveDomains().size());
+            projSAPo = projectStaticAttributeData.save(projSAPo);
+            // 存入项目动态信息
+            var projDPo = new ProjectDynamicPo(project.id, userId, projectName);
+            projDPo = projectDynamicData.save(projDPo);
+            // 存入子图动态信息
+            var subgDPo = new SubgraphDynamicPo(subPo.getId(), project.id, "Default subgraph");
+            subgDPo = subgraphDynamicData.save(subgDPo);
+            // 生成联通域初始颜色并存储
+            var cDPoMap = new HashMap<Long, ConnectiveDomainColorDynamicPo>(subPo.getConnectiveDomains().size());
+            String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
+                    "#8B7E66", "#8B668B", "#36648B", "#141414" };
+            for (var cd : subPo.getConnectiveDomains()) {
+                var color = colors[((int) (Math.random() * colors.length))];
+                var cDPo = connectiveDomainColorDynamicData
+                        .save(new ConnectiveDomainColorDynamicPo(cd.getId(), project.id, color));
+                cDPoMap.put(cd.getId(), cDPo);
+            }
+            // 生成节点初始位置
+            var cdList = new ArrayList<>(subPo.getConnectiveDomains());
+            cdList.sort((a, b) -> {
+                return b.getVertexIds().size() - a.getVertexIds().size();
+            });
+            var vPosPoMap = new HashMap<Long, VertexPositionDynamicPo>(cdList.size());
+            class Util {
+                HashMap<Long, VertexPositionDynamicPo> map;
+                Long projectId;
+                // TODO: 可以根据前端显示效果修改该值，也可以让前端把(0, 0)作为中心
+                double centerX = 800;
+                double centerY = 800;
 
-    @Override
-    public ProjectAllVo addProject(String projectName, String url, long userId) {
-        var po = new ProjectPo(null, userId, new HashSet<>(), new HashSet<>(), "");
-        po = projectData.save(po);
-        var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）");
-        dPo = projectDynamicData.save(dPo);
-        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1);
-        sAPo = projectStaticAttributeData.save(sAPo);
-        asyncAddProjectForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId);
-        return new ProjectAllVo(po.getId(), null, null, null, null,
-                new ProjectDynamicVo(po.getId(), projectName + "（正在解析）"));
-    };
+                Util(HashMap<Long, VertexPositionDynamicPo> map, Long projectId) {
+                    this.map = map;
+                    this.projectId = projectId;
+                }
 
-    @Override
-    public void removeProject(Long id) {
-        projectData.deleteById(id);
-        projectDynamicData.deleteById(id);
-        subgraphData.deleteByProjectId(id);
-        subgraphDynamicData.deleteByProjectId(id);
-        connectiveDomainDynamicData.deleteByProjectId(id);
-        edgeDynamicData.deleteByProjectId(id);
-        vertexDynamicData.deleteByProjectId(id);
-    };
+                double calcRadius(int size) {
+                    // TODO: 应当根据前端显示效果修改半径系数
+                    return (30 * Math.sqrt((double) size));
+                }
 
-    @Override
-    public void updateProjectDynamic(Long projectId, ProjectDynamicVo vo) {
-        vo.setId(projectId);
-        var userId = projectDynamicData.findById(projectId).orElse(null).getUserId();
-        projectDynamicData.save(new ProjectDynamicPo(vo.getId(), userId, vo.getProjectName()));
-    };
-
-    @Override
-    public List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId) {
-        List<ProjectDynamicPo> pDPos;
-        if (userId == null)
-            pDPos = projectDynamicData.findAll();
-        else
-            pDPos = projectDynamicData.findByUserId(userId);
-        List<ProjectStaticAttributePo> pSAPos;
-        if (userId == null)
-            pSAPos = projectStaticAttributeData.findAll();
-        else
-            pSAPos = projectStaticAttributeData.findByUserId(userId);
-        var pSAPoMap = pSAPos.stream().collect(Collectors.toMap(ProjectStaticAttributePo::getId, po -> po));
-        var vos = new ArrayList<ProjectBasicAttributeVo>(pDPos.size());
-        for (var pDPo : pDPos) {
-            var pSAPo = pSAPoMap.get(pDPo.getId());
-            if (pSAPo != null)
-                vos.add(new ProjectBasicAttributeVo(pDPo.getId(), pDPo.getProjectName(), pSAPo.getVertexNum(),
-                        pSAPo.getEdgeNum(), pSAPo.getConnectiveDomainNum()));
+                void calcPosForCD(Coordinate center, double radius, List<Long> vIds) {
+                    AffineTransformation.translationInstance(centerX, centerY).transform(center, center);
+                    var fact = new GeometricShapeFactory();
+                    fact.setCentre(center);
+                    fact.setSize(radius * 2);
+                    fact.setNumPoints((int) (radius / 10));
+                    var g = fact.createCircle();
+                    var pb = new RandomPointsBuilder();
+                    pb.setExtent(g);
+                    pb.setNumPoints(vIds.size());
+                    var randRes = pb.getGeometry().getCoordinates();
+                    for (int i = 0; i < vIds.size(); i++) {
+                        map.put(vIds.get(i), new VertexPositionDynamicPo(vIds.get(i), projectId, (float) randRes[i].x,
+                                (float) randRes[i].y));
+                    }
+                }
+            }
+            Util util = new Util(vPosPoMap, project.id);
+            if (cdList.size() > 0) {
+                var it = cdList.iterator();
+                var cd = it.next();
+                var radius = util.calcRadius(cd.getVertexIds().size());
+                // 中心联通域
+                util.calcPosForCD(new Coordinate(), radius, cd.getVertexIds());
+                while (it.hasNext()) {
+                    // 确定半径
+                    double centerR;
+                    double r;
+                    double theta;
+                    Coordinate p;
+                    // 第一个
+                    cd = it.next();
+                    r = util.calcRadius(cd.getVertexIds().size());
+                    centerR = radius + r;
+                    theta = Math.asin(r / centerR) * 2;
+                    radius += r * 2;
+                    p = new Coordinate(0, centerR);
+                    util.calcPosForCD(p, r, cd.getVertexIds());
+                    // 其余的几个
+                    int num = (int) (6.28 / theta);
+                    for (int i = 1; i < num; i++) {
+                        if (it.hasNext())
+                            cd = it.next();
+                        else
+                            break;
+                        AffineTransformation.rotationInstance(theta).transform(p, p);
+                        util.calcPosForCD(p, r, cd.getVertexIds());
+                    }
+                }
+            }
+            // 存储节点初始位置
+            for (var vp : vPosPoMap.values())
+                vertexPositionDynamicData.save(vp);
+        } catch (Exception e) {
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（解析失败）");
+            projectDynamicData.save(failedDPo);
+            throw e;
         }
-        return vos;
-    };
-
-    @Override
-    public ProjectAllVo getProjectAll(Long id) {
-        // 项目
-        var po = projectData.findById(id).orElse(null);
-        var project = new Project(po);
-        var vDPoMap = vertexDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var vPDPoMap = vertexPositionDynamicData.findByProjectId(id).stream()
-                .collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var eDPoMap = edgeDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var dVo = dPoTodVo(projectDynamicData.findById(id).orElse(null));
-        // 子图
-        var sPos = subgraphData.findByProjectId(id);
-        var sDPoMap = subgraphDynamicData.findByProjectId(id).stream()
-                .collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var cDPoMap = connectiveDomainDynamicData.findByProjectId(id).stream()
-                .collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var cCDPoMap = connectiveDomainColorDynamicData.findByProjectId(id).stream()
-                .collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var sVos = new ArrayList<SubgraphAllVo>(sPos.size());
-        // 获取子图vo
-        for (var sPo : sPos)
-            sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap, cCDPoMap));
-        // 返回
-        return project.getAllVo(vDPoMap, vPDPoMap, eDPoMap, sVos, dVo);
+        return CompletableFuture.completedFuture("Finished");
     }
 
-    @Override
-    public ProjectProfileVo getProjectProfile(Long id) {
-        var pDPo = projectDynamicData.findById(id).orElse(null);
-        var pSAPo = projectStaticAttributeData.findById(id).orElse(null);
-        String projectName = pDPo.getProjectName();
-        Integer vertexNum = pSAPo.getVertexNum();
-        Integer edgeNum = pSAPo.getEdgeNum();
-        Integer connectiveDomainNum = pSAPo.getConnectiveDomainNum();
-        Integer subgraphNum = subgraphData.countByProjectId(id);
-        Integer vertexAnotationNum = vertexDynamicData.countByProjectId(id);
-        Integer edgeAnotationNum = edgeDynamicData.countByProjectId(id);
-        Integer connectiveDomainAnotationNum = connectiveDomainDynamicData.countByProjectId(id);
-        return new ProjectProfileVo(id, projectName, vertexNum, edgeNum, connectiveDomainNum, subgraphNum,
-                vertexAnotationNum, edgeAnotationNum, connectiveDomainAnotationNum);
-    }
+    Project initAndSaveProject(Long projectId, List<String> caller, List<String> callee, Map<String, String> sourceCode, Long userId) {
+        Set<EdgePo> edgePos = new HashSet<EdgePo>();
+        Set<VertexPo> vertexPos = new HashSet<VertexPo>();
+        Map<String, VertexPo> vertexMap = new HashMap<String, VertexPo>();
+        Map<String, Integer> outdegree = new HashMap<String, Integer>();
+        Map<String, Integer> indegree = new HashMap<String, Integer>();
 
-    @Override
-    public SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name) {
-        // 生成并存储静态信息
-        var po = projectData.findById(projectId).orElse(null);
-        var project = new Project(po);
-        var newSPo = project.initSubgraph(threshold);
-        newSPo = subgraphData.save(newSPo);
-        // 存储动态信息
-        var sDPo = new SubgraphDynamicPo(newSPo.getId(), projectId, name);
-        sDPo = subgraphDynamicData.save(sDPo);
-        // 生成联通域初始颜色并存储
-        var cDPoMap = new HashMap<Long, ConnectiveDomainColorDynamicPo>(newSPo.getConnectiveDomains().size());
-        String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
-                "#8B7E66", "#8B668B", "#36648B", "#141414" };
-        for (var cd : newSPo.getConnectiveDomains()) {
-            var color = colors[((int) (Math.random() * colors.length))];
-            var cDPo = connectiveDomainColorDynamicData
-                    .save(new ConnectiveDomainColorDynamicPo(cd.getId(), projectId, color));
-            cDPoMap.put(cd.getId(), cDPo);
+        var vertexNameSet = new HashSet<String>();
+        vertexNameSet.addAll(caller);
+        vertexNameSet.addAll(callee);
+        var vertexNames = new ArrayList<String>(vertexNameSet);
+
+        for (var str : vertexNames) {
+            VertexPo vPo;
+            if (sourceCode.containsKey(str))
+                vPo = new VertexPo(null, str, sourceCode.get(str));
+            else
+                vPo = new VertexPo(null, str, "");
+            vertexPos.add(vPo);
+            vertexMap.put(str, vPo);
+            outdegree.put(str, 0);
+            indegree.put(str, 0);
         }
 
-        // 返回
-        var subgraph = new Subgraph(newSPo);
-        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>(), cDPoMap);
-    };
-
-    @Override
-    public void removeSubgraph(Long id) {
-        subgraphData.deleteById(id);
-    };
-
-    @Override
-    public void updateSubGraphDynamic(Long projectId, SubgraphDynamicVo vo) {
-        subgraphDynamicData.save(new SubgraphDynamicPo(vo.getId(), projectId, vo.getName()));
-    };
-
-    @Override
-    public void updateConnectiveDomainDynamic(Long projectId, Long subgraphId, ConnectiveDomainDynamicVo vo) {
-        if (vo.getAnotation() != null)
-            connectiveDomainDynamicData.save(new ConnectiveDomainDynamicPo(vo.getId(), projectId, vo.getAnotation()));
-        if (vo.getColor() != null)
-            connectiveDomainColorDynamicData
-                    .save(new ConnectiveDomainColorDynamicPo(vo.getId(), projectId, vo.getColor()));
-    }
-
-    @Override
-    public void updateEdgeDynamic(Long projectId, EdgeDynamicVo vo) {
-        edgeDynamicData.save(new EdgeDynamicPo(vo.getId(), projectId, vo.getAnotation()));
-    }
-
-    @Override
-    public void updateVertexDynamic(Long projectId, VertexDynamicVo vo) {
-        if (vo.getX() != null && vo.getY() != null)
-            vertexPositionDynamicData.save(new VertexPositionDynamicPo(vo.getId(), projectId, vo.getX(), vo.getY()));
-        if (vo.getAnotation() != null)
-            vertexDynamicData.save(new VertexDynamicPo(vo.getId(), projectId, vo.getAnotation()));
-    }
-
-    @Override
-    public List<String> getSimilarFunction(Long projectId, String funcName) {
-        var res = new ArrayList<String>();
-        var po = projectData.findById(projectId).orElse(null);
-        for (var vPo : po.getVertices())
-            if (vPo.getFunctionName().contains(funcName))
-                res.add(vPo.getFunctionName());
-        return res;
-    };
-
-    static class PathE {
-        long id;
-        PathV to;
-
-        PathE(long id, PathV to) {
-            this.id = id;
-            this.to = to;
+        for (int i = 0; i < caller.size(); i++) {
+            String startName = caller.get(i);
+            String endName = callee.get(i);
+            outdegree.put(startName, outdegree.get(startName) + 1);
+            indegree.put(endName, indegree.get(endName) + 1);
         }
-    }
 
-    static class PathV {
-        long id;
-        boolean inPath;
-        List<PathE> es = new ArrayList<>();
-
-        PathV(Long id) {
-            this.id = id;
-            this.inPath = false;
+        for (int i = 0; i < caller.size(); i++) {
+            String startName = caller.get(i);
+            String endName = callee.get(i);
+            VertexPo from = vertexMap.get(startName);
+            VertexPo to = vertexMap.get(endName);
+            Double closeness = 2.0 / (outdegree.get(startName) + indegree.get(endName));
+            edgePos.add(new EdgePo(null, from, to, closeness));
         }
-    }
 
-    @Override
-    public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
-        var res = new ArrayList<List<Long>>();
-        var po = projectData.findById(projectId).orElse(null);
-        var project = new Project(po);
-        // 添加点
-        var vs = new HashMap<Long, PathV>(project.vIdMap.size());
-        for (var v : project.vIdMap.values())
-            vs.put(v.id, new PathV(v.id));
-        // 添加单向边
-        for (var e : project.eIdMap.values())
-            vs.get(e.from.id).es.add(new PathE(e.id, vs.get(e.to.id)));
-
-        getAllPathDFS(endVertexId, vs.get(startVertexId), new ArrayList<Long>(), res);
-        res.sort((a, b) -> {
-            return b.size() - a.size();
-        });
-        if (res.size() > 50)
-            return new PathVo(res.size(), res.subList(0, 50));
-        else
-            return new PathVo(res.size(), res);
-    };
-
-    private void getAllPathDFS(Long endVertexId, PathV v, List<Long> path, List<List<Long>> res) {
-        if (v.inPath)
-            return;
-        if (v.id == endVertexId) {
-            res.add(new ArrayList<>(path));
-            return;
-        }
-        v.inPath = true;
-        for (var edge : v.es) {
-            path.add(edge.id);
-            getAllPathDFS(endVertexId, edge.to, path, res);
-            path.remove(path.size() - 1);
-        }
-        v.inPath = false;
+        var projPo = projectData.save(new ProjectPo(projectId, userId, vertexPos, edgePos, ""));
+        var vMap = projPo.getVertices().stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
+        PackageNode root = new PackageNode("src");
+        for (var v : vMap.values())
+            root.insertFunc(v.getId(), v.getFunctionName().split(":", 2)[0]);
+        projPo.setPackageStructure(JSONObject.toJSONString(root));
+        projPo = projectData.save(projPo);
+        return new Project(projPo);
     }
 
     private static VertexDynamicVo dPoTodVo(VertexDynamicPo po, VertexPositionDynamicPo posPo) {
@@ -588,15 +545,4 @@ public class ProjectServiceImpl implements ProjectService {
         return res;
     }
 
-    private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po) {
-        if (po == null)
-            return null;
-        return new SubgraphDynamicVo(po.getId(), po.getName());
-    }
-
-    private static ProjectDynamicVo dPoTodVo(ProjectDynamicPo po) {
-        if (po == null)
-            return null;
-        return new ProjectDynamicVo(po.getId(), po.getProjectName());
-    }
 }

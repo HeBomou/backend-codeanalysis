@@ -281,7 +281,7 @@ public class ProjectServiceTest {
         var e1 = new EdgePo(3L, v1, v2, 0.3d);
         var edges = new HashSet<EdgePo>(Arrays.asList(e1));
         var po = new ProjectPo(2L, 233L, vertices, edges,
-                "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}"); // TODO:
+                "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}");
 
         // Subgraphs
         var connectiveDomain1 = new ConnectiveDomainPo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L));

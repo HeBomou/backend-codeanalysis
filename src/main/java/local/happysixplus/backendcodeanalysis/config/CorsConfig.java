@@ -1,4 +1,4 @@
-package local.happysixplus.backendcodeanalysis;
+package local.happysixplus.backendcodeanalysis.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
