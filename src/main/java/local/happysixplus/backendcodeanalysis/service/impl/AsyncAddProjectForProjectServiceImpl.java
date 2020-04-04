@@ -402,7 +402,7 @@ public class AsyncAddProjectForProjectServiceImpl {
 
                 double calcRadius(int size) {
                     // TODO: 应当根据前端显示效果修改半径系数
-                    return (120 * Math.sqrt((double) size));
+                    return (80 * Math.sqrt((double) size));
                 }
 
                 void calcPosForCD(Coordinate center, double radius, List<Long> vIds) {
