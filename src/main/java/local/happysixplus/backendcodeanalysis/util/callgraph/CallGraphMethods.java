@@ -13,5 +13,5 @@ public interface CallGraphMethods{
      * @return Pair的第一个元素：每一行为一个代码依赖 第二个元素：String的ArrayList，每个String为一个函数的源码
      *
      */
-    ProjectInfo initGraph(String githubLink, String projectName);
+    ProjectInfo initGraph(String githubLink);
 }
