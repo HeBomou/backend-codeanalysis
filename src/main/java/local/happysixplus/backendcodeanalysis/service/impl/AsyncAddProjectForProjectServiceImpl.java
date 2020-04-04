@@ -29,6 +29,7 @@ import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
@@ -332,6 +333,8 @@ public class AsyncAddProjectForProjectServiceImpl {
     public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
         try {
             var projectInfo = callGraphMethods.initGraph(url);
+            if (projectInfo == null)
+                throw new MyRuntimeException("您的项目有问题");
             String[] callGraph = projectInfo.getCallGraph();
             var sourceCode = projectInfo.getSourceCode();
             List<String> caller = new ArrayList<>();
