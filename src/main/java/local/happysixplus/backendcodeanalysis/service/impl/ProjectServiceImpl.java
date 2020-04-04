@@ -26,6 +26,7 @@ import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
@@ -399,6 +400,8 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectAllVo getProjectAll(Long id) {
         // 项目
         var po = projectData.findById(id).orElse(null);
+        if (po.getPackageStructure() == "")
+            throw new MyRuntimeException("项目正在解析");
         var project = new Project(po);
         var vDPoMap = vertexDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
         var vPDPoMap = vertexPositionDynamicData.findByProjectId(id).stream()
@@ -425,6 +428,10 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectProfileVo getProjectProfile(Long id) {
         var pDPo = projectDynamicData.findById(id).orElse(null);
         var pSAPo = projectStaticAttributeData.findById(id).orElse(null);
+        if (pDPo == null)
+            throw new MyRuntimeException("项目不存在");
+        if (pSAPo == null)
+            throw new MyRuntimeException("项目正在解析或解析失败");
         String projectName = pDPo.getProjectName();
         Integer vertexNum = pSAPo.getVertexNum();
         Integer edgeNum = pSAPo.getEdgeNum();
