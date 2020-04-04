@@ -21,16 +21,13 @@ import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainColorDynamicData;
-import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
 import local.happysixplus.backendcodeanalysis.data.EdgeData;
-import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectStaticAttributeData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
-import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
