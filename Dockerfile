@@ -1,4 +1,6 @@
 FROM openjdk:8-jdk-alpine
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN apk --update add --no-cache git
 EXPOSE 8080
 ADD target/backend-codeanalysis-*.jar backend-codeanalysis.jar
 ENTRYPOINT ["java", "-jar", "/backend-codeanalysis.jar", "--spring.datasource.url=jdbc:mysql://mysql_ca:3306/code_analysis?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC", "--spring.redis.host=redis_ca"]
