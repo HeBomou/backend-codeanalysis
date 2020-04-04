@@ -334,7 +334,7 @@ public class AsyncAddProjectForProjectServiceImpl {
     @Async("AddProjectExecutor")
     public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
         try {
-            var projectInfo = callGraphMethods.initGraph(url, projectName);
+            var projectInfo = callGraphMethods.initGraph(url);
             String[] callGraph = projectInfo.getCallGraph();
             var sourceCode = projectInfo.getSourceCode();
             List<String> caller = new ArrayList<>();
