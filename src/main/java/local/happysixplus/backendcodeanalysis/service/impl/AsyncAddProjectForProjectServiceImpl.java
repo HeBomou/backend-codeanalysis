@@ -392,8 +392,8 @@ public class AsyncAddProjectForProjectServiceImpl {
                 HashMap<Long, VertexPositionDynamicPo> map;
                 Long projectId;
                 // TODO: 可以根据前端显示效果修改该值，也可以让前端把(0, 0)作为中心
-                double centerX = 800;
-                double centerY = 800;
+                double centerX = 200;
+                double centerY = 200;
 
                 Util(HashMap<Long, VertexPositionDynamicPo> map, Long projectId) {
                     this.map = map;
@@ -402,7 +402,7 @@ public class AsyncAddProjectForProjectServiceImpl {
 
                 double calcRadius(int size) {
                     // TODO: 应当根据前端显示效果修改半径系数
-                    return (30 * Math.sqrt((double) size));
+                    return (120 * Math.sqrt((double) size));
                 }
 
                 void calcPosForCD(Coordinate center, double radius, List<Long> vIds) {
