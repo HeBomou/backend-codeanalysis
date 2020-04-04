@@ -326,15 +326,6 @@ public class AsyncAddProjectForProjectServiceImpl {
     SubgraphDynamicData subgraphDynamicData;
 
     @Autowired
-    ConnectiveDomainDynamicData connectiveDomainDynamicData;
-
-    @Autowired
-    EdgeDynamicData edgeDynamicData;
-
-    @Autowired
-    VertexDynamicData vertexDynamicData;
-
-    @Autowired
     ConnectiveDomainColorDynamicData connectiveDomainColorDynamicData;
 
     @Autowired
