@@ -357,13 +357,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void removeProject(Long id) {
+        if (projectData.findById(id).orElse(null) == null)
+            throw new MyRuntimeException("该项目不存在");
         projectData.deleteById(id);
         projectDynamicData.deleteById(id);
+        projectStaticAttributeData.deleteById(id);
         subgraphData.deleteByProjectId(id);
         subgraphDynamicData.deleteByProjectId(id);
         connectiveDomainDynamicData.deleteByProjectId(id);
+        connectiveDomainColorDynamicData.deleteByProjectId(id);
         edgeDynamicData.deleteByProjectId(id);
         vertexDynamicData.deleteByProjectId(id);
+        vertexPositionDynamicData.deleteByProjectId(id);
     };
 
     @Override
