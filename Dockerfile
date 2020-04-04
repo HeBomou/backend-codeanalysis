@@ -11,7 +11,6 @@ ENTRYPOINT ["java", "-jar", "/backend-codeanalysis.jar", "--spring.datasource.ur
 
 # 准备mysql与redis容器
 # docker run -d --name mysql_ca --env="MYSQL_ROOT_PASSWORD=root" --env="MYSQL_PASSWORD=root" --env="MYSQL_DATABASE=code_analysis" mysql
-# docker run -d --name redis_ca redis
 
 # 项目修改后重新部署
 # ./mvnw clean package -DskipTests
