@@ -364,7 +364,7 @@ public class AsyncAddProjectForProjectServiceImpl {
             subPo = subgraphData.save(subPo);
             // 存入项目静态属性信息
             var projSAPo = new ProjectStaticAttributePo(project.id, userId, project.vIdMap.size(),
-                    project.vIdMap.size(), subPo.getConnectiveDomains().size());
+                    project.eIdMap.size(), subPo.getConnectiveDomains().size());
             projSAPo = projectStaticAttributeData.save(projSAPo);
             // 存入项目动态信息
             var projDPo = new ProjectDynamicPo(project.id, userId, projectName);
