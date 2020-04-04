@@ -17,27 +17,18 @@ public class SessionServiceImpl implements SessionService {
     UserData userData;
 
     @Override
-    public Long addSession(SessionVo vo, HttpServletRequest request) throws Exception {
-        HttpSession session = request.getSession();
+    public Long addSession(SessionVo vo) throws Exception {
         var po = userData.findByUsername(vo.getUsername());
         if (po == null)
             throw new MyRuntimeException("该用户不存在");
         if (!po.getPwdMd5().equals(vo.getPwdMd5())) {
             throw new MyRuntimeException("密码错误");
         }
-        Object value = session.getAttribute("user");
-        if (value == null) {
-            session.setAttribute("user", po.getId().toString());
-        }
         return po.getId();
     };
 
     @Override
-    public void removeSession(String id, HttpServletRequest request) throws Exception {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("user") != null && session.getAttribute("user").equals(id)) 
-            session.removeAttribute("user");
-        else
-            throw new MyRuntimeException("该用户未登录");
+    public void removeSession(String id) throws Exception {
+        
     };
 }
