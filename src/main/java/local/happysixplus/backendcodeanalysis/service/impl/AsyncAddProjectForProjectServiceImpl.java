@@ -335,6 +335,9 @@ public class AsyncAddProjectForProjectServiceImpl {
             var projectInfo = callGraphMethods.initGraph(url);
             if (projectInfo == null)
                 throw new MyRuntimeException("您的项目有问题");
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（解析失败）");
+            projectDynamicData.save(failedDPo);
+            failedDPo = null;
             String[] callGraph = projectInfo.getCallGraph();
             var sourceCode = projectInfo.getSourceCode();
             List<String> caller = new ArrayList<>();
@@ -463,7 +466,8 @@ public class AsyncAddProjectForProjectServiceImpl {
         return CompletableFuture.completedFuture("Finished");
     }
 
-    Project initAndSaveProject(Long projectId, List<String> caller, List<String> callee, Map<String, String> sourceCode, Long userId) {
+    Project initAndSaveProject(Long projectId, List<String> caller, List<String> callee, Map<String, String> sourceCode,
+            Long userId) {
         Set<EdgePo> edgePos = new HashSet<EdgePo>();
         Set<VertexPo> vertexPos = new HashSet<VertexPo>();
         Map<String, VertexPo> vertexMap = new HashMap<String, VertexPo>();
