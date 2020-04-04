@@ -17,4 +17,4 @@ ENTRYPOINT ["java", "-jar", "/backend-codeanalysis.jar", "--spring.datasource.ur
 # docker stop codeanalysis
 # docker rmi codeanalysis
 # docker build -t codeanalysis .
-# docker run -d --name codeanalysis -p 8080:8080 --link mysql_ca:mysql_ca --link redis_ca:redis_ca --rm codeanalysis
+# docker run -d --name codeanalysis -p 8080:8080 --link mysql_ca:mysql_ca --rm codeanalysis
