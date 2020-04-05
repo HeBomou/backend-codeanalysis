@@ -17,6 +17,7 @@ ENTRYPOINT ["java", "-jar", "/backend-codeanalysis.jar", "--spring.datasource.ur
 # 项目重新部署
 # ./mvnw clean package -DskipTests
 # docker stop codeanalysis
+# docker rm codeanalysis
 # docker rmi codeanalysis
 # docker build -t codeanalysis .
-# docker run -d --name codeanalysis -p 8080:8080 --link mysql_ca:mysql_ca --rm codeanalysis
+# docker run -d --name codeanalysis -p 8080:8080 --link mysql_ca:mysql_ca codeanalysis
