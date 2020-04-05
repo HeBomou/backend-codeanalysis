@@ -68,8 +68,6 @@ public class AsyncForProjectServiceImpl {
         Long id;
         String functionName = "";
         String sourceCode = "";
-        int inDegree = 0;
-        int outDegree = 0;
         List<Edge> edges = new ArrayList<>();
         List<Edge> allEdges = new ArrayList<>();
 
@@ -77,10 +75,6 @@ public class AsyncForProjectServiceImpl {
             id = po.getId();
             functionName = po.getFunctionName();
             sourceCode = po.getSourceCode();
-        }
-
-        VertexPo getVertexPo(Long projectId) {
-            return new VertexPo(id, projectId, functionName, sourceCode);
         }
 
         VertexAllVo getAllVo(VertexDynamicVo dVo) {
@@ -183,8 +177,11 @@ public class AsyncForProjectServiceImpl {
             userId = po.getUserId();
             for (var vPo : vPos)
                 vIdMap.put(vPo.getId(), new Vertex(vPo));
-            for (var ePo : ePos)
-                eIdMap.put(ePo.getId(), new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
+            for (var ePo : ePos) {
+                var e = new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId()));
+                eIdMap.put(ePo.getId(), e);
+                vIdMap.get(ePo.getFromId()).edges.add(e);
+            }
             packageStructureJSON = po.getPackageStructure();
         }
 
@@ -383,11 +380,11 @@ public class AsyncForProjectServiceImpl {
                 caller.add(edge.get(0));
                 callee.add(edge.get(1));
             }
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）");
-            projectDynamicData.save(failedDPo);
-            failedDPo = null;
+            // 先存入错误信息避免失败后无法更新
+            projectDynamicData.save(new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）"));
             // 生成并存入项目静态信息
             var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId);
+            // 可能projectId已经因为被用户删除而失效
             projectId = project.id;
             sourceCode = null;
             // 生成并存入默认子图静态信息
@@ -420,40 +417,81 @@ public class AsyncForProjectServiceImpl {
             });
             var vPosPoMap = new HashMap<Long, VertexPositionDynamicPo>(cdList.size());
             class Util {
-                HashMap<Long, VertexPositionDynamicPo> map;
+                HashMap<Long, VertexPositionDynamicPo> resMap;
+                Map<Long, Vertex> vMap;
+                Map<Long, Integer> wMap = new HashMap<>();
+                Set<Long> vstSet = new HashSet<>();
                 Long projectId;
-                // TODO: 可以根据前端显示效果修改该值，也可以让前端把(0, 0)作为中心
-                double centerX = 0;
-                double centerY = 0;
 
-                Util(HashMap<Long, VertexPositionDynamicPo> map, Long projectId) {
-                    this.map = map;
+                Util(HashMap<Long, VertexPositionDynamicPo> resMap, Long projectId, Map<Long, Vertex> vMap) {
+                    this.resMap = resMap;
                     this.projectId = projectId;
+                    this.vMap = vMap;
                 }
 
-                double calcRadius(int size) {
+                float calcRadius(int size) {
                     // TODO: 应当根据前端显示效果修改半径系数
-                    return (80 * Math.sqrt((double) size));
+                    return (float) (100 * Math.sqrt(size));
                 }
 
-                void calcPosForCD(Coordinate center, double radius, List<Long> vIds) {
-                    AffineTransformation.translationInstance(centerX, centerY).transform(center, center);
-                    var fact = new GeometricShapeFactory();
-                    fact.setCentre(center);
-                    fact.setSize(radius * 2 * 0.85);
-                    fact.setNumPoints((int) (radius / 10));
-                    var g = fact.createCircle();
-                    var pb = new RandomPointsBuilder();
-                    pb.setExtent(g);
-                    pb.setNumPoints(vIds.size());
-                    var randRes = pb.getGeometry().getCoordinates();
-                    for (int i = 0; i < vIds.size(); i++) {
-                        map.put(vIds.get(i), new VertexPositionDynamicPo(vIds.get(i), projectId, (float) randRes[i].x,
-                                (float) randRes[i].y));
+                int dfs(Vertex p, int weight) {
+                    if (vstSet.contains(p.id))
+                        return Integer.MAX_VALUE;
+                    vstSet.add(p.id);
+                    Integer w = wMap.get(p.id);
+                    if (w != null)
+                        return w;
+                    w = Integer.MAX_VALUE;
+                    for (var e : p.edges)
+                        w = Math.min(w, dfs(e.to, weight + 1));
+                    int rw = w - 1;
+                    if (w.equals(Integer.MAX_VALUE))
+                        rw = weight + 1;
+                    wMap.put(p.id, rw);
+                    return rw;
+                }
+
+                void calcPosForCD(Coordinate center, float radius, List<Long> vIds) {
+                    List<Vertex> vs = vIds.stream().map(id -> vMap.get(id)).collect(Collectors.toList());
+                    int minW = Integer.MAX_VALUE;
+                    int maxW = Integer.MIN_VALUE;
+                    // 获取权
+                    for (var v : vs) {
+                        minW = Math.min(minW, dfs(v, 0));
+                        maxW = Math.max(maxW, wMap.get(v.id));
                     }
+                    vstSet.clear();
+                    // 根据权分配坐标
+                    radius *= 0.8;
+                    float leftUpX = (float) center.x - radius;
+                    float leftUpY = (float) center.y - radius;
+                    float length = radius * 2;
+                    int rowHeight = 80;
+                    int maxRowNum = (int) length / rowHeight; // 最大行数
+                    int wDiff = maxW - minW + 1;
+                    int[] wCnts = new int[wDiff]; // 每个权值统计总数
+                    int[] wColCnts = new int[wDiff]; // 每个权值占有的列数
+                    int[] wColStart = new int[wDiff]; // 每个权值起始列
+                    for (var id : vIds)
+                        wCnts[wMap.get(id) - minW]++;
+                    for (int i = 0; i < wDiff; i++)
+                        wColCnts[i] = wCnts[i] / maxRowNum + (wCnts[i] % maxRowNum == 0 ? 0 : 1);
+                    for (int i = 1; i < wDiff; i++)
+                        wColStart[i] = wColStart[i - 1] + wColCnts[i - 1];
+                    for (int i = 0; i < wDiff; i++)
+                        wCnts[i] = 0;
+                    int colWidth = (int)length / (wColStart[wDiff - 1] + wColCnts[wDiff - 1]);
+                    for (var id : vIds) {
+                        int rw = wMap.get(id) - minW;
+                        float x = wColStart[rw] + wCnts[rw] / maxRowNum;
+                        float y = wCnts[rw] % maxRowNum;
+                        wCnts[rw]++;
+                        resMap.put(id, new VertexPositionDynamicPo(id, projectId, leftUpX + x * colWidth, leftUpY + y * rowHeight));
+                    }
+                    wMap.clear();
                 }
             }
-            Util util = new Util(vPosPoMap, project.id);
+            Util util = new Util(vPosPoMap, project.id, project.vIdMap);
             if (cdList.size() > 0) {
                 var it = cdList.iterator();
                 var cd = it.next();
@@ -462,8 +500,8 @@ public class AsyncForProjectServiceImpl {
                 util.calcPosForCD(new Coordinate(), radius, cd.getVertexIds());
                 while (it.hasNext()) {
                     // 确定半径
-                    double centerR;
-                    double r;
+                    float centerR;
+                    float r;
                     double theta;
                     Coordinate p;
                     // 第一个
