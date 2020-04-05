@@ -23,10 +23,14 @@ public interface ProjectService {
      */
     ProjectAllVo addProject(String projectName, String url, long userId);
 
+    /**
+     * 移除项目
+     */
     void removeProject(Long id);
 
     /**
      * 返回所有项目的动态信息
+     * 
      * @param userId 添加用户id的筛选条件
      */
     List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId);
@@ -36,6 +40,9 @@ public interface ProjectService {
      */
     ProjectProfileVo getProjectProfile(Long id);
 
+    /**
+     * 返回用户的所有项目信息
+     */
     ProjectAllVo getProjectAll(Long id);
 
     /**
@@ -47,32 +54,39 @@ public interface ProjectService {
      */
     SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name);
 
+    /**
+     * 删除子图
+     */
     void removeSubgraph(Long id);
 
     /**
      * 更新一个项目的动态信息
+     * 
      * @param projectId 项目id
-     * @param vo 项目vo
+     * @param vo        项目vo
      */
     void updateProjectDynamic(Long projectId, ProjectDynamicVo vo);
 
     /**
      * 更新一张子图的注释等动态信息
+     * 
      * @param projectId 项目id
-     * @param vo 子图vo
+     * @param vo        子图vo
      */
     void updateSubGraphDynamic(Long projectId, SubgraphDynamicVo vo);
 
     /**
      * 更新一个联通域的注释等动态信息
-     * @param projectId 项目id
+     * 
+     * @param projectId  项目id
      * @param subgraphId 子图id
-     * @param vo 要更新的联通域vo
+     * @param vo         要更新的联通域vo
      */
     void updateConnectiveDomainDynamic(Long projectId, Long subgraphId, ConnectiveDomainDynamicVo vo);
 
     /**
      * 更新一条边的注释等动态信息
+     * 
      * @param projectId
      * @param vo
      */
@@ -80,10 +94,16 @@ public interface ProjectService {
 
     /**
      * 更新一个点的注释等动态信息
+     * 
      * @param projectId
      * @param vo
      */
     void updateVertexDynamic(Long projectId, VertexDynamicVo vo);
+
+    /**
+     * 更新一个点的注释等动态信息
+     */
+    void updateConnectiveDomainAllVertex(Long projectId, Long connectiveDomainId, float relativeX, float relativeY);
 
     /**
      * 获取初始图中从start出发到end的所有路

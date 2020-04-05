@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 import com.alibaba.fastjson.JSONObject;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.util.AffineTransformation;
-import com.vividsolutions.jts.shape.random.RandomPointsBuilder;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;

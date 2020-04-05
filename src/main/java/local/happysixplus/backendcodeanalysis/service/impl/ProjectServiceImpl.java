@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainColorDynamicData;
+import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainData;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
 import local.happysixplus.backendcodeanalysis.data.EdgeData;
 import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
@@ -314,6 +315,9 @@ public class ProjectServiceImpl implements ProjectService {
     SubgraphDynamicData subgraphDynamicData;
 
     @Autowired
+    ConnectiveDomainData connectiveDomainData;
+
+    @Autowired
     ConnectiveDomainDynamicData connectiveDomainDynamicData;
 
     @Autowired
@@ -513,6 +517,22 @@ public class ProjectServiceImpl implements ProjectService {
             vertexPositionDynamicData.save(new VertexPositionDynamicPo(vo.getId(), projectId, vo.getX(), vo.getY()));
         if (vo.getAnotation() != null)
             vertexDynamicData.save(new VertexDynamicPo(vo.getId(), projectId, vo.getAnotation()));
+    }
+
+    @Override
+    public void updateConnectiveDomainAllVertex(Long projectId, Long connectiveDomainId, float relativeX,
+            float relativeY) {
+        var pVertexPo = vertexPositionDynamicData.findByProjectId(projectId);
+        var cVertexPo = connectiveDomainData.findById(connectiveDomainId).orElse(null).getVertexIds();
+        var vPos = new ArrayList<VertexPositionDynamicPo>();
+        for (var vpo : pVertexPo) {
+            if (cVertexPo.contains(vpo.getId())) {
+                vpo.setX(vpo.getX() + relativeX);
+                vpo.setY(vpo.getY() + relativeY);
+                vPos.add(vpo);
+            }
+        }
+        vertexPositionDynamicData.saveAll(vPos);
     }
 
     @Override
