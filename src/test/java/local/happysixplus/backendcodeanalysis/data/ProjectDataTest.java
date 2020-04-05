@@ -1,8 +1,6 @@
 package local.happysixplus.backendcodeanalysis.data;
 
-import local.happysixplus.backendcodeanalysis.po.EdgePo;
 import local.happysixplus.backendcodeanalysis.po.ProjectPo;
-import local.happysixplus.backendcodeanalysis.po.VertexPo;
 import lombok.var;
 
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
+
 
 @SpringBootTest
 class ProjectDataTest {
@@ -25,43 +23,7 @@ class ProjectDataTest {
 
     @BeforeEach
     void init() {
-        // data.deleteAll();
-
-        // projectPo = new ProjectPo(null, 1L, null, null, "ssss");
-        // projectPo = data.save(projectPo);
-        // // Vertices
-        // var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");
-        // var v2 = new VertexPo(null, "cnmd2", "nmbd yuanma 2");
-        // var v3 = new VertexPo(null, "cnmd3", "nmbd yuanma 3");
-        // var v4 = new VertexPo(null, "cnmd4", "nmbd yuanma 4");
-        // var vertices = new HashSet<VertexPo>();
-        // vertices.add(v1);
-        // vertices.add(v2);
-        // vertices.add(v3);
-        // vertices.add(v4);
-        // projectPo.setVertices(vertices);
-        // // Edges
-        // // var e1 = new EdgePo(null, v1, v2, 0.3d);
-        // // var e2 = new EdgePo(null, v2, v3, 0.1d);
-        // // var e3 = new EdgePo(null, v3, v4, 0.3d);
-        // var edges = new HashSet<EdgePo>();
-        // // edges.add(e1);
-        // // edges.add(e2);
-        // // edges.add(e3);
-        // projectPo.setEdges(edges);
-        // Subgraphs
-        /*
-         * var cd2vSet = new HashSet<VertexPo>(); cd2vSet.add(v1); cd2vSet.add(v2); var
-         * cd2eSet = new HashSet<EdgePo>(); cd2eSet.add(e1); var cd3vSet = new
-         * HashSet<VertexPo>(); cd3vSet.add(v3); cd3vSet.add(v4); var cd3eSet = new
-         * HashSet<EdgePo>(); cd3eSet.add(e3); var connectiveDomains1 = new
-         * HashSet<ConnectiveDomainPo>(); var connectiveDomains2 = new
-         * HashSet<ConnectiveDomainPo>(); var defaultSubgraph = new
-         * SubgraphPo(null,projectPo.getId(), 0d, connectiveDomains1); var subgraph1 =
-         * new SubgraphPo(null,projectPo.getId(), 0.2d, connectiveDomains2); var
-         * subgraphs = new HashSet<SubgraphPo>(); subgraphs.add(defaultSubgraph);
-         * subgraphs.add(subgraph1);
-         */
+        projectPo=new ProjectPo(null, 4396L, "eihei");
     }
 
     @AfterEach
@@ -71,12 +33,11 @@ class ProjectDataTest {
 
     @Test
     public void testInsert() {
-        // projectPo = data.save(projectPo);
-        // ProjectPo resPo = data.findById(projectPo.getId()).get();
-        // assertEquals(resPo.getEdges(), projectPo.getEdges());
-        // assertEquals(resPo.getVertices(), projectPo.getVertices());
-        // assertEquals(resPo.getUserId(), projectPo.getUserId());
-        // assertEquals(resPo.getId(), projectPo.getId());
+        projectPo = data.save(projectPo);
+        ProjectPo resPo = data.findById(projectPo.getId()).get();
+        assertEquals(resPo.getUserId(), projectPo.getUserId());
+        assertEquals(resPo.getId(), projectPo.getId());
+        assertEquals(resPo.getPackageStructure(),projectPo.getPackageStructure());
     }
 
     @Test
@@ -86,6 +47,17 @@ class ProjectDataTest {
         var resPo= data.findById(projectPo.getId()).orElse(null);
         assertEquals(resPo,null);
     }
+
+    @Test
+    public void testUpdate() {
+        projectPo = data.save(projectPo);
+        projectPo = data.save(new ProjectPo(projectPo.getId(),4397L,"123345"));
+        ProjectPo resPo = data.findById(projectPo.getId()).get();
+        assertEquals(resPo.getUserId(), projectPo.getUserId());
+        assertEquals(resPo.getId(), projectPo.getId());
+        assertEquals(resPo.getPackageStructure(),projectPo.getPackageStructure());
+    }
+
     // @Test
     // public void insertTest1() {
     // projectPo=data.save(projectPo);

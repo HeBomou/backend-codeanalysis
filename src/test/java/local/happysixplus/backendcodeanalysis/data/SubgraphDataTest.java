@@ -1,10 +1,8 @@
 package local.happysixplus.backendcodeanalysis.data;
 
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
-import local.happysixplus.backendcodeanalysis.po.EdgePo;
 import local.happysixplus.backendcodeanalysis.po.SubgraphPo;
 
-import local.happysixplus.backendcodeanalysis.po.VertexPo;
 import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,38 +23,28 @@ class SubgraphDataTest {
     SubgraphPo po1;
     @BeforeEach
     void setUp() {
-        // data.deleteAll();
-        // po = new SubgraphPo();
-        // var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");
-        // var v2 = new VertexPo(null, "cnmd2", "nmbd yuanma 2");
-        // var v3 = new VertexPo(null, "cnmd3", "nmbd yuanma 3");
-        // var v4 = new VertexPo(null, "cnmd4", "nmbd yuanma 4");
-        // var vertices = new HashSet<VertexPo>();
-        // vertices.add(v1);
-        // vertices.add(v2);
-        // vertices.add(v3);
-        // vertices.add(v4);
-        // var e1 = new EdgePo(null, v1, v2, 0.3d);
-        // var e2 = new EdgePo(null, v2, v3, 0.1d);
-        // var e3 = new EdgePo(null, v3, v4, 0.3d);
-        // var edges = new HashSet<EdgePo>();
-        // edges.add(e1);
-        // edges.add(e2);
-        // edges.add(e3);
-        // var cd2vSet = new HashSet<VertexPo>();
-        // cd2vSet.add(v1);
-        // cd2vSet.add(v2);
-        // var cd2eSet = new HashSet<EdgePo>();
-        // cd2eSet.add(e1);
-        // var cd3vSet = new HashSet<VertexPo>();
-        // cd3vSet.add(v3);
-        // cd3vSet.add(v4);
-        // var cd3eSet = new HashSet<EdgePo>();
-        // cd3eSet.add(e3);
-        // var connectiveDomains1 = new HashSet<ConnectiveDomainPo>();
-        // var connectiveDomains2 = new HashSet<ConnectiveDomainPo>();
-        // po = new SubgraphPo(null, 1L, 0d, connectiveDomains1);
-        // po1 = new SubgraphPo(null, 1L, 0.2d, connectiveDomains2);
+        data.deleteAll();
+        po = new SubgraphPo();
+        List<Long> vids1=new ArrayList<>();
+        for(int i=0;i<3;i++) vids1.add(Long.valueOf(i));
+        List<Long> vids2=new ArrayList<>();
+        for(int i=0;i<5;i++) vids2.add(Long.valueOf(i+10));
+        List<Long> vids3=new ArrayList<>();
+        for(int i=0;i<7;i++) vids3.add(Long.valueOf(i+100));
+        List<Long> eids1=new ArrayList<>();
+        for(int i=0;i<3;i++) eids1.add(Long.valueOf(i+2));
+        List<Long> eids2=new ArrayList<>();
+        for(int i=0;i<5;i++) eids2.add(Long.valueOf(i+20));
+        List<Long> eids3=new ArrayList<>();
+        for(int i=0;i<7;i++) eids3.add(Long.valueOf(i+200));
+        //var connectiveDomain1=new ConnectiveDomainPo(id, vertexIds, edgeIds)
+        var connectiveDomains1 = new HashSet<ConnectiveDomainPo>();
+        connectiveDomains1.add(new ConnectiveDomainPo(null,vids1,eids1));
+        connectiveDomains1.add(new ConnectiveDomainPo(null,vids2,eids2));
+        var connectiveDomains2 = new HashSet<ConnectiveDomainPo>();
+        connectiveDomains2.add(new ConnectiveDomainPo(null,vids2,eids2));
+        po = new SubgraphPo(null, 1L, 0d, connectiveDomains1);
+        po1 = new SubgraphPo(null, 1L, 0.2d, connectiveDomains2);
     }
     @AfterEach
     void tearDown(){
@@ -66,10 +54,13 @@ class SubgraphDataTest {
     public void testInsert(){
         po=data.save(po);
         SubgraphPo resPo=data.findById(po.getId()).get();
+        for(ConnectiveDomainPo cdp:resPo.getConnectiveDomains()){
+            sort(cdp);
+        }
         assertEquals(po.getId(),resPo.getId());
         assertEquals(po.getProjectId(),resPo.getProjectId());
         assertEquals(po.getThreshold(),resPo.getThreshold());
-        assertEquals(po.getConnectiveDomains(),resPo.getConnectiveDomains());
+        assertEquals(po.getConnectiveDomains().size(),resPo.getConnectiveDomains().size());
     }
     @Test
     public void testRemove(){
@@ -85,15 +76,21 @@ class SubgraphDataTest {
         List<SubgraphPo> pos=data.findByProjectId(1L);
         pos.sort((a,b)->(int)(a.getId()-b.getId()));
 
+        for(int i=0;i<pos.size();i++){
+            for(ConnectiveDomainPo cdp:pos.get(i).getConnectiveDomains()){
+                sort(cdp);
+            }
+        }
+
         assertEquals(po.getId(),pos.get(0).getId());
         assertEquals(po.getProjectId(),pos.get(0).getProjectId());
         assertEquals(po.getThreshold(),pos.get(0).getThreshold());
-        assertEquals(po.getConnectiveDomains(),pos.get(0).getConnectiveDomains());
+        assertEquals(po.getConnectiveDomains().size(),pos.get(0).getConnectiveDomains().size());
 
         assertEquals(po1.getId(),pos.get(1).getId());
         assertEquals(po1.getProjectId(),pos.get(1).getProjectId());
         assertEquals(po1.getThreshold(),pos.get(1).getThreshold());
-        assertEquals(po1.getConnectiveDomains(),pos.get(1).getConnectiveDomains());
+        assertEquals(po1.getConnectiveDomains().size(),pos.get(1).getConnectiveDomains().size());
     }
     @Test
     public void testDeleteByProjectId() {
@@ -110,5 +107,8 @@ class SubgraphDataTest {
         int count=data.countByProjectId(1L);
         assertEquals(count,2);
     }
-
+    void sort(ConnectiveDomainPo cdp){
+        cdp.getEdgeIds().sort((a,b)->(int)(a-b));
+        cdp.getVertexIds().sort((a,b)->(int)(a-b));
+    }
 }
