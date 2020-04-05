@@ -98,10 +98,6 @@ public class AsyncAddProjectForProjectServiceImpl {
             this.to = to;
         }
 
-        EdgePo getEdgePo(Map<String, VertexPo> vMap) {
-            return new EdgePo(id, vMap.get(from.functionName), vMap.get(to.functionName), closeness);
-        }
-
         EdgeAllVo getAllVo(EdgeDynamicVo dVo) {
             return new EdgeAllVo(id, from.id, to.id, closeness, dVo);
         }
@@ -185,8 +181,7 @@ public class AsyncAddProjectForProjectServiceImpl {
             for (var vPo : po.getVertices())
                 vIdMap.put(vPo.getId(), new Vertex(vPo));
             for (var ePo : po.getEdges())
-                eIdMap.put(ePo.getId(),
-                        new Edge(ePo, vIdMap.get(ePo.getFrom().getId()), vIdMap.get(ePo.getTo().getId())));
+                eIdMap.put(ePo.getId(), new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
             packageStructureJSON = po.getPackageStructure();
         }
 
@@ -474,12 +469,12 @@ public class AsyncAddProjectForProjectServiceImpl {
         Map<String, Integer> outdegree = new HashMap<String, Integer>();
         Map<String, Integer> indegree = new HashMap<String, Integer>();
 
+        // 去除重复点
         var vertexNameSet = new HashSet<String>();
         vertexNameSet.addAll(caller);
         vertexNameSet.addAll(callee);
-        var vertexNames = new ArrayList<String>(vertexNameSet);
 
-        for (var str : vertexNames) {
+        for (var str : vertexNameSet) {
             VertexPo vPo;
             if (sourceCode.containsKey(str))
                 vPo = new VertexPo(null, str, sourceCode.get(str));
@@ -490,6 +485,12 @@ public class AsyncAddProjectForProjectServiceImpl {
             outdegree.put(str, 0);
             indegree.put(str, 0);
         }
+        // 存入点
+        var vPosRes = vertexData.saveAll(vertexPos);
+        vertexPos.clear();
+        vertexPos.addAll(vPosRes);
+        for (var vPoRes : vPosRes)
+            vertexMap.put(vPoRes.getFunctionName(), vPoRes);
 
         for (int i = 0; i < caller.size(); i++) {
             String startName = caller.get(i);
@@ -504,7 +505,7 @@ public class AsyncAddProjectForProjectServiceImpl {
             VertexPo from = vertexMap.get(startName);
             VertexPo to = vertexMap.get(endName);
             Double closeness = 2.0 / (outdegree.get(startName) + indegree.get(endName));
-            edgePos.add(new EdgePo(null, from, to, closeness));
+            edgePos.add(new EdgePo(null, from.getId(), to.getId(), closeness));
         }
 
         var projPo = projectData.save(new ProjectPo(projectId, userId, vertexPos, edgePos, ""));

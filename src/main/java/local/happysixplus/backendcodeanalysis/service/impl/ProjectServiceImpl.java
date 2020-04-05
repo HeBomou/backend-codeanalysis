@@ -99,10 +99,6 @@ public class ProjectServiceImpl implements ProjectService {
             this.to = to;
         }
 
-        EdgePo getEdgePo(Map<String, VertexPo> vMap) {
-            return new EdgePo(id, vMap.get(from.functionName), vMap.get(to.functionName), closeness);
-        }
-
         EdgeAllVo getAllVo(EdgeDynamicVo dVo) {
             return new EdgeAllVo(id, from.id, to.id, closeness, dVo);
         }
@@ -187,7 +183,7 @@ public class ProjectServiceImpl implements ProjectService {
                 vIdMap.put(vPo.getId(), new Vertex(vPo));
             for (var ePo : po.getEdges())
                 eIdMap.put(ePo.getId(),
-                        new Edge(ePo, vIdMap.get(ePo.getFrom().getId()), vIdMap.get(ePo.getTo().getId())));
+                        new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
             packageStructureJSON = po.getPackageStructure();
         }
 
@@ -403,7 +399,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectAllVo getProjectAll(Long id) {
         // 项目
         var po = projectData.findById(id).orElse(null);
-        if (po.getPackageStructure() == "")
+        if (po.getPackageStructure().equals(""))
             throw new MyRuntimeException("项目正在解析");
         var project = new Project(po);
         var vDPoMap = vertexDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
@@ -559,7 +555,7 @@ public class ProjectServiceImpl implements ProjectService {
             return new PathVo(res.size(), res);
     };
 
-    private void getAllPathDFS(Long endVertexId, PathV v, List<Long> path, List<List<Long>> res) {
+    private void getAllPathDFS(long endVertexId, PathV v, List<Long> path, List<List<Long>> res) {
         if (v.inPath)
             return;
         if (v.id == endVertexId) {

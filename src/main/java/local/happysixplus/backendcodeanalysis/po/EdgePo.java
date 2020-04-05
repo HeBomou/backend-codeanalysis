@@ -22,13 +22,9 @@ public class EdgePo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    VertexPo from;
+    Long fromId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    VertexPo to;
+    Long toId;
 
     Double closeness;
 

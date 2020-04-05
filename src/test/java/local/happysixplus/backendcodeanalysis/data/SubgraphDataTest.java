@@ -36,27 +36,27 @@ class SubgraphDataTest {
         vertices.add(v2);
         vertices.add(v3);
         vertices.add(v4);
-        var e1 = new EdgePo(null, v1, v2, 0.3d);
-        var e2 = new EdgePo(null, v2, v3, 0.1d);
-        var e3 = new EdgePo(null, v3, v4, 0.3d);
-        var edges = new HashSet<EdgePo>();
-        edges.add(e1);
-        edges.add(e2);
-        edges.add(e3);
-        var cd2vSet = new HashSet<VertexPo>();
-        cd2vSet.add(v1);
-        cd2vSet.add(v2);
-        var cd2eSet = new HashSet<EdgePo>();
-        cd2eSet.add(e1);
-        var cd3vSet = new HashSet<VertexPo>();
-        cd3vSet.add(v3);
-        cd3vSet.add(v4);
-        var cd3eSet = new HashSet<EdgePo>();
-        cd3eSet.add(e3);
-        var connectiveDomains1 = new HashSet<ConnectiveDomainPo>();
-        var connectiveDomains2 = new HashSet<ConnectiveDomainPo>();
-        po = new SubgraphPo(null, 1L, 0d, connectiveDomains1);
-        po1 = new SubgraphPo(null, 1L, 0.2d, connectiveDomains2);
+        // var e1 = new EdgePo(null, v1, v2, 0.3d);
+        // var e2 = new EdgePo(null, v2, v3, 0.1d);
+        // var e3 = new EdgePo(null, v3, v4, 0.3d);
+        // var edges = new HashSet<EdgePo>();
+        // edges.add(e1);
+        // edges.add(e2);
+        // edges.add(e3);
+        // var cd2vSet = new HashSet<VertexPo>();
+        // cd2vSet.add(v1);
+        // cd2vSet.add(v2);
+        // var cd2eSet = new HashSet<EdgePo>();
+        // cd2eSet.add(e1);
+        // var cd3vSet = new HashSet<VertexPo>();
+        // cd3vSet.add(v3);
+        // cd3vSet.add(v4);
+        // var cd3eSet = new HashSet<EdgePo>();
+        // cd3eSet.add(e3);
+        // var connectiveDomains1 = new HashSet<ConnectiveDomainPo>();
+        // var connectiveDomains2 = new HashSet<ConnectiveDomainPo>();
+        // po = new SubgraphPo(null, 1L, 0d, connectiveDomains1);
+        // po1 = new SubgraphPo(null, 1L, 0.2d, connectiveDomains2);
     }
     @AfterEach
     void tearDown(){

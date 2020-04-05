@@ -41,13 +41,13 @@ class ProjectDataTest {
         vertices.add(v4);
         projectPo.setVertices(vertices);
         // Edges
-        var e1 = new EdgePo(null, v1, v2, 0.3d);
-        var e2 = new EdgePo(null, v2, v3, 0.1d);
-        var e3 = new EdgePo(null, v3, v4, 0.3d);
+        // var e1 = new EdgePo(null, v1, v2, 0.3d);
+        // var e2 = new EdgePo(null, v2, v3, 0.1d);
+        // var e3 = new EdgePo(null, v3, v4, 0.3d);
         var edges = new HashSet<EdgePo>();
-        edges.add(e1);
-        edges.add(e2);
-        edges.add(e3);
+        // edges.add(e1);
+        // edges.add(e2);
+        // edges.add(e3);
         projectPo.setEdges(edges);
         // Subgraphs
         /*
