@@ -330,7 +330,7 @@ public class AsyncAddProjectForProjectServiceImpl {
             var projectInfo = callGraphMethods.initGraph(url);
             if (projectInfo == null)
                 throw new MyRuntimeException("您的项目有问题");
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目打包失败）");
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）");
             projectDynamicData.save(failedDPo);
             failedDPo = null;
             String[] callGraph = projectInfo.getCallGraph();
@@ -454,7 +454,7 @@ public class AsyncAddProjectForProjectServiceImpl {
             for (var vp : vPosPoMap.values())
                 vertexPositionDynamicData.save(vp);
         } catch (Exception e) {
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）");
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目无法解析）");
             projectDynamicData.save(failedDPo);
             throw e;
         }
