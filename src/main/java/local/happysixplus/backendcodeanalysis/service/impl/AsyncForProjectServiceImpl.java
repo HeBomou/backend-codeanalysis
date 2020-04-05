@@ -431,10 +431,10 @@ public class AsyncForProjectServiceImpl {
 
                 float calcRadius(int size) {
                     // TODO: 应当根据前端显示效果修改半径系数
-                    return (float) (100 * Math.sqrt(size));
+                    return (float) (200 * Math.sqrt(size));
                 }
 
-                int dfs(Vertex p, int weight) {
+                int dfs(Vertex p) {
                     if (vstSet.contains(p.id))
                         return Integer.MAX_VALUE;
                     vstSet.add(p.id);
@@ -443,12 +443,10 @@ public class AsyncForProjectServiceImpl {
                         return w;
                     w = Integer.MAX_VALUE;
                     for (var e : p.edges)
-                        w = Math.min(w, dfs(e.to, weight + 1));
-                    int rw = w - 1;
-                    if (w.equals(Integer.MAX_VALUE))
-                        rw = weight + 1;
-                    wMap.put(p.id, rw);
-                    return rw;
+                        w = Math.min(w, dfs(e.to));
+                    wMap.put(p.id, w - 1);
+                    vstSet.remove(p.id);
+                    return w - 1;
                 }
 
                 void calcPosForCD(Coordinate center, float radius, List<Long> vIds) {
@@ -457,7 +455,7 @@ public class AsyncForProjectServiceImpl {
                     int maxW = Integer.MIN_VALUE;
                     // 获取权
                     for (var v : vs) {
-                        minW = Math.min(minW, dfs(v, 0));
+                        minW = Math.min(minW, dfs(v));
                         maxW = Math.max(maxW, wMap.get(v.id));
                     }
                     vstSet.clear();
