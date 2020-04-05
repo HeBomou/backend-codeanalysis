@@ -302,19 +302,13 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectData projectData;
 
     @Autowired
-    SubgraphData subgraphData;
-
-    @Autowired
-    EdgeData edgeData;
-
-    @Autowired
-    VertexData vertexData;
-
-    @Autowired
     ProjectStaticAttributeData projectStaticAttributeData;
 
     @Autowired
     ProjectDynamicData projectDynamicData;
+
+    @Autowired
+    SubgraphData subgraphData;
 
     @Autowired
     SubgraphDynamicData subgraphDynamicData;
@@ -323,13 +317,19 @@ public class ProjectServiceImpl implements ProjectService {
     ConnectiveDomainDynamicData connectiveDomainDynamicData;
 
     @Autowired
+    ConnectiveDomainColorDynamicData connectiveDomainColorDynamicData;
+
+    @Autowired
+    EdgeData edgeData;
+
+    @Autowired
     EdgeDynamicData edgeDynamicData;
 
     @Autowired
-    VertexDynamicData vertexDynamicData;
+    VertexData vertexData;
 
     @Autowired
-    ConnectiveDomainColorDynamicData connectiveDomainColorDynamicData;
+    VertexDynamicData vertexDynamicData;
 
     @Autowired
     VertexPositionDynamicData vertexPositionDynamicData;
@@ -352,16 +352,35 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void removeProject(Long id) {
-        projectData.deleteById(id);
-        projectDynamicData.deleteById(id);
-        projectStaticAttributeData.deleteById(id);
-        subgraphData.deleteByProjectId(id);
-        subgraphDynamicData.deleteByProjectId(id);
-        connectiveDomainDynamicData.deleteByProjectId(id);
-        connectiveDomainColorDynamicData.deleteByProjectId(id);
-        edgeDynamicData.deleteByProjectId(id);
-        vertexDynamicData.deleteByProjectId(id);
-        vertexPositionDynamicData.deleteByProjectId(id);
+        boolean err = false;
+        if (projectData.existsById(id))
+            projectData.deleteById(id);
+        else
+            err = true;
+        if (projectDynamicData.existsById(id))
+            projectDynamicData.deleteById(id);
+        if (projectStaticAttributeData.existsById(id))
+            projectStaticAttributeData.deleteById(id);
+        if (subgraphData.existsByProjectId(id))
+            subgraphData.deleteByProjectId(id);
+        if (subgraphDynamicData.existsByProjectId(id))
+            subgraphDynamicData.deleteByProjectId(id);
+        if (connectiveDomainDynamicData.existsByProjectId(id))
+            connectiveDomainDynamicData.deleteByProjectId(id);
+        if (connectiveDomainColorDynamicData.existsByProjectId(id))
+            connectiveDomainColorDynamicData.deleteByProjectId(id);
+        if (edgeData.existsByProjectId(id))
+            edgeData.deleteByProjectId(id);
+        if (edgeDynamicData.existsByProjectId(id))
+            edgeDynamicData.deleteByProjectId(id);
+        if (vertexData.existsByProjectId(id))
+            vertexData.deleteByProjectId(id);
+        if (vertexDynamicData.existsByProjectId(id))
+            vertexDynamicData.deleteByProjectId(id);
+        if (vertexPositionDynamicData.existsByProjectId(id))
+            vertexPositionDynamicData.deleteByProjectId(id);
+        if (err)
+            throw new MyRuntimeException("项目已不存在，但仍尝试删除");
     };
 
     @Override
@@ -483,6 +502,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void removeSubgraph(Long id) {
         subgraphData.deleteById(id);
+        subgraphDynamicData.deleteById(id);
     };
 
     @Override

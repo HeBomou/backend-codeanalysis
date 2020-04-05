@@ -9,9 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.VertexPositionDynamicPo;
 
 public interface VertexPositionDynamicData extends JpaRepository<VertexPositionDynamicPo, Long> {
+
     Integer countByProjectId(Long projectId);
+
     List<VertexPositionDynamicPo> findByProjectId(Long projectId);
+
+    boolean existsByProjectId(Long projectId);
+
     @Modifying
     @Transactional
     void deleteByProjectId(Long projectId);
+
 }

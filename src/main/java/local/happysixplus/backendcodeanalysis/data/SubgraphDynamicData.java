@@ -10,8 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.SubgraphDynamicPo;
 
 public interface SubgraphDynamicData extends JpaRepository<SubgraphDynamicPo, Long> {
+
     List<SubgraphDynamicPo> findByProjectId(Long projectId);
+
+    boolean existsByProjectId(Long projectId);
+
     @Modifying
     @Transactional
     void deleteByProjectId(Long projectId);
+
 }

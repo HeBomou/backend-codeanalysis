@@ -9,9 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 
 public interface ConnectiveDomainColorDynamicData extends JpaRepository<ConnectiveDomainColorDynamicPo, Long> {
+
     Integer countByProjectId(Long projectId);
+
     List<ConnectiveDomainColorDynamicPo> findByProjectId(Long projectId);
+
+    boolean existsByProjectId(Long projectId);
+
     @Modifying
     @Transactional
     void deleteByProjectId(Long projectId);
+
 }
