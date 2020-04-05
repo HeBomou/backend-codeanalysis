@@ -17,7 +17,6 @@ import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -544,6 +543,8 @@ public class ProjectServiceTest {
         var res = service.getOriginalGraphPath(2L, 1L, 5L);
         // 测试
         Mockito.verify(projectData).findById(2L);
+        Mockito.verify(vertexData).findByProjectId(2L);
+        Mockito.verify(edgeData).findByProjectId(2L);
         var p1 = Arrays.asList(1L, 2L);
         var p2 = Arrays.asList(3L, 5L);
         var p3 = Arrays.asList(1L, 4L, 5L);
@@ -554,39 +555,28 @@ public class ProjectServiceTest {
     @Test
     public void testGetSimilarFunction() {
         // 打桩数据生成
-        // var po = new ProjectPo(2L, 2333L, null, null, "zheli xjb xie ye meishi");
-        // var v1 = new VertexPo(1L, "v1", "dian1()");
-        // var v2 = new VertexPo(2L, "v2", "dian2()");
-        // var v3 = new VertexPo(3L, "v3", "dian3()");
-        // var v4 = new VertexPo(4L, "v4", "dian4()");
-        // var v5 = new VertexPo(5L, "a5", "dian5()");
-        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
-        // po.setVertices(vertices);
-        // var e1 = new EdgePo(1L, v1, v2, 0.666667d);
-        // var e2 = new EdgePo(2L, v2, v5, 0.5d);
-        // var e3 = new EdgePo(3L, v1, v4, 0.4d);
-        // var e4 = new EdgePo(4L, v2, v4, 0.4d);
-        // var e5 = new EdgePo(5L, v4, v5, 0.666667d);
-        // var e6 = new EdgePo(6L, v3, v1, 0.666667d);
-        // var e7 = new EdgePo(7L, v3, v4, 0.4d);
-        // var edges = new HashSet<EdgePo>(Arrays.asList(e1, e2, e3, e4, e5, e6, e7));
-        // po.setEdges(edges);
+        var v1 = new VertexPo(1L,2L, "v1", "dian1()");
+        var v2 = new VertexPo(2L,2L, "v2", "dian2()");
+        var v3 = new VertexPo(3L,2L, "v3", "dian3()");
+        var v4 = new VertexPo(4L,2L, "v4", "dian4()");
+        var v5 = new VertexPo(5L,2L, "a5", "dian5()");
+        var vPo = Arrays.asList(v1, v2, v3, v4, v5);
 
-        // // 打桩
-        // Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
+        // 打桩
+        Mockito.when(vertexData.findByProjectId(2L)).thenReturn(vPo);
 
-        // // 调用
-        // var res = service.getSimilarFunction(2L, "v");
+        // 调用
+        var res = service.getSimilarFunction(2L, "v");
 
-        // // 测试数据
-        // var strs = new ArrayList<String>();
-        // strs.add("v1");
-        // strs.add("v2");
-        // strs.add("v3");
-        // strs.add("v4");
+        // 测试数据
+        var strs = new ArrayList<String>();
+        strs.add("v1");
+        strs.add("v2");
+        strs.add("v3");
+        strs.add("v4");
 
-        // // 测试
-        // Mockito.verify(projectData).findById(2L);
-        // assertEquals(new HashSet<>(strs), new HashSet<>(res));
+        // 测试
+        Mockito.verify(vertexData).findByProjectId(2L);
+        assertEquals(new HashSet<>(strs), new HashSet<>(res));
     }
 }
