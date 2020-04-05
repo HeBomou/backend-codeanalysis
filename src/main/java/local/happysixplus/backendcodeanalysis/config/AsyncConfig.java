@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class AsyncConfig {
 
     // 声明一个线程池(并指定线程池的名字)
-    @Bean("AddProjectExecutor")
+    @Bean("ProjectExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 核心线程数1：线程池创建时候初始化的线程数
@@ -24,7 +24,7 @@ public class AsyncConfig {
         // 允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁
         executor.setKeepAliveSeconds(60);
         // 线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池
-        executor.setThreadNamePrefix("Pull Async-");
+        executor.setThreadNamePrefix("Project Async-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(120);
         executor.initialize();

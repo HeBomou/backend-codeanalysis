@@ -335,7 +335,7 @@ public class ProjectServiceImpl implements ProjectService {
     VertexPositionDynamicData vertexPositionDynamicData;
 
     @Autowired
-    AsyncAddProjectForProjectServiceImpl asyncAddProjectForProjectServiceImpl;
+    AsyncForProjectServiceImpl asyncForProjectServiceImpl;
 
     @Override
     public ProjectAllVo addProject(String projectName, String url, long userId) {
@@ -345,7 +345,7 @@ public class ProjectServiceImpl implements ProjectService {
         dPo = projectDynamicData.save(dPo);
         var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1);
         sAPo = projectStaticAttributeData.save(sAPo);
-        asyncAddProjectForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId);
+        asyncForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId);
         return new ProjectAllVo(po.getId(), null, null, null, null,
                 new ProjectDynamicVo(po.getId(), projectName + "（正在解析）"));
     };
@@ -361,24 +361,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectDynamicData.deleteById(id);
         if (projectStaticAttributeData.existsById(id))
             projectStaticAttributeData.deleteById(id);
-        if (subgraphData.existsByProjectId(id))
-            subgraphData.deleteByProjectId(id);
-        if (subgraphDynamicData.existsByProjectId(id))
-            subgraphDynamicData.deleteByProjectId(id);
-        if (connectiveDomainDynamicData.existsByProjectId(id))
-            connectiveDomainDynamicData.deleteByProjectId(id);
-        if (connectiveDomainColorDynamicData.existsByProjectId(id))
-            connectiveDomainColorDynamicData.deleteByProjectId(id);
-        if (edgeData.existsByProjectId(id))
-            edgeData.deleteByProjectId(id);
-        if (edgeDynamicData.existsByProjectId(id))
-            edgeDynamicData.deleteByProjectId(id);
-        if (vertexData.existsByProjectId(id))
-            vertexData.deleteByProjectId(id);
-        if (vertexDynamicData.existsByProjectId(id))
-            vertexDynamicData.deleteByProjectId(id);
-        if (vertexPositionDynamicData.existsByProjectId(id))
-            vertexPositionDynamicData.deleteByProjectId(id);
+        asyncForProjectServiceImpl.asyncRemoveProject(id);
         if (err)
             throw new MyRuntimeException("项目已不存在，但仍尝试删除");
     };

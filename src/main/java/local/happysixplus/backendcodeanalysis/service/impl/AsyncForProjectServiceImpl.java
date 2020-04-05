@@ -21,13 +21,16 @@ import org.springframework.stereotype.Service;
 
 import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainColorDynamicData;
+import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
 import local.happysixplus.backendcodeanalysis.data.EdgeData;
+import local.happysixplus.backendcodeanalysis.data.EdgeDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectStaticAttributeData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
+import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
 import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
@@ -59,7 +62,7 @@ import lombok.NoArgsConstructor;
 import lombok.var;
 
 @Service
-public class AsyncAddProjectForProjectServiceImpl {
+public class AsyncForProjectServiceImpl {
 
     static public class Vertex {
         Long id;
@@ -301,30 +304,62 @@ public class AsyncAddProjectForProjectServiceImpl {
     ProjectData projectData;
 
     @Autowired
-    SubgraphData subgraphData;
-
-    @Autowired
-    EdgeData edgeData;
-
-    @Autowired
-    VertexData vertexData;
-
-    @Autowired
     ProjectStaticAttributeData projectStaticAttributeData;
 
     @Autowired
     ProjectDynamicData projectDynamicData;
 
     @Autowired
+    SubgraphData subgraphData;
+
+    @Autowired
     SubgraphDynamicData subgraphDynamicData;
+
+    @Autowired
+    ConnectiveDomainDynamicData connectiveDomainDynamicData;
 
     @Autowired
     ConnectiveDomainColorDynamicData connectiveDomainColorDynamicData;
 
     @Autowired
+    EdgeData edgeData;
+
+    @Autowired
+    EdgeDynamicData edgeDynamicData;
+
+    @Autowired
+    VertexData vertexData;
+
+    @Autowired
+    VertexDynamicData vertexDynamicData;
+
+    @Autowired
     VertexPositionDynamicData vertexPositionDynamicData;
 
-    @Async("AddProjectExecutor")
+    @Async("ProjectExecutor")
+    public CompletableFuture<String> asyncRemoveProject(Long id) {
+        if (subgraphData.existsByProjectId(id))
+            subgraphData.deleteByProjectId(id);
+        if (subgraphDynamicData.existsByProjectId(id))
+            subgraphDynamicData.deleteByProjectId(id);
+        if (connectiveDomainDynamicData.existsByProjectId(id))
+            connectiveDomainDynamicData.deleteByProjectId(id);
+        if (connectiveDomainColorDynamicData.existsByProjectId(id))
+            connectiveDomainColorDynamicData.deleteByProjectId(id);
+        if (edgeData.existsByProjectId(id))
+            edgeData.deleteByProjectId(id);
+        if (edgeDynamicData.existsByProjectId(id))
+            edgeDynamicData.deleteByProjectId(id);
+        if (vertexData.existsByProjectId(id))
+            vertexData.deleteByProjectId(id);
+        if (vertexDynamicData.existsByProjectId(id))
+            vertexDynamicData.deleteByProjectId(id);
+        if (vertexPositionDynamicData.existsByProjectId(id))
+            vertexPositionDynamicData.deleteByProjectId(id);
+        return CompletableFuture.completedFuture("Success");
+    }
+
+    @Async("ProjectExecutor")
     public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
         try {
             var projectInfo = callGraphMethods.initGraph(url);
