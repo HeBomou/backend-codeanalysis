@@ -566,6 +566,28 @@ public class ProjectServiceTest {
     }
 
     @Test
+    public void testUpdateConnectiveDomainAllVertex() {
+        // 打桩数据
+        var vpPo1 = new VertexPositionDynamicPo(1L, 2L, 34.56f, 76.12f);
+        var vpPo2 = new VertexPositionDynamicPo(2L, 2L, -34.56f, -76.12f);
+        var vpPo3 = new VertexPositionDynamicPo(3L, 2L, 0f, -10f);
+        var vPos = Arrays.asList(vpPo1, vpPo2, vpPo3);
+        var cPo = new ConnectiveDomainPo(10L, Arrays.asList(1L, 3L), Arrays.asList(1L, 2L));
+        // 打桩
+        Mockito.when(vertexPositionDynamicData.findByProjectId(2L)).thenReturn(vPos);
+        Mockito.when(connectiveDomainData.findById(10L)).thenReturn(Optional.of(cPo));
+        // 执行
+        service.updateConnectiveDomainAllVertex(2L, 10L, 56.7f, -10.71f);
+        // 测试数据
+        var vpPo4 = new VertexPositionDynamicPo(1L, 2L, 91.26f, 65.41f);
+        var vpPo5 = new VertexPositionDynamicPo(3L, 2L, 56.7f, -20.71f);
+        // 测试
+        Mockito.verify(vertexPositionDynamicData).findByProjectId(2L);
+        Mockito.verify(connectiveDomainData).findById(10L);
+        Mockito.verify(vertexPositionDynamicData).saveAll(Arrays.asList(vpPo4, vpPo5));
+    }
+
+    @Test
     public void testGetOriginalGraphPath() {
         // 打桩数据生成
         var po = new ProjectPo(2L, 233L, "project package");
