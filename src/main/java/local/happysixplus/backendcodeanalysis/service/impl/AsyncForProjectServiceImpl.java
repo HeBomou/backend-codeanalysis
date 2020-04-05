@@ -364,10 +364,7 @@ public class AsyncForProjectServiceImpl {
         try {
             var projectInfo = callGraphMethods.initGraph(url);
             if (projectInfo == null)
-                throw new MyRuntimeException("您的项目有问题");
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）");
-            projectDynamicData.save(failedDPo);
-            failedDPo = null;
+                throw new MyRuntimeException("您的项目不行");
             String[] callGraph = projectInfo.getCallGraph();
             var sourceCode = projectInfo.getSourceCode();
             List<String> caller = new ArrayList<>();
@@ -386,8 +383,12 @@ public class AsyncForProjectServiceImpl {
                 caller.add(edge.get(0));
                 callee.add(edge.get(1));
             }
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）");
+            projectDynamicData.save(failedDPo);
+            failedDPo = null;
             // 生成并存入项目静态信息
             var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId);
+            projectId = project.id;
             sourceCode = null;
             // 生成并存入默认子图静态信息
             var subPo = project.initSubgraph(0D);
@@ -504,6 +505,10 @@ public class AsyncForProjectServiceImpl {
         Map<String, Integer> outdegree = new HashMap<String, Integer>();
         Map<String, Integer> indegree = new HashMap<String, Integer>();
 
+        // 存入项目
+        var projPo = projectData.save(new ProjectPo(projectId, userId, ""));
+        projectId = projPo.getId();
+
         // 去除重复点
         var vertexNameSet = new HashSet<String>();
         vertexNameSet.addAll(caller);
@@ -544,7 +549,7 @@ public class AsyncForProjectServiceImpl {
         // 存入边
         edgePos = edgeData.saveAll(edgePos);
 
-        var projPo = projectData.save(new ProjectPo(projectId, userId, ""));
+        // 获取包结构并存入
         var vMap = vertexPos.stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
         PackageNode root = new PackageNode("src");
         for (var v : vMap.values())
