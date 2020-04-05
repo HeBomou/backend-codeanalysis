@@ -481,8 +481,9 @@ public class ProjectServiceTest {
     public void testRemoveSubgraph1() {
         service.removeSubgraph(3L);
         Mockito.verify(subgraphData).deleteById(3L);
+        Mockito.verify(subgraphDynamicData).deleteById(3L);
     }
-
+ 
     @Test
     public void testUpdateSubgraphDynamic1() {
         service.updateSubGraphDynamic(2L, new SubgraphDynamicVo(1L, "newName"));
