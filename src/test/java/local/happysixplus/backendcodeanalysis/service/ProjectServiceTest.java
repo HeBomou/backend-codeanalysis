@@ -22,11 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import local.happysixplus.backendcodeanalysis.data.EdgeData;
 import local.happysixplus.backendcodeanalysis.data.ProjectData;
 import local.happysixplus.backendcodeanalysis.data.ProjectDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ProjectStaticAttributeData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphData;
 import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
+import local.happysixplus.backendcodeanalysis.data.VertexData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
@@ -60,6 +62,11 @@ import lombok.var;
 
 @SpringBootTest
 public class ProjectServiceTest {
+    @MockBean
+    VertexData vertexData;
+
+    @MockBean
+    EdgeData edgeData;
 
     @MockBean
     ProjectData projectData;
@@ -481,7 +488,7 @@ public class ProjectServiceTest {
     public void testRemoveSubgraph1() {
         service.removeSubgraph(3L);
         Mockito.verify(subgraphData).deleteById(3L);
-        Mockito.verify(subgraphDynamicData).deleteById(3L);
+        Mockito.verify(subgraphDynamicData).deleteById(3L); 
     }
  
     @Test
@@ -510,37 +517,38 @@ public class ProjectServiceTest {
         Mockito.verify(vertexPositionDynamicData).save(new VertexPositionDynamicPo(456L, 27L, 45.5f, 92.2f));
     }
 
-    @Test
+    @Test 
     public void testGetOriginalGraphPath() {
         // 打桩数据生成
-        // var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
-        // var v1 = new VertexPo(1L, "v1", "dian1()");
-        // var v2 = new VertexPo(2L, "v2", "dian2()");
-        // var v3 = new VertexPo(3L, "v3", "dian3()");
-        // var v4 = new VertexPo(4L, "v4", "dian4()");
-        // var v5 = new VertexPo(5L, "v5", "dian5()");
-        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
-        // po.setVertices(vertices);
-        // var e1 = new EdgePo(1L, v1, v2, 0.666667d);
-        // var e2 = new EdgePo(2L, v2, v5, 0.5d);
-        // var e3 = new EdgePo(3L, v1, v4, 0.4d);
-        // var e4 = new EdgePo(4L, v2, v4, 0.4d);
-        // var e5 = new EdgePo(5L, v4, v5, 0.666667d);
-        // var e6 = new EdgePo(6L, v3, v1, 0.666667d);
-        // var e7 = new EdgePo(7L, v3, v4, 0.4d);
-        // var edges = new HashSet<EdgePo>(Arrays.asList(e1, e2, e3, e4, e5, e6, e7));
-        // po.setEdges(edges);
-        // // 打桩
-        // Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
-        // // 调用
-        // var res = service.getOriginalGraphPath(2L, 1L, 5L);
-        // // 测试
-        // Mockito.verify(projectData).findById(2L);
-        // var p1 = Arrays.asList(1L, 2L);
-        // var p2 = Arrays.asList(3L, 5L);
-        // var p3 = Arrays.asList(1L, 4L, 5L);
-        // var pvo = new PathVo(3, Arrays.asList(p1, p2, p3));
-        // assertEquals(getHashCodeForPathVo(pvo), getHashCodeForPathVo(res));
+        var po = new ProjectPo(2L, 233L, "project package");
+        var v1 = new VertexPo(1L,2L, "v1", "dian1()");
+        var v2 = new VertexPo(2L,2L, "v2", "dian2()");
+        var v3 = new VertexPo(3L,2L, "v3", "dian3()");
+        var v4 = new VertexPo(4L,2L, "v4", "dian4()");
+        var v5 = new VertexPo(5L,2L, "v5", "dian5()");
+        var vPo = Arrays.asList(v1, v2, v3, v4, v5);
+        var e1 = new EdgePo(1L,2L, 1L, 2L, 0.666667d);
+        var e2 = new EdgePo(2L,2L, 2L, 5L, 0.5d);
+        var e3 = new EdgePo(3L,2L, 1L, 4L, 0.4d);
+        var e4 = new EdgePo(4L,2L, 2L, 4L, 0.4d);
+        var e5 = new EdgePo(5L,2L, 4L, 5L, 0.666667d);
+        var e6 = new EdgePo(6L,2L, 3L, 1L, 0.666667d);
+        var e7 = new EdgePo(7L,2L, 3L, 4L, 0.4d);
+        var ePo = Arrays.asList(e1, e2, e3, e4, e5, e6, e7);
+        // 打桩
+        Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
+        Mockito.when(vertexData.findByProjectId(2L)).thenReturn(vPo);
+        Mockito.when(edgeData.findByProjectId(2L)).thenReturn(ePo);
+
+        // 调用
+        var res = service.getOriginalGraphPath(2L, 1L, 5L);
+        // 测试
+        Mockito.verify(projectData).findById(2L);
+        var p1 = Arrays.asList(1L, 2L);
+        var p2 = Arrays.asList(3L, 5L);
+        var p3 = Arrays.asList(1L, 4L, 5L);
+        var pvo = new PathVo(3, Arrays.asList(p1, p2, p3));
+        assertEquals(getHashCodeForPathVo(pvo), getHashCodeForPathVo(res));
     }
 
     @Test
