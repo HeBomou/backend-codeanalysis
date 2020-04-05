@@ -95,7 +95,7 @@ public class ProjectController {
     /**
      * 更新连通域名等动态信息
      */
-    @PutMapping(value = "/{projectId}/sugraph/{subgraphId}/connectiveDomain/{id}/dynamic")
+    @PutMapping(value = "/{projectId}/subgraph/{subgraphId}/connectiveDomain/{id}/dynamic")
     public void putConnectiveDomain(@PathVariable Long projectId,@PathVariable Long subgraphId, @RequestBody ConnectiveDomainDynamicVo vo) {
         service.updateConnectiveDomainDynamic(projectId,subgraphId, vo);
     }
