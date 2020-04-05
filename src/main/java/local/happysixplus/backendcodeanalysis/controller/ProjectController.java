@@ -93,6 +93,30 @@ public class ProjectController {
     }
 
     /**
+     * 更新连通域名等动态信息
+     */
+    @PutMapping(value = "/{projectId}/sugraph/{subgraphId}/connectiveDomain/{id}/dynamic")
+    public void putConnectiveDomain(@PathVariable Long projectId,@PathVariable Long subgraphId, @RequestBody ConnectiveDomainDynamicVo vo) {
+        service.updateConnectiveDomainDynamic(projectId,subgraphId, vo);
+    }
+
+/**
+     * 更新顶点名等动态信息
+     */
+    @PutMapping(value = "/{projectId}/vertex/{id}/dynamic")
+    public void putVertex(@PathVariable Long projectId, @RequestBody VertexDynamicVo vo) {
+        service.updateVertexDynamic(projectId, vo);
+    }
+    /**
+     * 更新边名等动态信息
+     */
+    @PutMapping(value = "/{projectId}/edge/{id}/dynamic")
+    public void putEdge(@PathVariable Long projectId, @RequestBody EdgeDynamicVo vo) {
+        service.updateEdgeDynamic(projectId, vo);
+    }
+
+
+    /**
      * 获取原图从起始点到终止点的所有路径，至多50条
      */
     @GetMapping(value = "/{projectId}/originalGraphPath")
