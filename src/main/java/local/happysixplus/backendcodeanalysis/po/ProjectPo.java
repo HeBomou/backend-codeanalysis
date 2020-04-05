@@ -24,14 +24,6 @@ public class ProjectPo {
 
     Long userId;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn()
-    Set<VertexPo> vertices;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn()
-    Set<EdgePo> edges;
-
     @Column(columnDefinition = "MEDIUMTEXT")
     String packageStructure;
 }

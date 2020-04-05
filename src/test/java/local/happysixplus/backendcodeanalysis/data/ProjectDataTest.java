@@ -25,30 +25,30 @@ class ProjectDataTest {
 
     @BeforeEach
     void init() {
-        data.deleteAll();
+        // data.deleteAll();
 
-        projectPo = new ProjectPo(null, 1L, null, null, "ssss");
-        projectPo = data.save(projectPo);
-        // Vertices
-        var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");
-        var v2 = new VertexPo(null, "cnmd2", "nmbd yuanma 2");
-        var v3 = new VertexPo(null, "cnmd3", "nmbd yuanma 3");
-        var v4 = new VertexPo(null, "cnmd4", "nmbd yuanma 4");
-        var vertices = new HashSet<VertexPo>();
-        vertices.add(v1);
-        vertices.add(v2);
-        vertices.add(v3);
-        vertices.add(v4);
-        projectPo.setVertices(vertices);
-        // Edges
-        // var e1 = new EdgePo(null, v1, v2, 0.3d);
-        // var e2 = new EdgePo(null, v2, v3, 0.1d);
-        // var e3 = new EdgePo(null, v3, v4, 0.3d);
-        var edges = new HashSet<EdgePo>();
-        // edges.add(e1);
-        // edges.add(e2);
-        // edges.add(e3);
-        projectPo.setEdges(edges);
+        // projectPo = new ProjectPo(null, 1L, null, null, "ssss");
+        // projectPo = data.save(projectPo);
+        // // Vertices
+        // var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");
+        // var v2 = new VertexPo(null, "cnmd2", "nmbd yuanma 2");
+        // var v3 = new VertexPo(null, "cnmd3", "nmbd yuanma 3");
+        // var v4 = new VertexPo(null, "cnmd4", "nmbd yuanma 4");
+        // var vertices = new HashSet<VertexPo>();
+        // vertices.add(v1);
+        // vertices.add(v2);
+        // vertices.add(v3);
+        // vertices.add(v4);
+        // projectPo.setVertices(vertices);
+        // // Edges
+        // // var e1 = new EdgePo(null, v1, v2, 0.3d);
+        // // var e2 = new EdgePo(null, v2, v3, 0.1d);
+        // // var e3 = new EdgePo(null, v3, v4, 0.3d);
+        // var edges = new HashSet<EdgePo>();
+        // // edges.add(e1);
+        // // edges.add(e2);
+        // // edges.add(e3);
+        // projectPo.setEdges(edges);
         // Subgraphs
         /*
          * var cd2vSet = new HashSet<VertexPo>(); cd2vSet.add(v1); cd2vSet.add(v2); var
@@ -71,12 +71,12 @@ class ProjectDataTest {
 
     @Test
     public void testInsert() {
-        projectPo = data.save(projectPo);
-        ProjectPo resPo = data.findById(projectPo.getId()).get();
-        assertEquals(resPo.getEdges(), projectPo.getEdges());
-        assertEquals(resPo.getVertices(), projectPo.getVertices());
-        assertEquals(resPo.getUserId(), projectPo.getUserId());
-        assertEquals(resPo.getId(), projectPo.getId());
+        // projectPo = data.save(projectPo);
+        // ProjectPo resPo = data.findById(projectPo.getId()).get();
+        // assertEquals(resPo.getEdges(), projectPo.getEdges());
+        // assertEquals(resPo.getVertices(), projectPo.getVertices());
+        // assertEquals(resPo.getUserId(), projectPo.getUserId());
+        // assertEquals(resPo.getId(), projectPo.getId());
     }
 
     @Test

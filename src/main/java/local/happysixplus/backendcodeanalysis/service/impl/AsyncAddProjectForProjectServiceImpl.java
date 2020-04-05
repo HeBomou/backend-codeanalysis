@@ -76,8 +76,8 @@ public class AsyncAddProjectForProjectServiceImpl {
             sourceCode = po.getSourceCode();
         }
 
-        VertexPo getVertexPo() {
-            return new VertexPo(id, functionName, sourceCode);
+        VertexPo getVertexPo(Long projectId) {
+            return new VertexPo(id, projectId, functionName, sourceCode);
         }
 
         VertexAllVo getAllVo(VertexDynamicVo dVo) {
@@ -175,12 +175,12 @@ public class AsyncAddProjectForProjectServiceImpl {
         Map<Long, Edge> eIdMap = new HashMap<Long, Edge>();
         String packageStructureJSON;
 
-        Project(ProjectPo po) {
+        Project(ProjectPo po, List<VertexPo> vPos, List<EdgePo> ePos) {
             id = po.getId();
             userId = po.getUserId();
-            for (var vPo : po.getVertices())
+            for (var vPo : vPos)
                 vIdMap.put(vPo.getId(), new Vertex(vPo));
-            for (var ePo : po.getEdges())
+            for (var ePo : ePos)
                 eIdMap.put(ePo.getId(), new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
             packageStructureJSON = po.getPackageStructure();
         }
@@ -463,8 +463,8 @@ public class AsyncAddProjectForProjectServiceImpl {
 
     Project initAndSaveProject(Long projectId, List<String> caller, List<String> callee, Map<String, String> sourceCode,
             Long userId) {
-        Set<EdgePo> edgePos = new HashSet<EdgePo>();
-        Set<VertexPo> vertexPos = new HashSet<VertexPo>();
+        List<EdgePo> edgePos = new ArrayList<EdgePo>();
+        List<VertexPo> vertexPos = new ArrayList<VertexPo>();
         Map<String, VertexPo> vertexMap = new HashMap<String, VertexPo>();
         Map<String, Integer> outdegree = new HashMap<String, Integer>();
         Map<String, Integer> indegree = new HashMap<String, Integer>();
@@ -473,49 +473,50 @@ public class AsyncAddProjectForProjectServiceImpl {
         var vertexNameSet = new HashSet<String>();
         vertexNameSet.addAll(caller);
         vertexNameSet.addAll(callee);
-
         for (var str : vertexNameSet) {
             VertexPo vPo;
             if (sourceCode.containsKey(str))
-                vPo = new VertexPo(null, str, sourceCode.get(str));
+                vPo = new VertexPo(null, projectId, str, sourceCode.get(str));
             else
-                vPo = new VertexPo(null, str, "");
+                vPo = new VertexPo(null, projectId, str, "");
             vertexPos.add(vPo);
-            vertexMap.put(str, vPo);
-            outdegree.put(str, 0);
-            indegree.put(str, 0);
         }
+        vertexNameSet = null;
         // 存入点
-        var vPosRes = vertexData.saveAll(vertexPos);
-        vertexPos.clear();
-        vertexPos.addAll(vPosRes);
-        for (var vPoRes : vPosRes)
-            vertexMap.put(vPoRes.getFunctionName(), vPoRes);
+        vertexPos = vertexData.saveAll(vertexPos);
+        for (var vPo : vertexPos) {
+            vertexMap.put(vPo.getFunctionName(), vPo);
+            outdegree.put(vPo.getFunctionName(), 0);
+            indegree.put(vPo.getFunctionName(), 0);
+        }
 
+        // 计算出度入度
         for (int i = 0; i < caller.size(); i++) {
             String startName = caller.get(i);
             String endName = callee.get(i);
             outdegree.put(startName, outdegree.get(startName) + 1);
             indegree.put(endName, indegree.get(endName) + 1);
         }
-
+        // 生成边
         for (int i = 0; i < caller.size(); i++) {
             String startName = caller.get(i);
             String endName = callee.get(i);
             VertexPo from = vertexMap.get(startName);
             VertexPo to = vertexMap.get(endName);
             Double closeness = 2.0 / (outdegree.get(startName) + indegree.get(endName));
-            edgePos.add(new EdgePo(null, from.getId(), to.getId(), closeness));
+            edgePos.add(new EdgePo(null, projectId, from.getId(), to.getId(), closeness));
         }
+        // 存入边
+        edgePos = edgeData.saveAll(edgePos);
 
-        var projPo = projectData.save(new ProjectPo(projectId, userId, vertexPos, edgePos, ""));
-        var vMap = projPo.getVertices().stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
+        var projPo = projectData.save(new ProjectPo(projectId, userId, ""));
+        var vMap = vertexPos.stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
         PackageNode root = new PackageNode("src");
         for (var v : vMap.values())
             root.insertFunc(v.getId(), v.getFunctionName().split(":", 2)[0]);
         projPo.setPackageStructure(JSONObject.toJSONString(root));
         projPo = projectData.save(projPo);
-        return new Project(projPo);
+        return new Project(projPo, vertexPos, edgePos);
     }
 
     private static VertexDynamicVo dPoTodVo(VertexDynamicPo po, VertexPositionDynamicPo posPo) {

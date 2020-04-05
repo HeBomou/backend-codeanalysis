@@ -160,18 +160,18 @@ public class ProjectServiceTest {
     public void testAddProject1() {
         // 打桩数据生成
         // project
-        var v1 = new VertexPo(1L, "top.hebomou.App:main(java.lang.String[])",
-                "public static void main( String[] args )");
-        var v2 = new VertexPo(2L, "top.hebomou.ClassA:<init>()", "public ClassA()");
-        var v3 = new VertexPo(3L, "top.hebomou.ClassA:funcA2()", "public void funcA2()");
-        var v4 = new VertexPo(4L, "top.hebomou.ClassB:<init>(char)", "public ClassB(char temp)");
-        var v5 = new VertexPo(5L, "top.hebomou.ClassB:funcB2(char)", "public void funcB2(char temp)");
-        var v6 = new VertexPo(6L, "top.hebomou.ClassC:<init>()", "public ClassC()");
-        var v7 = new VertexPo(7L, "top.hebomou.ClassC:funcC1(top.hebomou.ClassB,char)",
-                "public void funcC1(ClassB obj, char temp)");
-        var v8 = new VertexPo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()");
-        var v9 = new VertexPo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()");
-        var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5, v6, v7, v8, v9));
+        // var v1 = new VertexPo(1L, "top.hebomou.App:main(java.lang.String[])",
+        //         "public static void main( String[] args )");
+        // var v2 = new VertexPo(2L, "top.hebomou.ClassA:<init>()", "public ClassA()");
+        // var v3 = new VertexPo(3L, "top.hebomou.ClassA:funcA2()", "public void funcA2()");
+        // var v4 = new VertexPo(4L, "top.hebomou.ClassB:<init>(char)", "public ClassB(char temp)");
+        // var v5 = new VertexPo(5L, "top.hebomou.ClassB:funcB2(char)", "public void funcB2(char temp)");
+        // var v6 = new VertexPo(6L, "top.hebomou.ClassC:<init>()", "public ClassC()");
+        // var v7 = new VertexPo(7L, "top.hebomou.ClassC:funcC1(top.hebomou.ClassB,char)",
+        //         "public void funcC1(ClassB obj, char temp)");
+        // var v8 = new VertexPo(8L, "top.hebomou.ClassD:<init>()", "public ClassD()");
+        // var v9 = new VertexPo(9L, "top.hebomou.ClassD:funcD1()", "public void funcD1()");
+        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5, v6, v7, v8, v9));
         // var e1 = new EdgePo(1L, v1, v2, 1d);
         // var e2 = new EdgePo(2L, v4, v7, 0.5d);
         // var e3 = new EdgePo(3L, v4, v6, 0.5d);
@@ -275,9 +275,9 @@ public class ProjectServiceTest {
     public void testGetProjectAll1() {
         // 打桩数据生成
         // project
-        var v1 = new VertexPo(3L, "edu.itrust.BeanBuilder:v1(java.util.Map,java.lang.Object)", "dian1()");
-        var v2 = new VertexPo(4L, "edu.itrust.BeanSBer:v2(java.util.Map,java.lang.Object)", "dian2()");
-        var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
+        // var v1 = new VertexPo(3L, "edu.itrust.BeanBuilder:v1(java.util.Map,java.lang.Object)", "dian1()");
+        // var v2 = new VertexPo(4L, "edu.itrust.BeanSBer:v2(java.util.Map,java.lang.Object)", "dian2()");
+        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2));
         // var e1 = new EdgePo(3L, v1, v2, 0.3d);
         // var edges = new HashSet<EdgePo>(Arrays.asList(e1));
         // var po = new ProjectPo(2L, 233L, vertices, edges,
@@ -410,15 +410,15 @@ public class ProjectServiceTest {
     @Test
     public void testAddSubgraph1() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
+        // var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
 
-        var v1 = new VertexPo(1L, "v1", "dian1()");
-        var v2 = new VertexPo(2L, "v2", "dian2()");
-        var v3 = new VertexPo(3L, "v3", "dian3()");
-        var v4 = new VertexPo(4L, "v4", "dian4()");
-        var v5 = new VertexPo(5L, "v5", "dian5()");
-        var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
-        po.setVertices(vertices);
+        // var v1 = new VertexPo(1L, "v1", "dian1()");
+        // var v2 = new VertexPo(2L, "v2", "dian2()");
+        // var v3 = new VertexPo(3L, "v3", "dian3()");
+        // var v4 = new VertexPo(4L, "v4", "dian4()");
+        // var v5 = new VertexPo(5L, "v5", "dian5()");
+        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
+        // po.setVertices(vertices);
 
         // var e1 = new EdgePo(1L, v1, v2, 0.666667d);
         // var e2 = new EdgePo(2L, v2, v5, 0.5d);
@@ -512,14 +512,14 @@ public class ProjectServiceTest {
     @Test
     public void testGetOriginalGraphPath() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
-        var v1 = new VertexPo(1L, "v1", "dian1()");
-        var v2 = new VertexPo(2L, "v2", "dian2()");
-        var v3 = new VertexPo(3L, "v3", "dian3()");
-        var v4 = new VertexPo(4L, "v4", "dian4()");
-        var v5 = new VertexPo(5L, "v5", "dian5()");
-        var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
-        po.setVertices(vertices);
+        // var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
+        // var v1 = new VertexPo(1L, "v1", "dian1()");
+        // var v2 = new VertexPo(2L, "v2", "dian2()");
+        // var v3 = new VertexPo(3L, "v3", "dian3()");
+        // var v4 = new VertexPo(4L, "v4", "dian4()");
+        // var v5 = new VertexPo(5L, "v5", "dian5()");
+        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
+        // po.setVertices(vertices);
         // var e1 = new EdgePo(1L, v1, v2, 0.666667d);
         // var e2 = new EdgePo(2L, v2, v5, 0.5d);
         // var e3 = new EdgePo(3L, v1, v4, 0.4d);
@@ -545,14 +545,14 @@ public class ProjectServiceTest {
     @Test
     public void testGetSimilarFunction() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 2333L, null, null, "zheli xjb xie ye meishi");
-        var v1 = new VertexPo(1L, "v1", "dian1()");
-        var v2 = new VertexPo(2L, "v2", "dian2()");
-        var v3 = new VertexPo(3L, "v3", "dian3()");
-        var v4 = new VertexPo(4L, "v4", "dian4()");
-        var v5 = new VertexPo(5L, "a5", "dian5()");
-        var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
-        po.setVertices(vertices);
+        // var po = new ProjectPo(2L, 2333L, null, null, "zheli xjb xie ye meishi");
+        // var v1 = new VertexPo(1L, "v1", "dian1()");
+        // var v2 = new VertexPo(2L, "v2", "dian2()");
+        // var v3 = new VertexPo(3L, "v3", "dian3()");
+        // var v4 = new VertexPo(4L, "v4", "dian4()");
+        // var v5 = new VertexPo(5L, "a5", "dian5()");
+        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
+        // po.setVertices(vertices);
         // var e1 = new EdgePo(1L, v1, v2, 0.666667d);
         // var e2 = new EdgePo(2L, v2, v5, 0.5d);
         // var e3 = new EdgePo(3L, v1, v4, 0.4d);

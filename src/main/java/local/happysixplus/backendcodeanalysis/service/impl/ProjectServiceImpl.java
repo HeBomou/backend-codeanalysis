@@ -77,8 +77,8 @@ public class ProjectServiceImpl implements ProjectService {
             sourceCode = po.getSourceCode();
         }
 
-        VertexPo getVertexPo() {
-            return new VertexPo(id, functionName, sourceCode);
+        VertexPo getVertexPo(Long projectId) {
+            return new VertexPo(id, projectId, functionName, sourceCode);
         }
 
         VertexAllVo getAllVo(VertexDynamicVo dVo) {
@@ -176,14 +176,13 @@ public class ProjectServiceImpl implements ProjectService {
         Map<Long, Edge> eIdMap = new HashMap<Long, Edge>();
         String packageStructureJSON;
 
-        Project(ProjectPo po) {
+        Project(ProjectPo po, List<VertexPo> vPos, List<EdgePo> ePos) {
             id = po.getId();
             userId = po.getUserId();
-            for (var vPo : po.getVertices())
+            for (var vPo : vPos)
                 vIdMap.put(vPo.getId(), new Vertex(vPo));
-            for (var ePo : po.getEdges())
-                eIdMap.put(ePo.getId(),
-                        new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
+            for (var ePo : ePos)
+                eIdMap.put(ePo.getId(), new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
             packageStructureJSON = po.getPackageStructure();
         }
 
@@ -340,7 +339,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectAllVo addProject(String projectName, String url, long userId) {
-        var po = new ProjectPo(null, userId, new HashSet<>(), new HashSet<>(), "");
+        var po = new ProjectPo(null, userId, "");
         po = projectData.save(po);
         var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）");
         dPo = projectDynamicData.save(dPo);
@@ -399,9 +398,16 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectAllVo getProjectAll(Long id) {
         // 项目
         var po = projectData.findById(id).orElse(null);
+        if (po == null)
+            throw new MyRuntimeException("项目不存在");
         if (po.getPackageStructure().equals(""))
             throw new MyRuntimeException("项目正在解析");
-        var project = new Project(po);
+        var vPos = vertexData.findByProjectId(id);
+        var ePos = edgeData.findByProjectId(id);
+        var project = new Project(po, vPos, ePos);
+        po = null;
+        vPos = null;
+        ePos = null;
         var vDPoMap = vertexDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
         var vPDPoMap = vertexPositionDynamicData.findByProjectId(id).stream()
                 .collect(Collectors.toMap(v -> v.getId(), v -> v));
@@ -447,7 +453,12 @@ public class ProjectServiceImpl implements ProjectService {
     public SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name) {
         // 生成并存储静态信息
         var po = projectData.findById(projectId).orElse(null);
-        var project = new Project(po);
+        var vPos = vertexData.findByProjectId(projectId);
+        var ePos = edgeData.findByProjectId(projectId);
+        var project = new Project(po, vPos, ePos);
+        po = null;
+        vPos = null;
+        ePos = null;
         var newSPo = project.initSubgraph(threshold);
         newSPo = subgraphData.save(newSPo);
         // 存储动态信息
@@ -504,8 +515,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<String> getSimilarFunction(Long projectId, String funcName) {
         var res = new ArrayList<String>();
-        var po = projectData.findById(projectId).orElse(null);
-        for (var vPo : po.getVertices())
+        var vPos = vertexData.findByProjectId(projectId);
+        for (var vPo : vPos)
             if (vPo.getFunctionName().contains(funcName))
                 res.add(vPo.getFunctionName());
         return res;
@@ -536,7 +547,12 @@ public class ProjectServiceImpl implements ProjectService {
     public PathVo getOriginalGraphPath(Long projectId, Long startVertexId, Long endVertexId) {
         var res = new ArrayList<List<Long>>();
         var po = projectData.findById(projectId).orElse(null);
-        var project = new Project(po);
+        var vPos = vertexData.findByProjectId(projectId);
+        var ePos = edgeData.findByProjectId(projectId);
+        var project = new Project(po, vPos, ePos);
+        po = null;
+        vPos = null;
+        ePos = null;
         // 添加点
         var vs = new HashMap<Long, PathV>(project.vIdMap.size());
         for (var v : project.vIdMap.values())

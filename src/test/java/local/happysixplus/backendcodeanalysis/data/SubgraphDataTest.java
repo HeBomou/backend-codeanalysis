@@ -25,17 +25,17 @@ class SubgraphDataTest {
     SubgraphPo po1;
     @BeforeEach
     void setUp() {
-        data.deleteAll();
-        po = new SubgraphPo();
-        var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");
-        var v2 = new VertexPo(null, "cnmd2", "nmbd yuanma 2");
-        var v3 = new VertexPo(null, "cnmd3", "nmbd yuanma 3");
-        var v4 = new VertexPo(null, "cnmd4", "nmbd yuanma 4");
-        var vertices = new HashSet<VertexPo>();
-        vertices.add(v1);
-        vertices.add(v2);
-        vertices.add(v3);
-        vertices.add(v4);
+        // data.deleteAll();
+        // po = new SubgraphPo();
+        // var v1 = new VertexPo(null, "cnmd1", "nmbd yuanma 1");
+        // var v2 = new VertexPo(null, "cnmd2", "nmbd yuanma 2");
+        // var v3 = new VertexPo(null, "cnmd3", "nmbd yuanma 3");
+        // var v4 = new VertexPo(null, "cnmd4", "nmbd yuanma 4");
+        // var vertices = new HashSet<VertexPo>();
+        // vertices.add(v1);
+        // vertices.add(v2);
+        // vertices.add(v3);
+        // vertices.add(v4);
         // var e1 = new EdgePo(null, v1, v2, 0.3d);
         // var e2 = new EdgePo(null, v2, v3, 0.1d);
         // var e3 = new EdgePo(null, v3, v4, 0.3d);
