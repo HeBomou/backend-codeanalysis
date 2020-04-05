@@ -9,10 +9,12 @@ RUN mkdir /root/.m2
 ADD settings.xml /root/.m2/
 ENTRYPOINT ["java", "-jar", "/backend-codeanalysis.jar", "--spring.datasource.url=jdbc:mysql://mysql_ca:3306/code_analysis?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC", "--spring.redis.host=redis_ca"]
 
-# 准备mysql与redis容器
+# 重启mysql容器
+# docker stop mysql_ca
+# docker rm mysql_ca
 # docker run -d --name mysql_ca --env="MYSQL_ROOT_PASSWORD=root" --env="MYSQL_PASSWORD=root" --env="MYSQL_DATABASE=code_analysis" mysql
 
-# 项目修改后重新部署
+# 项目重新部署
 # ./mvnw clean package -DskipTests
 # docker stop codeanalysis
 # docker rmi codeanalysis
