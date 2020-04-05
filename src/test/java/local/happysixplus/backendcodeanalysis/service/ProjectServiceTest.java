@@ -433,9 +433,13 @@ public class ProjectServiceTest {
 
     @Test
     public void testRemoveProject1() {
-        service.removeProject(2L);
-        Mockito.verify(projectData).deleteById(2L);
-        Mockito.verify(projectDynamicData).deleteById(2L);
+        Mockito.when(projectData.existsById(99999L)).thenReturn(true);
+        Mockito.when(projectDynamicData.existsById(99999L)).thenReturn(true);
+        Mockito.when(projectStaticAttributeData.existsById(99999L)).thenReturn(true);
+        service.removeProject(99999L);
+        Mockito.verify(projectData).deleteById(99999L);
+        Mockito.verify(projectDynamicData).deleteById(99999L);
+        Mockito.verify(projectStaticAttributeData).deleteById(99999L);
     }
 
     @Test
@@ -458,83 +462,85 @@ public class ProjectServiceTest {
     @Test
     public void testAddSubgraph1() {
         // 打桩数据生成
-        // var po = new ProjectPo(2L, 233L, null, null, "zheli xjb xie ye meishi");
+        var po = new ProjectPo(2L, 233L, "zheli xjb xie ye meishi");
 
-        // var v1 = new VertexPo(1L, "v1", "dian1()");
-        // var v2 = new VertexPo(2L, "v2", "dian2()");
-        // var v3 = new VertexPo(3L, "v3", "dian3()");
-        // var v4 = new VertexPo(4L, "v4", "dian4()");
-        // var v5 = new VertexPo(5L, "v5", "dian5()");
-        // var vertices = new HashSet<VertexPo>(Arrays.asList(v1, v2, v3, v4, v5));
-        // po.setVertices(vertices);
+        var v1 = new VertexPo(1L,2L, "v1", "dian1()");
+        var v2 = new VertexPo(2L,2L, "v2", "dian2()");
+        var v3 = new VertexPo(3L,2L, "v3", "dian3()");
+        var v4 = new VertexPo(4L,2L, "v4", "dian4()");
+        var v5 = new VertexPo(5L,2L, "v5", "dian5()");
+        var vPo = Arrays.asList(v1, v2, v3, v4, v5);
 
-        // var e1 = new EdgePo(1L, v1, v2, 0.666667d);
-        // var e2 = new EdgePo(2L, v2, v5, 0.5d);
-        // var e3 = new EdgePo(3L, v1, v4, 0.4d);
-        // var e4 = new EdgePo(4L, v2, v4, 0.4d);
-        // var e5 = new EdgePo(5L, v4, v5, 0.666667d);
-        // var e6 = new EdgePo(6L, v3, v1, 0.666667d);
-        // var e7 = new EdgePo(7L, v3, v4, 0.4d);
-        // var edges = new HashSet<EdgePo>(Arrays.asList(e1, e2, e3, e4, e5, e6, e7));
-        // po.setEdges(edges);
+        var e1 = new EdgePo(1L,2L, 1L, 2L, 0.666667d);
+        var e2 = new EdgePo(2L,2L, 2L, 5L, 0.5d);
+        var e3 = new EdgePo(3L,2L, 1L, 4L, 0.4d);
+        var e4 = new EdgePo(4L,2L, 2L, 4L, 0.4d);
+        var e5 = new EdgePo(5L,2L, 4L, 5L, 0.666667d);
+        var e6 = new EdgePo(6L,2L, 3L, 1L, 0.666667d);
+        var e7 = new EdgePo(7L,2L, 3L, 4L, 0.4d);
+        var ePo = Arrays.asList(e1, e2, e3, e4, e5, e6, e7);
 
-        // var spo1 = new SubgraphPo(null, 2L, 0.555d, null);
-        // var connectiveDomain1 = new ConnectiveDomainPo(null, Arrays.asList(1L, 2L,
-        // 3L), Arrays.asList(1L, 6L));
-        // var connectiveDomain2 = new ConnectiveDomainPo(null, Arrays.asList(4L, 5L),
-        // Arrays.asList(5L));
-        // var connectiveDomains1 = new
-        // HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain1,
-        // connectiveDomain2));
-        // spo1.setConnectiveDomains(connectiveDomains1);
+        var spo1 = new SubgraphPo(null, 2L, 0.555d, null);
+        var connectiveDomain1 = new ConnectiveDomainPo(null, Arrays.asList(1L, 2L,
+        3L), Arrays.asList(1L, 6L));
+        var connectiveDomain2 = new ConnectiveDomainPo(null, Arrays.asList(4L, 5L),
+        Arrays.asList(5L));
+        var connectiveDomains1 = new
+        HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain1,
+        connectiveDomain2));
+        spo1.setConnectiveDomains(connectiveDomains1);
 
-        // var spo2 = new SubgraphPo(17L, 2L, 0.555d, null);
-        // var connectiveDomain3 = new ConnectiveDomainPo(1L, Arrays.asList(1L, 2L, 3L),
-        // Arrays.asList(1L, 6L));
-        // var connectiveDomain4 = new ConnectiveDomainPo(2L, Arrays.asList(4L, 5L),
-        // Arrays.asList(5L));
-        // var connectiveDomains2 = new
-        // HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain3,
-        // connectiveDomain4));
-        // spo2.setConnectiveDomains(connectiveDomains2);
+        var spo2 = new SubgraphPo(17L, 2L, 0.555d, null);
+        var connectiveDomain3 = new ConnectiveDomainPo(1L, Arrays.asList(1L, 2L, 3L),
+        Arrays.asList(1L, 6L));
+        var connectiveDomain4 = new ConnectiveDomainPo(2L, Arrays.asList(4L, 5L),
+        Arrays.asList(5L));
+        var connectiveDomains2 = new
+        HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain3,
+        connectiveDomain4));
+        spo2.setConnectiveDomains(connectiveDomains2);
 
-        // var sdpo1 = new SubgraphDynamicPo(17L, 2L, "subgraphdd");
-        // var sdpo2 = new SubgraphDynamicPo(17L, 2L, "subgraphdd");
+        var sdpo1 = new SubgraphDynamicPo(17L, 2L, "subgraphdd");
+        var sdpo2 = new SubgraphDynamicPo(17L, 2L, "subgraphdd");
 
-        // // 打桩
-        // Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
-        // Mockito.when(subgraphData.save(spo1)).thenReturn(spo2);
-        // Mockito.when(subgraphDynamicData.save(sdpo1)).thenReturn(sdpo2);
-        // Mockito.when(connectiveDomainColorDynamicData.save(Mockito.any(ConnectiveDomainColorDynamicPo.class)))
-        // .thenAnswer((Answer<ConnectiveDomainColorDynamicPo>) invocation -> {
-        // return (ConnectiveDomainColorDynamicPo) invocation.getArgument(0);
-        // });
-        // // 调用
-        // var res = service.addSubgraph(2L, 0.555d, "subgraphdd");
-        // for (var cd : res.getConnectiveDomains()) {
-        // assertEquals(cd.getDomainDynamicVo().getColor().charAt(0), '#');
-        // assertEquals(cd.getDomainDynamicVo().getColor().length(), 7);
-        // // 忽略颜色
-        // cd.getDomainDynamicVo().setColor(null);
-        // }
+        // 打桩
+        Mockito.when(vertexData.findByProjectId(2L)).thenReturn(vPo);
+        Mockito.when(edgeData.findByProjectId(2L)).thenReturn(ePo);
+        Mockito.when(projectData.findById(2L)).thenReturn(Optional.of(po));
+        Mockito.when(subgraphData.save(spo1)).thenReturn(spo2);
+        Mockito.when(subgraphDynamicData.save(sdpo1)).thenReturn(sdpo2);
+        Mockito.when(connectiveDomainColorDynamicData.save(Mockito.any(ConnectiveDomainColorDynamicPo.class)))
+        .thenAnswer((Answer<ConnectiveDomainColorDynamicPo>) invocation -> {
+        return (ConnectiveDomainColorDynamicPo) invocation.getArgument(0);
+        });
+        // 调用
+        var res = service.addSubgraph(2L, 0.555d, "subgraphdd");
+        for (var cd : res.getConnectiveDomains()) {
+        assertEquals(cd.getDomainDynamicVo().getColor().charAt(0), '#');
+        assertEquals(cd.getDomainDynamicVo().getColor().length(), 7);
+        // 忽略颜色
+        cd.getDomainDynamicVo().setColor(null);
+        }
 
-        // // 验证
-        // Mockito.verify(projectData).findById(2L);
-        // Mockito.verify(subgraphData).save(spo1);
-        // Mockito.verify(subgraphDynamicData).save(sdpo1);
+        // 验证
+        Mockito.verify(vertexData).findByProjectId(2L);
+        Mockito.verify(edgeData).findByProjectId(2L);
+        Mockito.verify(projectData).findById(2L);
+        Mockito.verify(subgraphData).save(spo1);
+        Mockito.verify(subgraphDynamicData).save(sdpo1);
 
-        // var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(3L, 1L,
-        // 2L), Arrays.asList(6L, 1L),
-        // new ConnectiveDomainDynamicVo(1L, "", null));
-        // var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L,
-        // 4L), Arrays.asList(5L),
-        // new ConnectiveDomainDynamicVo(2L, "", null));
-        // var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1,
-        // connectiveDomainVo2);
-        // var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new
-        // SubgraphDynamicVo(17L, "subgraphdd"));
-        // assertEquals(getHashCodeForSubgraphAllVo(svo),
-        // getHashCodeForSubgraphAllVo(res));
+        var connectiveDomainVo1 = new ConnectiveDomainAllVo(1L, Arrays.asList(3L, 1L,
+        2L), Arrays.asList(6L, 1L),
+        new ConnectiveDomainDynamicVo(1L, "", null));
+        var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L,
+        4L), Arrays.asList(5L),
+        new ConnectiveDomainDynamicVo(2L, "", null));
+        var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1,
+        connectiveDomainVo2);
+        var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new
+        SubgraphDynamicVo(17L, "subgraphdd"));
+        assertEquals(getHashCodeForSubgraphAllVo(svo),
+        getHashCodeForSubgraphAllVo(res));
 
     }
 
