@@ -1,7 +1,5 @@
 package local.happysixplus.backendcodeanalysis.po;
 
-import java.util.Set;
-
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
