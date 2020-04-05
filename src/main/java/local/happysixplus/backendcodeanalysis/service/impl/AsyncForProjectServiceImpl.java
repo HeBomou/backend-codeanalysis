@@ -423,8 +423,8 @@ public class AsyncForProjectServiceImpl {
                 HashMap<Long, VertexPositionDynamicPo> map;
                 Long projectId;
                 // TODO: 可以根据前端显示效果修改该值，也可以让前端把(0, 0)作为中心
-                double centerX = 200;
-                double centerY = 200;
+                double centerX = 0;
+                double centerY = 0;
 
                 Util(HashMap<Long, VertexPositionDynamicPo> map, Long projectId) {
                     this.map = map;
@@ -440,7 +440,7 @@ public class AsyncForProjectServiceImpl {
                     AffineTransformation.translationInstance(centerX, centerY).transform(center, center);
                     var fact = new GeometricShapeFactory();
                     fact.setCentre(center);
-                    fact.setSize(radius * 2);
+                    fact.setSize(radius * 2 * 0.85);
                     fact.setNumPoints((int) (radius / 10));
                     var g = fact.createCircle();
                     var pb = new RandomPointsBuilder();
@@ -470,7 +470,7 @@ public class AsyncForProjectServiceImpl {
                     cd = it.next();
                     r = util.calcRadius(cd.getVertexIds().size());
                     centerR = radius + r;
-                    theta = Math.asin(r / centerR) * 2;
+                    theta = Math.asin(r / centerR) * 2 * 1.5;
                     radius += r * 2;
                     p = new Coordinate(0, centerR);
                     util.calcPosForCD(p, r, cd.getVertexIds());
