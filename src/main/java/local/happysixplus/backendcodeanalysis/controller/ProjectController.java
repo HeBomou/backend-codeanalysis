@@ -50,11 +50,13 @@ public class ProjectController {
         return service.getProjectBasicAttribute(userId);
     }
 
+    /**
+     * 获取项目的所有统计信息，包括点数、边数、连通域数以及相应注释数量
+     */
     @GetMapping(value = "/{id}/profile")
     public ProjectProfileVo getProjectProfile(@PathVariable Long id) {
         return service.getProjectProfile(id);
     }
-    
 
     /**
      * 根据项目id获取项目的全部信息
@@ -96,17 +98,28 @@ public class ProjectController {
      * 更新连通域名等动态信息
      */
     @PutMapping(value = "/{projectId}/subgraph/{subgraphId}/connectiveDomain/{id}/dynamic")
-    public void putConnectiveDomain(@PathVariable Long projectId,@PathVariable Long subgraphId, @RequestBody ConnectiveDomainDynamicVo vo) {
-        service.updateConnectiveDomainDynamic(projectId,subgraphId, vo);
+    public void putConnectiveDomain(@PathVariable Long projectId, @PathVariable Long subgraphId,
+            @RequestBody ConnectiveDomainDynamicVo vo) {
+        service.updateConnectiveDomainDynamic(projectId, subgraphId, vo);
     }
 
-/**
+    /**
+     * 更新连通域内所有顶点的位置信息
+     */
+    @PutMapping(value = "/{projectId}/connectiveDomain/{connectiveDomainId}/position")
+    public void putConnectiveDomainPosition(@PathVariable Long projectId, @PathVariable Long connectiveDomainId,
+            @RequestParam float relativeX, @RequestParam float relativeY) {
+        service.updateConnectiveDomainAllVertex(projectId, connectiveDomainId, relativeX, relativeY);
+    }
+
+    /**
      * 更新顶点名等动态信息
      */
     @PutMapping(value = "/{projectId}/vertex/{id}/dynamic")
     public void putVertex(@PathVariable Long projectId, @RequestBody VertexDynamicVo vo) {
         service.updateVertexDynamic(projectId, vo);
     }
+
     /**
      * 更新边名等动态信息
      */
@@ -114,7 +127,6 @@ public class ProjectController {
     public void putEdge(@PathVariable Long projectId, @RequestBody EdgeDynamicVo vo) {
         service.updateEdgeDynamic(projectId, vo);
     }
-
 
     /**
      * 获取原图从起始点到终止点的所有路径，至多50条
@@ -125,6 +137,9 @@ public class ProjectController {
         return service.getOriginalGraphPath(projectId, startVertexId, endVertexId);
     }
 
+    /**
+     * 获取重复函数名列表
+     */
     @GetMapping(value = "/{projectId}/similarFunction")
     public List<String> getSimilarFunction(@RequestParam String funcName, @PathVariable Long projectId) {
         return service.getSimilarFunction(projectId, funcName);
