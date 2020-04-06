@@ -5,6 +5,14 @@ pipeline {
             args '-v /root/.m2:/root/.m2' 
         }
     }
+    stage('init') {
+        steps {
+            script {
+                def dockerPath = tool 'docker' //全局配置里的docker
+                env.PATH = "${dockerPath}/bin:${env.PATH}" //添加了系统环境变量上
+            }
+        }
+    }
     stages {
         stage('Build') { 
             steps {
