@@ -1,14 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Init') {
-            steps {
-                script {
-                    def dockerPath = tool 'docker' //全局配置里的docker
-                    env.PATH = "${dockerPath}/bin:${env.PATH}" //添加了系统环境变量上
-                }
-            }
-        }
         stage('Build') { 
             steps {
                 sh './mvnw -B -DskipTests clean package' 
