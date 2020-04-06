@@ -44,8 +44,8 @@ class ConnectiveDomainColorDynamicDataTest {
     @Test
     public void testUpdate() {
         connectiveDomainColorDynamicPo = data.save(connectiveDomainColorDynamicPo);
-        connectiveDomainColorDynamicPo = new ConnectiveDomainColorDynamicPo(connectiveDomainColorDynamicPo.getId(), 4396L,
-                "Mother fucker");
+        connectiveDomainColorDynamicPo = new ConnectiveDomainColorDynamicPo(connectiveDomainColorDynamicPo.getId(),
+                4396L, "Mother fucker");
         connectiveDomainColorDynamicPo = data.save(connectiveDomainColorDynamicPo);
         ConnectiveDomainColorDynamicPo resPo = data.findById(connectiveDomainColorDynamicPo.getId()).get();
         assertEquals(resPo.getId(), connectiveDomainColorDynamicPo.getId());
@@ -98,7 +98,7 @@ class ConnectiveDomainColorDynamicDataTest {
         connectiveDomainColorDynamicPo = data.save(connectiveDomainColorDynamicPo);
         data.save(new ConnectiveDomainColorDynamicPo(12347L, 1L, "SKTKhan"));
         data.save(new ConnectiveDomainColorDynamicPo(12348L, 1L, "SKTCLid"));
-        int count=data.countByProjectId(1L);
-        assertEquals(3,count);
+        int count = data.countByProjectId(1L);
+        assertEquals(3, count);
     }
 }
