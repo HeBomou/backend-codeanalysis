@@ -1,0 +1,7 @@
+**
+
+!target/*.jar
+!Dockerfile
+!.mvn
+!mvnw
+!settings.xml
