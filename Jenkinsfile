@@ -1,12 +1,7 @@
 pipeline {
-    agent {
-        docker {
-            image 'openjdk:8-jdk-alpine' 
-            args '-v /root/.m2:/root/.m2' 
-        }
-    }
+    agent any
     stages {
-        stage('init') {
+        stage('Init') {
             steps {
                 script {
                     def dockerPath = tool 'docker' //全局配置里的docker
