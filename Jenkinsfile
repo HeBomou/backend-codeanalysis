@@ -8,35 +8,37 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                try {
-                    sh 'docker stop codeanalysis'
-                }
-                catch (err) {
-                    echo "Warning: no such container codeanalysis"
-                }
-                try {
-                    sh 'docker rm codeanalysis'
-                }
-                catch (err) {
-                    echo "Warning: no such container codeanalysis"
-                }
-                try {
-                    sh 'docker rmi codeanalysis'
-                }
-                catch (err) {
-                    echo "Warning: no such image codeanalysis"
-                }
-                try {
-                    sh 'docker stop mysql_ca'
-                }
-                catch (err) {
-                    echo "Warning: no such container mysql_ca"
-                }
-                try {
-                    sh 'docker rm mysql_ca'
-                }
-                catch (err) {
-                    echo "Warning: no such image mysql_ca"
+                script {
+                    try {
+                        sh 'docker stop codeanalysis'
+                    }
+                    catch (err) {
+                        echo "Warning: no such container codeanalysis"
+                    }
+                    try {
+                        sh 'docker rm codeanalysis'
+                    }
+                    catch (err) {
+                        echo "Warning: no such container codeanalysis"
+                    }
+                    try {
+                        sh 'docker rmi codeanalysis'
+                    }
+                    catch (err) {
+                        echo "Warning: no such image codeanalysis"
+                    }
+                    try {
+                        sh 'docker stop mysql_ca'
+                    }
+                    catch (err) {
+                        echo "Warning: no such container mysql_ca"
+                    }
+                    try {
+                        sh 'docker rm mysql_ca'
+                    }
+                    catch (err) {
+                        echo "Warning: no such image mysql_ca"
+                    }
                 }
                 sh 'docker run -d --name mysql_ca --env="MYSQL_ROOT_PASSWORD=root" --env="MYSQL_PASSWORD=root" --env="MYSQL_DATABASE=code_analysis" mysql'
                 sh 'docker build -t codeanalysis .'
