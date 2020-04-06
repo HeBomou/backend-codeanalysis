@@ -98,9 +98,8 @@ class ConnectiveDomainDynamicDataTest {
         connectiveDomainDynamicPo = data.save(connectiveDomainDynamicPo);
         data.save(new ConnectiveDomainDynamicPo(12347L, 1L, "SKTKhan"));
         data.save(new ConnectiveDomainDynamicPo(12348L, 1L, "SKTCLid"));
-        int count=data.countByProjectId(1L);
-        assertEquals(3,count);
+        int count = data.countByProjectId(1L);
+        assertEquals(3, count);
     }
-
 
 }

@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-
 @SpringBootTest
 class ProjectDataTest {
 
@@ -23,7 +21,7 @@ class ProjectDataTest {
 
     @BeforeEach
     void init() {
-        projectPo=new ProjectPo(null, 4396L, "eihei");
+        projectPo = new ProjectPo(null, 4396L, "eihei");
     }
 
     @AfterEach
@@ -37,25 +35,25 @@ class ProjectDataTest {
         ProjectPo resPo = data.findById(projectPo.getId()).get();
         assertEquals(resPo.getUserId(), projectPo.getUserId());
         assertEquals(resPo.getId(), projectPo.getId());
-        assertEquals(resPo.getPackageStructure(),projectPo.getPackageStructure());
+        assertEquals(resPo.getPackageStructure(), projectPo.getPackageStructure());
     }
 
     @Test
-    public void testRemove(){
+    public void testRemove() {
         projectPo = data.save(projectPo);
         data.deleteById(projectPo.getId());
-        var resPo= data.findById(projectPo.getId()).orElse(null);
-        assertEquals(resPo,null);
+        var resPo = data.findById(projectPo.getId()).orElse(null);
+        assertEquals(resPo, null);
     }
 
     @Test
     public void testUpdate() {
         projectPo = data.save(projectPo);
-        projectPo = data.save(new ProjectPo(projectPo.getId(),4397L,"123345"));
+        projectPo = data.save(new ProjectPo(projectPo.getId(), 4397L, "123345"));
         ProjectPo resPo = data.findById(projectPo.getId()).get();
         assertEquals(resPo.getUserId(), projectPo.getUserId());
         assertEquals(resPo.getId(), projectPo.getId());
-        assertEquals(resPo.getPackageStructure(),projectPo.getPackageStructure());
+        assertEquals(resPo.getPackageStructure(), projectPo.getPackageStructure());
     }
 
     // @Test
