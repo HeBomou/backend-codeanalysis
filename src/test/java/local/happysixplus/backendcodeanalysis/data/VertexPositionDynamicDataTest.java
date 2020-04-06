@@ -24,7 +24,7 @@ class VertexPositionDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        vertexPositionDynamicPo = new VertexPositionDynamicPo(4444L, 1L, 0.1f,0.1f);
+        vertexPositionDynamicPo = new VertexPositionDynamicPo(4444L, 1L, 0.1f, 0.1f);
     }
 
     @AfterEach
@@ -45,7 +45,7 @@ class VertexPositionDynamicDataTest {
     @Test
     public void testUpdate() {
         vertexPositionDynamicPo = data.save(vertexPositionDynamicPo);
-        vertexPositionDynamicPo = new VertexPositionDynamicPo(vertexPositionDynamicPo.getId(), 4396L,0.2f,0.2f);
+        vertexPositionDynamicPo = new VertexPositionDynamicPo(vertexPositionDynamicPo.getId(), 4396L, 0.2f, 0.2f);
         vertexPositionDynamicPo = data.save(vertexPositionDynamicPo);
         VertexPositionDynamicPo resPo = data.findById(vertexPositionDynamicPo.getId()).get();
         assertEquals(resPo.getId(), vertexPositionDynamicPo.getId());
@@ -66,8 +66,10 @@ class VertexPositionDynamicDataTest {
     @Test
     public void testFindByProjectId() {
         vertexPositionDynamicPo = data.save(vertexPositionDynamicPo);
-        VertexPositionDynamicPo vertexPositionDynamicPo1 = data.save(new VertexPositionDynamicPo(4657L, 1L, 0.3f,0.3f));
-        VertexPositionDynamicPo vertexPositionDynamicPo2 = data.save(new VertexPositionDynamicPo(4658L, 1L, 0.4f,0.4f));
+        VertexPositionDynamicPo vertexPositionDynamicPo1 = data
+                .save(new VertexPositionDynamicPo(4657L, 1L, 0.3f, 0.3f));
+        VertexPositionDynamicPo vertexPositionDynamicPo2 = data
+                .save(new VertexPositionDynamicPo(4658L, 1L, 0.4f, 0.4f));
         List<VertexPositionDynamicPo> list = data.findByProjectId(1L);
         list.sort((a, b) -> (int) (a.getId() - b.getId()));
         assertEquals(list.get(0).getId(), vertexPositionDynamicPo.getId());
@@ -89,18 +91,19 @@ class VertexPositionDynamicDataTest {
     @Test
     public void testDeleteByProjectId() {
         vertexPositionDynamicPo = data.save(vertexPositionDynamicPo);
-        data.save(new VertexPositionDynamicPo(4657L, 1L, 0.5f,0.5f));
-        data.save(new VertexPositionDynamicPo(4658L, 1L, 0.7f,0.7f));
+        data.save(new VertexPositionDynamicPo(4657L, 1L, 0.5f, 0.5f));
+        data.save(new VertexPositionDynamicPo(4658L, 1L, 0.7f, 0.7f));
         data.deleteByProjectId(vertexPositionDynamicPo.getId());
         List<VertexPositionDynamicPo> list = data.findByProjectId(vertexPositionDynamicPo.getId());
         assertEquals(list, new ArrayList<VertexPositionDynamicPo>());
     }
+
     @Test
-    public void testCountByProjectId(){
+    public void testCountByProjectId() {
         vertexPositionDynamicPo = data.save(vertexPositionDynamicPo);
-        data.save(new VertexPositionDynamicPo(4657L, 1L, 0.5f,0.5f));
-        data.save(new VertexPositionDynamicPo(4658L, 1L, 0.7f,0.7f));
-        int count=data.countByProjectId(1L);
-        assertEquals(3,count);
+        data.save(new VertexPositionDynamicPo(4657L, 1L, 0.5f, 0.5f));
+        data.save(new VertexPositionDynamicPo(4658L, 1L, 0.7f, 0.7f));
+        int count = data.countByProjectId(1L);
+        assertEquals(3, count);
     }
 }

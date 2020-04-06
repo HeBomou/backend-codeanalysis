@@ -20,49 +20,50 @@ class UserDataTest {
     UserPo po;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         data.deleteAll();
-        po=new UserPo(null,"SKTFaker","123faker");
+        po = new UserPo(null, "SKTFaker", "123faker");
     }
+
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         data.deleteAll();
     }
 
     @Test
-    public void testInsert(){
-        po=data.save(po);
-        UserPo res=data.findById(po.getId()).get();
-        assertEquals(po.getId(),res.getId());
+    public void testInsert() {
+        po = data.save(po);
+        UserPo res = data.findById(po.getId()).get();
+        assertEquals(po.getId(), res.getId());
         assertEquals(po.getUsername(), res.getUsername());
-        assertEquals(po.getPwdMd5(),res.getPwdMd5());
+        assertEquals(po.getPwdMd5(), res.getPwdMd5());
     }
 
     @Test
-    public void testUpdate(){
-        po=data.save(po);
-        po=new UserPo(po.getId(),"RNGUzi","sfzjhnfkzgjjuzi");
-        po=data.save(po);
-        UserPo res=data.findById(po.getId()).get();
-        assertEquals(po.getId(),res.getId());
+    public void testUpdate() {
+        po = data.save(po);
+        po = new UserPo(po.getId(), "RNGUzi", "sfzjhnfkzgjjuzi");
+        po = data.save(po);
+        UserPo res = data.findById(po.getId()).get();
+        assertEquals(po.getId(), res.getId());
         assertEquals(po.getUsername(), res.getUsername());
-        assertEquals(po.getPwdMd5(),res.getPwdMd5());
+        assertEquals(po.getPwdMd5(), res.getPwdMd5());
     }
 
     @Test
-    public void testRemove(){
-        po=data.save(po);
+    public void testRemove() {
+        po = data.save(po);
         data.deleteById(po.getId());
-        var res=data.findById(po.getId()).orElse(null);
-        assertEquals(res,null);
+        var res = data.findById(po.getId()).orElse(null);
+        assertEquals(res, null);
     }
 
     @Test
-    public void testFindByUsername(){
-        po=data.save(po);
-        UserPo res=data.findByUsername(po.getUsername());
-        assertEquals(po.getId(),res.getId());
+    public void testFindByUsername() {
+        po = data.save(po);
+        UserPo res = data.findByUsername(po.getUsername());
+        assertEquals(po.getId(), res.getId());
         assertEquals(po.getUsername(), res.getUsername());
-        assertEquals(po.getPwdMd5(),res.getPwdMd5());
+        assertEquals(po.getPwdMd5(), res.getPwdMd5());
     }
 }
