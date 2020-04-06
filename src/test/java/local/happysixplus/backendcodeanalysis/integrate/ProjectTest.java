@@ -51,7 +51,7 @@ public class ProjectTest {
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
 		try {
-			Thread.sleep(1000 * 15);
+			Thread.sleep(1000 * 35);
 
 		} catch (Exception e) {
 		}
@@ -70,7 +70,7 @@ public class ProjectTest {
 						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		try {
-			Thread.sleep(1000 * 15);
+			Thread.sleep(1000 * 35);
 
 		} catch (Exception e) {
 		}
@@ -91,7 +91,7 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		try {
-            Thread.sleep(1000 * 15);
+            Thread.sleep(1000 * 35);
 
         } catch (Exception e) {
         }
@@ -115,7 +115,7 @@ public class ProjectTest {
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
 		try {
-            Thread.sleep(1000 * 15);
+            Thread.sleep(1000 * 35);
 
         } catch (Exception e) {
         }
@@ -137,7 +137,7 @@ public class ProjectTest {
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
 		try {
-            Thread.sleep(1000 * 15);
+            Thread.sleep(1000 * 35);
 
         } catch (Exception e) {
         }
@@ -196,7 +196,7 @@ public class ProjectTest {
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
 		try {
-            Thread.sleep(1000 * 20);
+            Thread.sleep(1000 *45);
 
         } catch (Exception e) {
         }
@@ -223,7 +223,7 @@ public class ProjectTest {
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
 		try {
-            Thread.sleep(1000 * 20);
+            Thread.sleep(1000 * 45);
 
         } catch (Exception e) {
 		}
@@ -301,7 +301,7 @@ public class ProjectTest {
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		try {
-            Thread.sleep(1000 * 20);
+            Thread.sleep(1000 * 45);
 
         } catch (Exception e) {
 		}
@@ -331,7 +331,7 @@ public class ProjectTest {
 				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 				try {
-					Thread.sleep(1000 * 20);
+					Thread.sleep(1000 * 45);
 		
 				} catch (Exception e) {
 				}
@@ -353,7 +353,7 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo1 = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
 		try {
-            Thread.sleep(1000 * 20);
+            Thread.sleep(1000 * 45);
 
         } catch (Exception e) {
 		}
