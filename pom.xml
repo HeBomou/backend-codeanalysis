@@ -17,6 +17,8 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<docker.image.name>codeanalysis</docker.image.name>
+        <docker.image.tag>2.1.4.RELEASE</docker.image.tag>
 	</properties>
 
 	<dependencies>
@@ -105,6 +107,22 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+               <groupId>com.spotify</groupId>
+               <artifactId>docker-maven-plugin</artifactId>
+               <version>0.4.10</version>
+               <configuration>
+                   <imageName>${docker.image.name}:${docker.image.tag}</imageName>
+                   <dockerDirectory>${basedir}</dockerDirectory>
+                   <resources>
+                       <resource>
+                           <targetPath>/</targetPath>
+                           <directory>${project.build.directory}</directory>
+                           <include>${project.build.finalName}.jar</include>
+                       </resource>
+                   </resources>
+               </configuration>
+           </plugin>
 		</plugins>
 	</build>
 
