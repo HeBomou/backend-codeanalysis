@@ -50,12 +50,19 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
-		try {
-			Thread.sleep(1000 * 35);
-
-		} catch (Exception e) {
+		MvcResult resGet;
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(1);
+				resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
 		}
-		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var resa = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
 		assertEquals(resa.getDynamicVo().getProjectName(), "Linux");
@@ -69,12 +76,19 @@ public class ProjectTest {
 				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux2")
 						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		try {
-			Thread.sleep(1000 * 35);
-
-		} catch (Exception e) {
+		MvcResult resGet;
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(2);
+				resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "3"))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
 		}
-		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "3"))
+		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "3"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list = JSONObject.parseArray(resGet.getResponse().getContentAsString());
 		var resa = JSONObject.parseObject(list.get(0).toString(), ProjectDynamicVo.class);
@@ -90,13 +104,19 @@ public class ProjectTest {
 						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
-		try {
-            Thread.sleep(1000 * 35);
-
-        } catch (Exception e) {
-        }
 		long projectId = allVo.getId();
 		allVo.getDynamicVo().setProjectName("Test3WYM");
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(3);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
+		}
 		mockMvc.perform(MockMvcRequestBuilders.put("/project/{projectId}/dynamic", projectId)
 				.contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(allVo.getDynamicVo())))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -114,18 +134,28 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
-		try {
-            Thread.sleep(1000 * 35);
-
-        } catch (Exception e) {
-        }
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(4);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
+		}
 		mockMvc.perform(MockMvcRequestBuilders.delete("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project").param("userId", "5"))
+		boolean check=false;
+		try{
+			mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		var list = JSONObject.parseArray(resGet.getResponse().getContentAsString());
-		assertEquals(list.size(), 0);
-
+			check=true;
+		}catch(Throwable T){
+			return;
+		}
+		assertEquals(check,true);
 	}
 
 	@Test // 子图相关
@@ -136,17 +166,26 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
-		try {
-            Thread.sleep(1000 * 35);
-
-        } catch (Exception e) {
-        }
+		MvcResult resGet;
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(5);
+				resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
+		}
+		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		// 添加子图
 		mockMvc.perform(MockMvcRequestBuilders.post("/project/{projectId}/subgraph", projectId)
 				.param("threshold", "0.3").param("name", "testSubgraphzero"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		// 验证结果
-		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+		resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo2 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
 		var sgs = allVo2.getSubgraphs();
@@ -165,7 +204,7 @@ public class ProjectTest {
 		var allVo3 = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectAllVo.class);
 		var sgs1 = allVo3.getSubgraphs();
 		assertEquals(sgs1.size(), 1);
-		//获取子图
+		// 获取子图
 		MvcResult resGet1 = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var resa = JSONObject.parseObject(resGet1.getResponse().getContentAsString(), ProjectAllVo.class);
@@ -195,11 +234,17 @@ public class ProjectTest {
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
-		try {
-            Thread.sleep(1000 *45);
-
-        } catch (Exception e) {
-        }
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(6);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
+		}
 		MvcResult resGetFunction = mockMvc.perform(
 				MockMvcRequestBuilders.get("/project/{projectId}/similarFunction", projectId).param("funcName", "C"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -222,10 +267,16 @@ public class ProjectTest {
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
-		try {
-            Thread.sleep(1000 * 45);
-
-        } catch (Exception e) {
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(7);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
 		}
 		MvcResult resGet1 = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -233,15 +284,15 @@ public class ProjectTest {
 		List<VertexAllVo> vdvs = resa.getVertices();
 		long id1 = -1L;
 		long id2 = -1L;
-		for(VertexAllVo vvv:vdvs){
-			if(vvv.getFunctionName().contains("main"))
-				id1=vvv.getId();
-			if(vvv.getFunctionName().contains("Baker"))
-				id2=vvv.getId();
-				
+		for (VertexAllVo vvv : vdvs) {
+			if (vvv.getFunctionName().contains("main"))
+				id1 = vvv.getId();
+			if (vvv.getFunctionName().contains("Baker"))
+				id2 = vvv.getId();
+
 		}
-		assertNotEquals(id1,-1L);
-		assertNotEquals(id2,-1L);
+		assertNotEquals(id1, -1L);
+		assertNotEquals(id2, -1L);
 		MvcResult resGetFunction = mockMvc
 				.perform(MockMvcRequestBuilders.get("/project/{projectId}/originalGraphPath", projectId)
 						.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
@@ -249,27 +300,26 @@ public class ProjectTest {
 		var res = resGetFunction.getResponse().getContentAsString();
 		var path = JSONObject.parseObject(res, PathVo.class);
 		assertEquals(path.getNum(), 1);
-		System.out.println(res);
+		// System.out.println(res);
 
 	}
 
 	@Test // 测试新建项目
 	public void Test8() throws Exception {
-		// var res = 
-		mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
-						.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
+		// var res =
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
+				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 	}
 
 	@Test // 测试新建项目
 	public void Test9() throws Exception {
-		// var res = 
-		mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
-						.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
+		// var res =
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
+				.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		// var vo = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
+		// var vo = JSONObject.parseObject(res.getResponse().getContentAsString(),
+		// ProjectAllVo.class);
 		// assertNotEquals(vo.getId(), null);
 		// assertEquals(vo.getDynamicVo().getProjectName(), "TestEightDemo");
 		// assertNotEquals(vo.getVertices().size(), 0);
@@ -279,12 +329,12 @@ public class ProjectTest {
 
 	@Test // 测试新建项目
 	public void Test10() throws Exception {
-		// var res = 
-		mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestT Demo")
-						.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
+		// var res =
+		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestT Demo")
+				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		// var vo = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
+		// var vo = JSONObject.parseObject(res.getResponse().getContentAsString(),
+		// ProjectAllVo.class);
 		// assertNotEquals(vo.getId(), null);
 		// assertEquals(vo.getDynamicVo().getProjectName(), "TestT Demo");
 		// assertNotEquals(vo.getVertices().size(), 0);
@@ -300,12 +350,18 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
-		try {
-            Thread.sleep(1000 * 45);
-
-        } catch (Exception e) {
-		}
 		long projectId = vo.getId();
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(11);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
+		}
 		MvcResult resGet = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}/profile", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var profileVo = JSONObject.parseObject(resGet.getResponse().getContentAsString(), ProjectProfileVo.class);
@@ -327,14 +383,24 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list1 = JSONObject.parseArray(result1.getResponse().getContentAsString());
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
-				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
+		MvcResult resAdd = mockMvc
+				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
+						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-				try {
-					Thread.sleep(1000 * 45);
-		
-				} catch (Exception e) {
-				}
+		var v = resAdd.getResponse().getContentAsString();
+		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
+		long projectId = vo.getId();
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(12);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
+		}
 		MvcResult result2 = mockMvc.perform(MockMvcRequestBuilders.get("/project"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list2 = JSONObject.parseArray(result2.getResponse().getContentAsString());
@@ -352,10 +418,17 @@ public class ProjectTest {
 						.param("url", "https://gitee.com/HeBomou/simple.git").param("userId", "4396"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo1 = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
-		try {
-            Thread.sleep(1000 * 45);
-
-        } catch (Exception e) {
+		long projectId = vo1.getId();
+		for (int i = 0; i < 5; i++) {
+			try {
+				Thread.sleep(1000 * 10);
+				System.out.println(13);
+				mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
+						.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				break;
+			} catch (Throwable T) {
+				continue;
+			}
 		}
 		MvcResult resGet1 = mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", vo1.getId()))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -375,7 +448,7 @@ public class ProjectTest {
 							.param("startVertexId", Long.toString(id1)).param("endVertexId", Long.toString(id2)))
 					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 			var pathVo = JSONObject.parseObject(resGetFunction.getResponse().getContentAsString(), PathVo.class);
-			System.out.print(pathVo.getNum());
+			// System.out.print(pathVo.getNum());
 			for (var path : pathVo.getPaths())
 				assertEquals(path.size(), new HashSet<>(path).size());
 		}
