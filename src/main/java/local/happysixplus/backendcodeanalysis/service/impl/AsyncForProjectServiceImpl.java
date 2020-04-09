@@ -378,8 +378,8 @@ public class AsyncForProjectServiceImpl {
                 caller.add(edge.get(0));
                 callee.add(edge.get(1));
             }
-            // 先存入错误信息避免失败后无法更新
-            projectDynamicData.save(new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）"));
+            // TODO: 先存入错误信息避免失败后无法更新
+            // projectDynamicData.save(new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）"));
             // 生成并存入项目静态信息
             var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId);
             // 可能projectId已经因为被用户删除而失效
