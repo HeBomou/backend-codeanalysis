@@ -23,6 +23,7 @@ public class ProjectController {
     @PostMapping
     public ProjectAllVo postProject(@RequestParam String projectName, @RequestParam String url,
             @RequestParam long userId) {
+        System.out.println("Post Project: " + projectName + ", URL: " + url + ", UserId: " + userId);
         return service.addProject(projectName, url, userId);
     }
 
