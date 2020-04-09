@@ -351,7 +351,7 @@ public class ProjectTest {
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
 		long projectId = vo.getId();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 8; i++) {
 			try {
 				Thread.sleep(1000 * 10);
 				System.out.println(11);
