@@ -14,7 +14,6 @@
     > $ ./mvnw -B -DskipTests clean package
 
     Windows下使用PowerShell
-
     > $ mvnw.cmd -B -DskipTests clean package
 
 2. 运行后端所依赖的MySQL容器
@@ -77,36 +76,16 @@ Jenkins也使用Docker部署，需要注意一个问题是在Jenkins容器内构
     然后安装下述插件  
     SSH、GitLab、GitLab Hook、Build Authorization Token Root
 
-3. 配置Jenkins和gitlab密钥对
-
-    进入jenkins容器中生成SSH密钥对，输入命令后一路回车，会在/root/生成.ssh/目录
-
-    > $ ssh-keygen -t rsa
-
-    Jenkins主界面-Credentials-System-Global credentials-Add Credentials，添加SSH Username with private key类型的凭证，将id_rsa文件的内容拷贝到Private Key一栏；打开gitlab，点击头像-settings-SSH密钥，将id_rsa.pub文件内容添加进去
-
-    除此以外，还需要在Jenkins中配置SSH服务器，Jenkins主界面-系统管理-系统设置，找到SSH remote hosts，分别填写服务器ip、SSH端口(一般默认为22)并选择刚刚创建的凭证
-
-4. 创建并配置一个流水线项目
+3. 创建并配置一个流水线项目
 
     因为Jenkinsfile已经写好，只需要配置好GitLab地址和GitLab Hook就行了
 
-    首先生成一个Token
+    TODO: 下面是SSD的表演时间
 
-    > openssl rand -hex 12
-
-    在Jenkins中新建一个流水线项目，Build Triggers配置如下，把生成的Token复制到最后一栏
-
-    ![9EF0E945-BC90-48ED-A7BC-BE224D37C6E1](/Users/macbook/Downloads/9EF0E945-BC90-48ED-A7BC-BE224D37C6E1.jpeg)
-
-    打开需要部署的gitlab仓库-Settings-Integrations，URL一栏为http://Jenkins服务器ip:端口号/buildByToken/build?job=项目名称&token=上述生成的Token，保存即可
-
-    回到Jenkins新建项目流程，Pipeline配置中选择Pipeline script from SCM，SCM选择Git，接下来填写好gitlab仓库的URL，选择凭证（也可以使用gitlab账号密码作为凭证），Branches to build填写master，Additional Behaviours选择Clean before checkout即可，点击保存，配置完毕
-
-5. 如果服务器CPU核心较少或内存不够
+4. 如果服务器CPU核心较少或内存不够
 
     注意到一个问题，如果连续push，Jenkins构建会同时进行，这必定会导致我们价值十块钱的学生服务器爆炸  
 
     因此需要在Jenkins系统设置里把最大同时构建数改为1，这样push产生的新的构建请求会被排进构建队列里，就不会炸服
 
-6. 最后在master分支push就能自动部署了
+5. 最后在master分支push就能自动部署了
