@@ -65,7 +65,7 @@ Jenkins也使用Docker部署，需要注意一个问题是在Jenkins容器内构
 
     然后使用浏览器访问宿主机的8088端口（或者你映射的端口），跟随指引配置即可  
 
-    访问初始密钥的时候需要进入Jenkins容器内部
+    访问初始密钥的时候需要进入Jenkins容器内部，根据网页提示到容器中的指定目录下寻找
 
     > $ docker exec -it Jenkins bash
 
