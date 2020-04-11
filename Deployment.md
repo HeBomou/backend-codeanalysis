@@ -2,7 +2,7 @@
 
 ## 概要
 
-先用maven wrapper打包，然后构建Docker镜像，最后根据该镜像运行Docker容器，整个过程由Jenkins控制并在开发过程中自动部署，实现持续集成  
+先用maven wrapper打包，然后构建Docker镜像，最后根据该镜像运行Docker容器，另外需要一个MySQL容器用于数据库，整个过程由Jenkins控制并在开发过程中自动部署，实现持续集成  
 
 ## 手动部署详细步骤
 
