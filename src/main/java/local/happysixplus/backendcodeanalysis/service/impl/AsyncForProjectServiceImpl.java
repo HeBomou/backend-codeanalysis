@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import local.happysixplus.backendcodeanalysis.util.callgraph.CallGraphMethods;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainColorDynamicData;
 import local.happysixplus.backendcodeanalysis.data.ConnectiveDomainDynamicData;
 import local.happysixplus.backendcodeanalysis.data.EdgeData;
@@ -30,7 +31,6 @@ import local.happysixplus.backendcodeanalysis.data.SubgraphDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexData;
 import local.happysixplus.backendcodeanalysis.data.VertexDynamicData;
 import local.happysixplus.backendcodeanalysis.data.VertexPositionDynamicData;
-import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainColorDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainDynamicPo;
 import local.happysixplus.backendcodeanalysis.po.ConnectiveDomainPo;
@@ -293,9 +293,6 @@ public class AsyncForProjectServiceImpl {
     }
 
     @Autowired
-    CallGraphMethods callGraphMethods;
-
-    @Autowired
     ProjectData projectData;
 
     @Autowired
@@ -331,6 +328,9 @@ public class AsyncForProjectServiceImpl {
     @Autowired
     VertexPositionDynamicData vertexPositionDynamicData;
 
+    @Autowired
+    AsyncCallGraphForProjectServiceImpl asyncCallGraphForProjectServiceImpl;
+
     @Async("ProjectExecutor")
     public CompletableFuture<String> asyncRemoveProject(Long id) {
         if (subgraphData.existsByProjectId(id))
@@ -357,9 +357,10 @@ public class AsyncForProjectServiceImpl {
     @Async("ProjectExecutor")
     public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
         try {
-            var projectInfo = callGraphMethods.initGraph(url);
+            var projectInfoFuture = asyncCallGraphForProjectServiceImpl.asyncGitPull(url);
+            var projectInfo = projectInfoFuture.get(270, TimeUnit.SECONDS);
             if (projectInfo == null)
-                throw new MyRuntimeException("您的项目不行");
+                throw new Exception();
             String[] callGraph = projectInfo.getCallGraph();
             var sourceCode = projectInfo.getSourceCode();
             List<String> caller = new ArrayList<>();
@@ -379,7 +380,8 @@ public class AsyncForProjectServiceImpl {
                 callee.add(edge.get(1));
             }
             // TODO: 先存入错误信息避免失败后无法更新
-            // projectDynamicData.save(new ProjectDynamicPo(projectId, userId, projectName + "（数据库异常）"));
+            // projectDynamicData.save(new ProjectDynamicPo(projectId, userId, projectName +
+            // "（数据库异常）"));
             // 生成并存入项目静态信息
             var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId);
             // 可能projectId已经因为被用户删除而失效
@@ -476,13 +478,14 @@ public class AsyncForProjectServiceImpl {
                         wColStart[i] = wColStart[i - 1] + wColCnts[i - 1];
                     for (int i = 0; i < wDiff; i++)
                         wCnts[i] = 0;
-                    int colWidth = (int)length / (wColStart[wDiff - 1] + wColCnts[wDiff - 1]);
+                    int colWidth = (int) length / (wColStart[wDiff - 1] + wColCnts[wDiff - 1]);
                     for (var id : vIds) {
                         int rw = wMap.get(id) - minW;
                         float x = wColStart[rw] + wCnts[rw] / maxRowNum;
                         float y = wCnts[rw] % maxRowNum;
                         wCnts[rw]++;
-                        resMap.put(id, new VertexPositionDynamicPo(id, projectId, leftUpX + x * colWidth, leftUpY + y * rowHeight));
+                        resMap.put(id, new VertexPositionDynamicPo(id, projectId, leftUpX + x * colWidth,
+                                leftUpY + y * rowHeight));
                     }
                     wMap.clear();
                 }
@@ -523,10 +526,12 @@ public class AsyncForProjectServiceImpl {
             // 存储节点初始位置
             for (var vp : vPosPoMap.values())
                 vertexPositionDynamicData.save(vp);
+        } catch (TimeoutException timeout) {
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目Clone超时）");
+            projectDynamicData.save(failedDPo);
         } catch (Exception e) {
             var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目无法解析）");
             projectDynamicData.save(failedDPo);
-            throw e;
         }
         return CompletableFuture.completedFuture("Finished");
     }
