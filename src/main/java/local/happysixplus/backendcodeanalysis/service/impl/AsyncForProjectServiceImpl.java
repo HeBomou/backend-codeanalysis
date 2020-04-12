@@ -358,7 +358,7 @@ public class AsyncForProjectServiceImpl {
     public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
         try {
             var projectInfoFuture = asyncCallGraphForProjectServiceImpl.asyncGitPull(url);
-            var projectInfo = projectInfoFuture.get(270, TimeUnit.SECONDS);
+            var projectInfo = projectInfoFuture.get(300, TimeUnit.SECONDS);
             if (projectInfo == null)
                 throw new Exception();
             String[] callGraph = projectInfo.getCallGraph();
