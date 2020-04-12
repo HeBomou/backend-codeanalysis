@@ -25,6 +25,7 @@ public class VertexPo {
 
     Long projectId;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     String functionName;
 
     @Column(columnDefinition = "MEDIUMTEXT")
