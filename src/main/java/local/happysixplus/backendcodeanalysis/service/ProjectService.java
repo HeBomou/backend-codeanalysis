@@ -101,7 +101,7 @@ public interface ProjectService {
     void updateVertexDynamic(Long projectId, VertexDynamicVo vo);
 
     /**
-     * 更新一个点的注释等动态信息
+     * 更新一个连通域内所有点的位置
      */
     void updateConnectiveDomainAllVertex(Long projectId, Long connectiveDomainId, float relativeX, float relativeY);
 
