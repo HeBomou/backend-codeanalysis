@@ -20,7 +20,7 @@ service/impl/AsyncCallGraphForProjectServiceImpl.java
 
 #### 保存代码文本
 
-todo
+util/callgraph/CallGraphMethodsImpl.java：loadSourceCode
 
 #### 包结构
 
@@ -93,7 +93,3 @@ service/impl/AdminSessionServiceImpl.java
 #### 管理员增删改查
 
 service/impl/AdminUserServiceImpl.java
-
-第六，后端，对于点的初始位置生成，我们做了优化。在同一个联通域内，我们基于求强联通分量的Tarjan算法设计了一个改良布局算法，他能保证在有环的情况下也能让排列中边的方向都尽可能的相同；在全局上，使用了jts解析几何库让所有联通域都按照环形围绕排列 
-
-第七，后端的依赖抽取和源码读取。由于之前提供的call-graph工具只能对jar包进行分析，而查看函数对应的源码必须要从java文件入手，所以必须同时拥有待分析项目的jar包和源文件。因此采用在git上clone下来源文件，然后手动打包的方式（不支持maven打包的项目需要提供jar包）。首先进行源码的读取，遍历项目路径，返回一个函数名到函数源码的Map，然后调用call-graph工具对jar包进行依赖抽取，最后进行过滤，删除未出现在依赖中的函数。
