@@ -44,6 +44,9 @@ public class CallGraphMethodsImpl implements CallGraphMethods {
                 cg.addAll(tempList);
             }
         }
+        if(cg.size()==0){
+            return null;
+        }
         //JCallGraph.getGraphFromJar("src/main/resources/temp/" + projectName + "/target/" + "Hello-1.0-SNAPSHOT.jar", projectName);  
         /*for(String key:srcCode.keySet()){
             System.out.println("-----------------");
