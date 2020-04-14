@@ -24,9 +24,9 @@ util/callgraph/CallGraphMethodsImpl.java：loadSourceCode
 
 #### 包结构
 
-todo
+service/impl/ProjectServiceImpl.java：initAndSaveProject
 
-（如果这俩在一个函数实现的就不分开了）
+service/impl/ProjectServiceImpl.java：PackageNode内部静态类的insertFunc递归函数
 
 #### 获取项目信息
 
