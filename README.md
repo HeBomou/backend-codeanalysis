@@ -1,5 +1,7 @@
 # 迭代二后端检查点导航
 
+已经部署在服务器上，为了方便检查我们配置了跨域，助教可以用直接postman根据接口文档检查接口，服务器地址是[http://101.201.150.49:8080/](http://101.201.150.49:8080/)，如果无响应可能是Jenkins正在自动构建，Jenkins地址是[http://101.201.150.49:8088/](http://101.201.150.49:8088/)，账号密码请联系组长
+
 以下代码实现都在src/main/java/local/happysixplus/backendcodeanalysis目录下
 
 /controller中有RESTFUL接口
