@@ -24,4 +24,7 @@ public class ProjectPo {
 
     @Column(columnDefinition = "MEDIUMTEXT")
     String packageStructure;
+
+    Long groupId;
+
 }

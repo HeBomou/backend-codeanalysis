@@ -343,11 +343,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectAllVo addProject(String projectName, String url, long userId) {
-        var po = new ProjectPo(null, userId, "");
+        var po = new ProjectPo(null, userId, "", -1l);
         po = projectData.save(po);
-        var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）");
+        var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）", -1l);
         dPo = projectDynamicData.save(dPo);
-        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1);
+        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1, -1l);
         sAPo = projectStaticAttributeData.save(sAPo);
         asyncForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId);
         return new ProjectAllVo(po.getId(), null, null, null, null,
@@ -374,7 +374,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProjectDynamic(Long projectId, ProjectDynamicVo vo) {
         vo.setId(projectId);
         var userId = projectDynamicData.findById(projectId).orElse(null).getUserId();
-        projectDynamicData.save(new ProjectDynamicPo(vo.getId(), userId, vo.getProjectName()));
+        projectDynamicData.save(new ProjectDynamicPo(vo.getId(), userId, vo.getProjectName(), -1l));
     };
 
     @Override

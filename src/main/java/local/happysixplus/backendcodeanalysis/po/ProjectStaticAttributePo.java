@@ -35,4 +35,6 @@ public class ProjectStaticAttributePo {
 
     Integer connectiveDomainNum;
 
+    Long groupId;
+
 }

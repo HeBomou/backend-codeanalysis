@@ -24,7 +24,7 @@ class ProjectStaticAttributeDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        projectStaticAttributePo = new ProjectStaticAttributePo(123L, 1L, 1, 2, 3);
+        projectStaticAttributePo = new ProjectStaticAttributePo(123L, 1L, 1, 2, 3, -1l);
     }
 
     @AfterEach
@@ -46,7 +46,7 @@ class ProjectStaticAttributeDataTest {
     @Test
     public void testUpdate() {
         projectStaticAttributePo = data.save(projectStaticAttributePo);
-        projectStaticAttributePo = new ProjectStaticAttributePo(projectStaticAttributePo.getId(), 4396L, 4, 5, 6);
+        projectStaticAttributePo = new ProjectStaticAttributePo(projectStaticAttributePo.getId(), 4396L, 4, 5, 6, -1l);
         projectStaticAttributePo = data.save(projectStaticAttributePo);
         ProjectStaticAttributePo resPo = data.findById(projectStaticAttributePo.getId()).get();
         assertEquals(resPo.getId(), projectStaticAttributePo.getId());
@@ -67,8 +67,10 @@ class ProjectStaticAttributeDataTest {
     @Test
     public void testFindByUserId() {
         projectStaticAttributePo = data.save(projectStaticAttributePo);
-        ProjectStaticAttributePo projectStaticAttributePo1 = data.save(new ProjectStaticAttributePo(124L, 1L, 7, 8, 9));
-        ProjectStaticAttributePo projectStaticAttributePo2 = data.save(new ProjectStaticAttributePo(125L, 1L, 0, 1, 2));
+        ProjectStaticAttributePo projectStaticAttributePo1 = data
+                .save(new ProjectStaticAttributePo(124L, 1L, 7, 8, 9, -1l));
+        ProjectStaticAttributePo projectStaticAttributePo2 = data
+                .save(new ProjectStaticAttributePo(125L, 1L, 0, 1, 2, -1l));
         List<ProjectStaticAttributePo> list = data.findByUserId(1L);
         list.sort((a, b) -> (int) (a.getId() - b.getId()));
         assertEquals(list.get(0).getId(), projectStaticAttributePo.getId());

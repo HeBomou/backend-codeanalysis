@@ -31,4 +31,6 @@ public class ProjectDynamicPo {
 
     String projectName;
 
+    Long groupId;
+
 }

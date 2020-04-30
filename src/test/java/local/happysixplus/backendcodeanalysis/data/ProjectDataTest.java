@@ -21,7 +21,7 @@ class ProjectDataTest {
 
     @BeforeEach
     void init() {
-        projectPo = new ProjectPo(null, 4396L, "eihei");
+        projectPo = new ProjectPo(null, 4396L, "eihei", -1l);
     }
 
     @AfterEach
@@ -49,7 +49,7 @@ class ProjectDataTest {
     @Test
     public void testUpdate() {
         projectPo = data.save(projectPo);
-        projectPo = data.save(new ProjectPo(projectPo.getId(), 4397L, "123345"));
+        projectPo = data.save(new ProjectPo(projectPo.getId(), 4397L, "123345", -1l));
         ProjectPo resPo = data.findById(projectPo.getId()).get();
         assertEquals(resPo.getUserId(), projectPo.getUserId());
         assertEquals(resPo.getId(), projectPo.getId());

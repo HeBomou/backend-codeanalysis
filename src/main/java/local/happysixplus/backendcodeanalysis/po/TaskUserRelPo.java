@@ -13,20 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class GroupTaskPo{
+public class TaskUserRelPo{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Long groupId;
+    Long taskId;
 
-    String name;
-
-    String info;
-
-    String deadline;
-
-    int sFinished;
+    Long userId;
 
 }

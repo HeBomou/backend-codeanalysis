@@ -24,7 +24,7 @@ class ProjectDynamicDataTest {
     @BeforeEach
     void init() {
         data.deleteAll();
-        projectDynamicPo = new ProjectDynamicPo(123L, 1L, "SKTelecomT1Faker");
+        projectDynamicPo = new ProjectDynamicPo(123L, 1L, "SKTelecomT1Faker", -1l);
     }
 
     @AfterEach
@@ -44,7 +44,7 @@ class ProjectDynamicDataTest {
     @Test
     public void testUpdate() {
         projectDynamicPo = data.save(projectDynamicPo);
-        projectDynamicPo = new ProjectDynamicPo(projectDynamicPo.getId(), 4396L, "Mother fucker");
+        projectDynamicPo = new ProjectDynamicPo(projectDynamicPo.getId(), 4396L, "Mother fucker", -1l);
         projectDynamicPo = data.save(projectDynamicPo);
         ProjectDynamicPo resPo = data.findById(projectDynamicPo.getId()).get();
         assertEquals(resPo.getId(), projectDynamicPo.getId());
@@ -63,8 +63,8 @@ class ProjectDynamicDataTest {
     @Test
     public void testFindByUserId() {
         projectDynamicPo = data.save(projectDynamicPo);
-        ProjectDynamicPo projectDynamicPo1 = data.save(new ProjectDynamicPo(124L, 1L, "SKTKhan"));
-        ProjectDynamicPo projectDynamicPo2 = data.save(new ProjectDynamicPo(125L, 1L, "SKTCLid"));
+        ProjectDynamicPo projectDynamicPo1 = data.save(new ProjectDynamicPo(124L, 1L, "SKTKhan", -1l));
+        ProjectDynamicPo projectDynamicPo2 = data.save(new ProjectDynamicPo(125L, 1L, "SKTCLid", -1l));
         List<ProjectDynamicPo> list = data.findByUserId(1L);
         list.sort((a, b) -> (int) (a.getId() - b.getId()));
         assertEquals(list.get(0).getId(), projectDynamicPo.getId());

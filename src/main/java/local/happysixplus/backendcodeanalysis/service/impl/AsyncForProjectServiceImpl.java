@@ -392,10 +392,10 @@ public class AsyncForProjectServiceImpl {
             subPo = subgraphData.save(subPo);
             // 存入项目静态属性信息
             var projSAPo = new ProjectStaticAttributePo(project.id, userId, project.vIdMap.size(),
-                    project.eIdMap.size(), subPo.getConnectiveDomains().size());
+                    project.eIdMap.size(), subPo.getConnectiveDomains().size(), -1l);
             projSAPo = projectStaticAttributeData.save(projSAPo);
             // 存入项目动态信息
-            var projDPo = new ProjectDynamicPo(project.id, userId, projectName);
+            var projDPo = new ProjectDynamicPo(project.id, userId, projectName, -1l);
             projDPo = projectDynamicData.save(projDPo);
             // 存入子图动态信息
             var subgDPo = new SubgraphDynamicPo(subPo.getId(), project.id, "Default subgraph");
@@ -527,10 +527,10 @@ public class AsyncForProjectServiceImpl {
             for (var vp : vPosPoMap.values())
                 vertexPositionDynamicData.save(vp);
         } catch (TimeoutException timeout) {
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目Clone超时）");
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目Clone超时）", -1l);
             projectDynamicData.save(failedDPo);
         } catch (Exception e) {
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目无法解析）");
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目无法解析）", -1l);
             projectDynamicData.save(failedDPo);
         }
         return CompletableFuture.completedFuture("Finished");
@@ -545,7 +545,7 @@ public class AsyncForProjectServiceImpl {
         Map<String, Integer> indegree = new HashMap<String, Integer>();
 
         // 存入项目
-        var projPo = projectData.save(new ProjectPo(projectId, userId, ""));
+        var projPo = projectData.save(new ProjectPo(projectId, userId, "", -1l));
         projectId = projPo.getId();
 
         // 去除重复点

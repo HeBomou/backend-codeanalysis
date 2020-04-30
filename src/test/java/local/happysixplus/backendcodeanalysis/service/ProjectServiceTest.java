@@ -190,7 +190,8 @@ public class ProjectServiceTest {
         var e8 = new EdgePo(8L, 23333L, 7L, 7L, 0.5d);
         var ePo = Arrays.asList(e1, e2, e3, e4, e5, e6, e7, e8);
         var po = new ProjectPo(23333L, 2L,
-                "{\"chrs\":{\"top\":{\"chrs\":{\"hebomou\":{\"chrs\":{\"App\":{\"chrs\":{},\"funcs\":[1],\"str\":\"App\"},\"ClassD\":{\"chrs\":{},\"funcs\":[8,9],\"str\":\"ClassD\"},\"ClassA\":{\"chrs\":{},\"funcs\":[2,3],\"str\":\"ClassA\"},\"ClassB\":{\"chrs\":{},\"funcs\":[4,5],\"str\":\"ClassB\"},\"ClassC\":{\"chrs\":{},\"funcs\":[6,7],\"str\":\"ClassC\"}},\"funcs\":[],\"str\":\"hebomou\"}},\"funcs\":[],\"str\":\"top\"}},\"funcs\":[],\"str\":\"src\"}");
+                "{\"chrs\":{\"top\":{\"chrs\":{\"hebomou\":{\"chrs\":{\"App\":{\"chrs\":{},\"funcs\":[1],\"str\":\"App\"},\"ClassD\":{\"chrs\":{},\"funcs\":[8,9],\"str\":\"ClassD\"},\"ClassA\":{\"chrs\":{},\"funcs\":[2,3],\"str\":\"ClassA\"},\"ClassB\":{\"chrs\":{},\"funcs\":[4,5],\"str\":\"ClassB\"},\"ClassC\":{\"chrs\":{},\"funcs\":[6,7],\"str\":\"ClassC\"}},\"funcs\":[],\"str\":\"hebomou\"}},\"funcs\":[],\"str\":\"top\"}},\"funcs\":[],\"str\":\"src\"}",
+                -1l);
         // subgraph
         var connectiveDomain1 = new ConnectiveDomainPo(444444L, Arrays.asList(8L, 9L), Arrays.asList(4L));
         var connectiveDomain2 = new ConnectiveDomainPo(444445L, Arrays.asList(1L, 2L, 5L, 3L, 7L, 6L, 4L),
@@ -198,9 +199,9 @@ public class ProjectServiceTest {
         var connectiveDomainsPo = new HashSet<ConnectiveDomainPo>(Arrays.asList(connectiveDomain1, connectiveDomain2));
         var sPo = new SubgraphPo(123456789L, 2L, 0d, connectiveDomainsPo);
         // static attribute
-        var saPo = new ProjectStaticAttributePo(23333L, 2L, 9, 8, 2);
+        var saPo = new ProjectStaticAttributePo(23333L, 2L, 9, 8, 2, -1l);
         // project dynamic
-        var dPo = new ProjectDynamicPo(23333L, 2L, "Test Faker");
+        var dPo = new ProjectDynamicPo(23333L, 2L, "Test Faker", -1l);
         // subgraph dynamic
         var dsPo = new SubgraphDynamicPo(123456789L, 23333L, "Default subgraph");
 
@@ -328,7 +329,8 @@ public class ProjectServiceTest {
         var e1 = new EdgePo(3L, 2L, 3L, 4L, 0.3d);
         var ePo = Arrays.asList(e1);
         var po = new ProjectPo(2L, 233L,
-                "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}");
+                "{\"chrs\":{\"edu\":{\"chrs\":{\"itrust\":{\"chrs\":{\"BeanBuilder\":{\"chrs\":{},\"funcs\":[3],\"str\":\"BeanBuilder\"},\"BeanSBer\":{\"chrs\":{},\"funcs\":[4],\"str\":\"BeanSBer\"}},\"funcs\":[],\"str\":\"itrust\"}},\"funcs\":[],\"str\":\"edu\"}},\"funcs\":[],\"str\":\"src\"}",
+                -1l);
 
         // Subgraphs
         var connectiveDomain1 = new ConnectiveDomainPo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L));
@@ -344,7 +346,7 @@ public class ProjectServiceTest {
         var dConnectiveDomain1 = new ConnectiveDomainDynamicPo(2L, 2L, "acd 1");
         var dConnectiveDomainColor1 = new ConnectiveDomainColorDynamicPo(2L, 2L, "#CDBE70");
         var dsPo = new SubgraphDynamicPo(4L, 2L, "Default subgraph");
-        var dPo = new ProjectDynamicPo(2L, 5L, "projC");
+        var dPo = new ProjectDynamicPo(2L, 5L, "projC", -1l);
 
         // 打桩
         Mockito.when(vertexData.findByProjectId(2L)).thenReturn(vPo);
@@ -385,13 +387,13 @@ public class ProjectServiceTest {
     @Test
     public void testGetProjectBasicAttribute() {
         // 打桩数据生成
-        var dPo1 = new ProjectDynamicPo(10000L, 55555L, "One project");
-        var dPo2 = new ProjectDynamicPo(10001L, 55555L, "Two project");
-        var dPo3 = new ProjectDynamicPo(10002L, 55555L, "Three project");
+        var dPo1 = new ProjectDynamicPo(10000L, 55555L, "One project", -1l);
+        var dPo2 = new ProjectDynamicPo(10001L, 55555L, "Two project", -1l);
+        var dPo3 = new ProjectDynamicPo(10002L, 55555L, "Three project", -1l);
         var dPos = Arrays.asList(dPo1, dPo2, dPo3);
-        var sPo1 = new ProjectStaticAttributePo(10000L, 55555L, 34, 56, 4);
-        var sPo2 = new ProjectStaticAttributePo(10001L, 55555L, 2333, 6000, 68);
-        var sPo3 = new ProjectStaticAttributePo(10002L, 55555L, 2, 1, 1);
+        var sPo1 = new ProjectStaticAttributePo(10000L, 55555L, 34, 56, 4, -1l);
+        var sPo2 = new ProjectStaticAttributePo(10001L, 55555L, 2333, 6000, 68, -1l);
+        var sPo3 = new ProjectStaticAttributePo(10002L, 55555L, 2, 1, 1, -1l);
         var sPos = Arrays.asList(sPo1, sPo2, sPo3);
         // 打桩
         Mockito.when(projectDynamicData.findByUserId(55555L)).thenReturn(dPos);
@@ -413,8 +415,8 @@ public class ProjectServiceTest {
     @Test
     public void testGetProjectProfile() {
         // 打桩数据生成
-        var dPo = new ProjectDynamicPo(10000L, 55555L, "One project");
-        var sPo = new ProjectStaticAttributePo(10000L, 55555L, 34, 56, 4);
+        var dPo = new ProjectDynamicPo(10000L, 55555L, "One project", -1l);
+        var sPo = new ProjectStaticAttributePo(10000L, 55555L, 34, 56, 4, -1l);
         // 打桩
         Mockito.when(projectDynamicData.findById(10000L)).thenReturn(Optional.of(dPo));
         Mockito.when(projectStaticAttributeData.findById(10000L)).thenReturn(Optional.of(sPo));
@@ -446,8 +448,8 @@ public class ProjectServiceTest {
     @Test
     public void testUpdateProjectDynamic1() {
         // 打桩数据生成
-        var originDPo = new ProjectDynamicPo(256L, 15L, "Hello");
-        var dPoToSave = new ProjectDynamicPo(256L, 15L, "Bye");
+        var originDPo = new ProjectDynamicPo(256L, 15L, "Hello", -1l);
+        var dPoToSave = new ProjectDynamicPo(256L, 15L, "Bye", -1l);
         // 打桩
         Mockito.when(projectDynamicData.findById(256L)).thenReturn(Optional.of(originDPo));
         Mockito.when(projectDynamicData.save(dPoToSave)).thenReturn(dPoToSave);
@@ -463,7 +465,7 @@ public class ProjectServiceTest {
     @Test
     public void testAddSubgraph1() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, "zheli xjb xie ye meishi");
+        var po = new ProjectPo(2L, 233L, "zheli xjb xie ye meishi", -1l);
 
         var v1 = new VertexPo(1L, 2L, "v1", "dian1()");
         var v2 = new VertexPo(2L, 2L, "v2", "dian2()");
@@ -590,7 +592,7 @@ public class ProjectServiceTest {
     @Test
     public void testGetOriginalGraphPath() {
         // 打桩数据生成
-        var po = new ProjectPo(2L, 233L, "project package");
+        var po = new ProjectPo(2L, 233L, "project package", -1l);
         var v1 = new VertexPo(1L, 2L, "v1", "dian1()");
         var v2 = new VertexPo(2L, 2L, "v2", "dian2()");
         var v3 = new VertexPo(3L, 2L, "v3", "dian3()");
