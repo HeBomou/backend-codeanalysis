@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class TaskUserRelPo{
+@Table(indexes = { @Index(columnList = "taskId"), @Index(columnList = "userId") })
+public class TaskUserRelPo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
