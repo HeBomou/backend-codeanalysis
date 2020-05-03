@@ -26,4 +26,5 @@ public class GroupUserRelPo {
 
     Long userId;
 
+    String level;
 }
