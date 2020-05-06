@@ -4,7 +4,7 @@ import java.util.List;
 
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
 
-public interface Message {
+public interface MessageService {
 
     /**
      * 添加私信
