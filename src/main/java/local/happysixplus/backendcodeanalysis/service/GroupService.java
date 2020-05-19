@@ -54,7 +54,7 @@ public interface GroupService {
      * @param userId
      * @param level
      */
-    void updateMember(Long groupId, Long userId, int level);
+    void updateMember(Long groupId, Long userId, String level);
 
     /**
      * 获取组员等级，判断是否有权限进行操作
@@ -63,7 +63,7 @@ public interface GroupService {
      * @param userId
      * @return
      */
-    int getMemberLevel(Long groupId, Long userId);
+    String getMemberLevel(Long groupId, Long userId);
 
     /**
      * 获取小组成员列表

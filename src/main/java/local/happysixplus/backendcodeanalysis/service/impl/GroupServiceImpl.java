@@ -1,6 +1,8 @@
 package local.happysixplus.backendcodeanalysis.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -13,6 +15,8 @@ import local.happysixplus.backendcodeanalysis.data.GroupTaskData;
 import local.happysixplus.backendcodeanalysis.data.GroupUserRelData;
 import local.happysixplus.backendcodeanalysis.data.TaskUserRelData;
 import local.happysixplus.backendcodeanalysis.data.UserData;
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
+import local.happysixplus.backendcodeanalysis.po.GroupNoticePo;
 import local.happysixplus.backendcodeanalysis.po.GroupPo;
 import local.happysixplus.backendcodeanalysis.po.GroupUserRelPo;
 import local.happysixplus.backendcodeanalysis.service.GroupService;
@@ -86,47 +90,71 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void addMember(Long groupId, String inviteCode, Long userId) {
-
+        var po = groupData.findById(groupId).orElse(null);
+        if (!inviteCode.equals(po.getInviteCode()))
+            throw new MyRuntimeException("邀请码错误");
+        groupUserRelData.save(new GroupUserRelPo(null, groupId, userId, "member"));
     }
 
     @Override
     public void removeMember(Long groupId, Long userId) {
-
+        groupUserRelData.deleteByGroupIdAndUserId(groupId, userId);
+        taskUserRelData.deleteByUserIdAndGroupId(userId, groupId);
     }
 
     @Override
-    public void updateMember(Long groupId, Long userId, int level) {
-
+    public void updateMember(Long groupId, Long userId, String level) {
+        var po = groupUserRelData.findByGroupIdAndUserId(groupId, userId);
+        po.setLevel(level);
+        groupUserRelData.save(po);
     }
 
     @Override
-    public int getMemberLevel(Long groupId, Long userId) {
-        return 0;
+    public String getMemberLevel(Long groupId, Long userId) {
+        var po = groupUserRelData.findByGroupIdAndUserId(groupId, userId);
+        return po.getLevel();
     }
 
     @Override
     public List<UserVo> getMembers(Long groupId) {
-        return null;
+        var pos = groupUserRelData.findByGroupId(groupId);
+        var userIds = new ArrayList<Long>(pos.size());
+        for (var po : pos)
+            userIds.add(po.getUserId());
+        var userPos = userData.findByIdIn(userIds);
+        var res = new ArrayList<UserVo>();
+        for (var po : userPos)
+            res.add(new UserVo(po.getId(), po.getUsername(), po.getPwdMd5()));
+        return res;
     }
 
     @Override
     public void addNotice(GroupNoticeVo vo) {
-
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        var po = new GroupNoticePo(null, vo.getGroupId(), vo.getTitle(), vo.getTime(), df.format(new Date()));
+        groupNoticeData.save(po);
     }
 
     @Override
     public void removeNotice(Long id) {
-
+        groupNoticeData.deleteById(id);
     }
 
     @Override
     public void updateNotice(GroupNoticeVo vo) {
-
+        var po = groupNoticeData.findById(vo.getId()).orElse(null);
+        po.setContent(vo.getContent());
+        po.setTitle(vo.getTitle());
+        groupNoticeData.save(po);
     }
 
     @Override
     public List<GroupNoticeVo> getNotice(Long groupId) {
-        return null;
+        var pos = groupNoticeData.findAllByGroupId(groupId);
+        var res = new ArrayList<GroupNoticeVo>();
+        for (var po : pos)
+            res.add(new GroupNoticeVo(po.getId(), po.getGroupId(), po.getTitle(), po.getContent(), po.getTime()));
+        return res;
     }
 
 }

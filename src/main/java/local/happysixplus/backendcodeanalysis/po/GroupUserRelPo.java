@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(indexes = { @Index(columnList = "groupId,userId") })
+@Table(indexes = { @Index(columnList = "groupId,userId"), @Index(columnList = "userId") })
 public class GroupUserRelPo {
 
     @Id

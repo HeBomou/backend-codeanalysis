@@ -59,12 +59,12 @@ public class GroupController {
     }
 
     @PutMapping(value="/{groupId}/authority/{userId}")
-    public void putMember(@PathVariable Long groupId,@PathVariable Long userId,@RequestParam int level){
+    public void putMember(@PathVariable Long groupId,@PathVariable Long userId,@RequestParam String level){
         service.updateMember(groupId, userId, level);
     }
 
     @GetMapping(value="/{groupId}/authority/{userId}")
-    public int getAuthorityLevel(@PathVariable Long groupId,@PathVariable Long userId){
+    public String getAuthorityLevel(@PathVariable Long groupId,@PathVariable Long userId){
         return service.getMemberLevel(groupId, userId);
     }
 
