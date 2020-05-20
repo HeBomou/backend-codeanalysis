@@ -23,32 +23,32 @@ public class TaskController {
     TaskService service;
 
     @PostMapping
-    public void postTask(@RequestBody GroupTaskVo vo){
+    public void postTask(@RequestBody GroupTaskVo vo) {
         service.updateTask(vo);
     }
 
-    @DeleteMapping(value="/{id}")
-    public void deleteTask(@PathVariable Long id){
+    @DeleteMapping(value = "/{id}")
+    public void deleteTask(@PathVariable Long id) {
         service.removeTask(id);
     }
 
     @PutMapping
-    public void putTask(@RequestBody GroupTaskVo vo) throws Exception{
+    public void putTask(@RequestBody GroupTaskVo vo) throws Exception {
         service.updateTask(vo);
     }
 
-    @PutMapping(value="/{taskId}/assign/{userId}")
-    public void assignTask(@PathVariable Long taskId,@PathVariable Long userId){
-        service.assignTask(taskId, userId);
+    @PutMapping(value = "/{groupId}/{taskId}/assign/{userId}")
+    public void assignTask(@PathVariable Long taskId, @PathVariable Long userId, @PathVariable Long groupId) {
+        service.assignTask(taskId, userId, groupId);
     }
 
-    @GetMapping(value="/{groupId}")
-    public List<GroupTaskVo> getAllTask(@PathVariable Long groupId){
+    @GetMapping(value = "/{groupId}")
+    public List<GroupTaskVo> getAllTask(@PathVariable Long groupId) {
         return service.getAllTask(groupId);
     }
 
-    @GetMapping(value="/{groupId}/{userId}")
-    public List<GroupTaskVo> getTask(@PathVariable Long groupId,@PathVariable Long userId){
+    @GetMapping(value = "/{groupId}/{userId}")
+    public List<GroupTaskVo> getTask(@PathVariable Long groupId, @PathVariable Long userId) {
         return service.getTask(groupId, userId);
     }
 }

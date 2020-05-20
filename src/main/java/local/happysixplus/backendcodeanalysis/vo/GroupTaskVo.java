@@ -18,5 +18,5 @@ public class GroupTaskVo {
 
     String deadline;
 
-    int sFinished;
+    int isFinished;
 }

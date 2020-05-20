@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(indexes = { @Index(columnList = "groupId") })
 public class GroupTaskPo {
-
+ 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -30,6 +30,6 @@ public class GroupTaskPo {
 
     String deadline;
 
-    int sFinished;
+    int isFinished;
 
 }

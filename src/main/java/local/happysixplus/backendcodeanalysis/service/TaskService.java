@@ -27,7 +27,7 @@ public interface TaskService {
      * @param taskId
      * @param userId
      */
-    void assignTask(Long taskId, Long userId);
+    void assignTask(Long taskId, Long userId, Long groupId);
 
     /**
      * 获取小组任务列表

@@ -1,5 +1,7 @@
 package local.happysixplus.backendcodeanalysis.data;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +11,8 @@ import local.happysixplus.backendcodeanalysis.po.TaskUserRelPo;
 
 public interface TaskUserRelData extends JpaRepository<TaskUserRelPo, Long> {
 
+    List<TaskUserRelPo> findByGroupIdAndUserId(Long groupId, Long userId);
+
     @Modifying
     @Transactional
     void deleteByGroupId(Long groupId);
@@ -16,5 +20,9 @@ public interface TaskUserRelData extends JpaRepository<TaskUserRelPo, Long> {
     @Modifying
     @Transactional
     void deleteByUserIdAndGroupId(Long userId, Long groupId);
+
+    @Modifying
+    @Transactional
+    void deleteByTaskId(Long taskId);
 
 }
