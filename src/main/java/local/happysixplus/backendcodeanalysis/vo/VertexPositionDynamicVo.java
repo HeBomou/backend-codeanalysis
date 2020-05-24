@@ -7,9 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VertexDynamicVo {
+public class VertexPositionDynamicVo {
 
     Long id;
 
-    String anotation = "";
+    Long subgraphId;
+
+    Float x = 0f;
+
+    Float y = 0f;
 }

@@ -12,6 +12,7 @@ import local.happysixplus.backendcodeanalysis.vo.ProjectProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexPositionDynamicVo;
 
 public interface ProjectService {
 
@@ -94,16 +95,18 @@ public interface ProjectService {
 
     /**
      * 更新一个点的注释等动态信息
-     * 
-     * @param projectId
-     * @param vo
      */
     void updateVertexDynamic(Long projectId, VertexDynamicVo vo);
 
     /**
+     * 更新一个点在子图中的位置
+     */
+    void updateVertexPositionDynamic(Long projectId, VertexPositionDynamicVo vo);
+
+    /**
      * 更新一个连通域内所有点的位置
      */
-    void updateConnectiveDomainAllVertex(Long projectId, Long connectiveDomainId, float relativeX, float relativeY);
+    void updateConnectiveDomainAllVertex(Long projectId, Long subgraphId, Long connectiveDomainId, float relativeX, float relativeY);
 
     /**
      * 获取初始图中从start出发到end的所有路

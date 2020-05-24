@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping(value = "/project")
@@ -107,10 +110,10 @@ public class ProjectController {
     /**
      * 更新连通域内所有顶点的位置信息
      */
-    @PutMapping(value = "/{projectId}/connectiveDomain/{connectiveDomainId}/position")
-    public void putConnectiveDomainPosition(@PathVariable Long projectId, @PathVariable Long connectiveDomainId,
+    @PutMapping(value = "/{projectId}/subgraph/{subgraphId}/connectiveDomain/{connectiveDomainId}/position")
+    public void putConnectiveDomainPosition(@PathVariable Long projectId, @PathVariable Long subgraphId, @PathVariable Long connectiveDomainId,
             @RequestParam float relativeX, @RequestParam float relativeY) {
-        service.updateConnectiveDomainAllVertex(projectId, connectiveDomainId, relativeX, relativeY);
+        service.updateConnectiveDomainAllVertex(projectId, subgraphId, connectiveDomainId, relativeX, relativeY);
     }
 
     /**
@@ -119,6 +122,14 @@ public class ProjectController {
     @PutMapping(value = "/{projectId}/vertex/{id}/dynamic")
     public void putVertex(@PathVariable Long projectId, @RequestBody VertexDynamicVo vo) {
         service.updateVertexDynamic(projectId, vo);
+    }
+
+    /**
+     * 更新子图中点的位置
+     */
+    @PutMapping(value = "/{projectId}/subgraph/{subgraphId}/vertex/{id}/position")
+    public void putVertexPosition(@PathVariable Long projectId, @RequestBody VertexPositionDynamicVo vo) {
+        service.updateVertexPositionDynamic(projectId, vo);
     }
 
     /**

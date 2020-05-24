@@ -56,6 +56,7 @@ import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexAllVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexPositionDynamicVo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.var;
@@ -187,11 +188,11 @@ public class ProjectServiceImpl implements ProjectService {
             packageStructureJSON = po.getPackageStructure();
         }
 
-        ProjectAllVo getAllVo(Map<Long, VertexDynamicPo> vDPoMap, Map<Long, VertexPositionDynamicPo> cPDPoMap,
-                Map<Long, EdgeDynamicPo> eDPoMap, List<SubgraphAllVo> sVos, ProjectDynamicVo dVo) {
+        ProjectAllVo getAllVo(Map<Long, VertexDynamicPo> vDPoMap, Map<Long, EdgeDynamicPo> eDPoMap,
+                List<SubgraphAllVo> sVos, ProjectDynamicVo dVo) {
             List<VertexAllVo> vVos = new ArrayList<>();
             for (var v : vIdMap.values())
-                vVos.add(v.getAllVo(dPoTodVo(vDPoMap.get(v.id), cPDPoMap.get(v.id))));
+                vVos.add(v.getAllVo(dPoTodVo(vDPoMap.get(v.id))));
             var rootVo = JSONObject.parseObject(packageStructureJSON, PackageNode.class).getVo();
             List<EdgeAllVo> eVos = new ArrayList<>();
             for (var e : eIdMap.values())
@@ -415,8 +416,6 @@ public class ProjectServiceImpl implements ProjectService {
         vPos = null;
         ePos = null;
         var vDPoMap = vertexDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
-        var vPDPoMap = vertexPositionDynamicData.findByProjectId(id).stream()
-                .collect(Collectors.toMap(v -> v.getId(), v -> v));
         var eDPoMap = edgeDynamicData.findByProjectId(id).stream().collect(Collectors.toMap(v -> v.getId(), v -> v));
         var dVo = dPoTodVo(projectDynamicData.findById(id).orElse(null));
         // 子图
@@ -432,7 +431,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (var sPo : sPos)
             sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap, cCDPoMap));
         // 返回
-        return project.getAllVo(vDPoMap, vPDPoMap, eDPoMap, sVos, dVo);
+        return project.getAllVo(vDPoMap, eDPoMap, sVos, dVo);
     }
 
     @Override
@@ -457,33 +456,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name) {
-        // 生成并存储静态信息
-        var po = projectData.findById(projectId).orElse(null);
-        var vPos = vertexData.findByProjectId(projectId);
-        var ePos = edgeData.findByProjectId(projectId);
-        var project = new Project(po, vPos, ePos);
-        po = null;
-        vPos = null;
-        ePos = null;
-        var newSPo = project.initSubgraph(threshold);
-        newSPo = subgraphData.save(newSPo);
-        // 存储动态信息
-        var sDPo = new SubgraphDynamicPo(newSPo.getId(), projectId, name);
-        sDPo = subgraphDynamicData.save(sDPo);
-        // 生成联通域初始颜色并存储
-        var cDPoMap = new HashMap<Long, ConnectiveDomainColorDynamicPo>(newSPo.getConnectiveDomains().size());
-        String[] colors = { "#CDCDB4", "#CDB5CD", "#CDBE70", "#B4CDCD", "#CD919E", "#9ACD32", "#CD4F39", "#8B3E2F",
-                "#8B7E66", "#8B668B", "#36648B", "#141414" };
-        for (var cd : newSPo.getConnectiveDomains()) {
-            var color = colors[((int) (Math.random() * colors.length))];
-            var cDPo = connectiveDomainColorDynamicData
-                    .save(new ConnectiveDomainColorDynamicPo(cd.getId(), projectId, color));
-            cDPoMap.put(cd.getId(), cDPo);
-        }
-
-        // 返回
-        var subgraph = new Subgraph(newSPo);
-        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>(), cDPoMap);
+        return asyncForProjectServiceImpl.addSubgraph(projectId, threshold, name);
     };
 
     @Override
@@ -513,20 +486,25 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateVertexDynamic(Long projectId, VertexDynamicVo vo) {
-        if (vo.getX() != null && vo.getY() != null)
-            vertexPositionDynamicData.save(new VertexPositionDynamicPo(vo.getId(), projectId, vo.getX(), vo.getY()));
-        if (vo.getAnotation() != null)
-            vertexDynamicData.save(new VertexDynamicPo(vo.getId(), projectId, vo.getAnotation()));
+        vertexDynamicData.save(new VertexDynamicPo(vo.getId(), projectId, vo.getAnotation()));
     }
 
     @Override
-    public void updateConnectiveDomainAllVertex(Long projectId, Long connectiveDomainId, float relativeX,
+    public void updateVertexPositionDynamic(Long projectId, VertexPositionDynamicVo vo) {
+        var po = vertexPositionDynamicData.findByVertexIdAndSubgraphId(vo.getId(), vo.getSubgraphId());
+        po.setX(vo.getX());
+        po.setY(vo.getY());
+        vertexPositionDynamicData.save(po);
+    }
+
+    @Override
+    public void updateConnectiveDomainAllVertex(Long projectId, Long subgraphId, Long connectiveDomainId, float relativeX,
             float relativeY) {
-        var pVertexPo = vertexPositionDynamicData.findByProjectId(projectId);
-        var cVertexPo = connectiveDomainData.findById(connectiveDomainId).orElse(null).getVertexIds();
+        var pVertexPo = vertexPositionDynamicData.findBySubgraphId(subgraphId);
+        var cVertexIds = new HashSet<>(connectiveDomainData.findById(connectiveDomainId).orElse(null).getVertexIds());
         var vPos = new ArrayList<VertexPositionDynamicPo>();
         for (var vpo : pVertexPo) {
-            if (cVertexPo.contains(vpo.getId())) {
+            if (cVertexIds.contains(vpo.getId())) {
                 vpo.setX(vpo.getX() + relativeX);
                 vpo.setY(vpo.getY() + relativeY);
                 vPos.add(vpo);
@@ -610,12 +588,16 @@ public class ProjectServiceImpl implements ProjectService {
         v.inPath = false;
     }
 
-    private static VertexDynamicVo dPoTodVo(VertexDynamicPo po, VertexPositionDynamicPo posPo) {
-        // 初始一定有Pos
-        var res = new VertexDynamicVo(posPo.getId(), "", posPo.getX(), posPo.getY());
-        if (po != null)
-            res.setAnotation(po.getAnotation());
-        return res;
+    private static VertexDynamicVo dPoTodVo(VertexDynamicPo po) {
+        if (po == null)
+            return null;
+        return new VertexDynamicVo(po.getId(), po.getAnotation());
+    }
+
+    private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
+        if (po == null)
+            return null;
+        return new VertexPositionDynamicVo(po.getVertexId(), po.getSubgraphId(), po.getX(), po.getY());
     }
 
     private static EdgeDynamicVo dPoTodVo(EdgeDynamicPo po) {

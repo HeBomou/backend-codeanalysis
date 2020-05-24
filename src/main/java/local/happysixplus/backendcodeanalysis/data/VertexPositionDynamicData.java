@@ -12,7 +12,9 @@ public interface VertexPositionDynamicData extends JpaRepository<VertexPositionD
 
     Integer countByProjectId(Long projectId);
 
-    List<VertexPositionDynamicPo> findByProjectId(Long projectId);
+    List<VertexPositionDynamicPo> findBySubgraphId(Long subgraphId);
+
+    VertexPositionDynamicPo findByVertexIdAndSubgraphId(Long vertexId, Long subgraphId);
 
     boolean existsByProjectId(Long projectId);
 
