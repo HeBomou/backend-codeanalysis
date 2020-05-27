@@ -3,6 +3,7 @@ package local.happysixplus.backendcodeanalysis.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -20,9 +21,9 @@ import local.happysixplus.backendcodeanalysis.po.GroupNoticePo;
 import local.happysixplus.backendcodeanalysis.po.GroupPo;
 import local.happysixplus.backendcodeanalysis.po.GroupUserRelPo;
 import local.happysixplus.backendcodeanalysis.service.GroupService;
+import local.happysixplus.backendcodeanalysis.vo.GroupMemberVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupNoticeVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupVo;
-import local.happysixplus.backendcodeanalysis.vo.UserVo;
 import lombok.var;
 
 @Service
@@ -116,15 +117,18 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<UserVo> getMembers(Long groupId) {
+    public List<GroupMemberVo> getMembers(Long groupId) {
         var pos = groupUserRelData.findByGroupId(groupId);
         var userIds = new ArrayList<Long>(pos.size());
-        for (var po : pos)
+        var mapList = new HashMap<Long, String>();
+        for (var po : pos) {
             userIds.add(po.getUserId());
+            mapList.put(po.getUserId(), po.getLevel());
+        }
         var userPos = userData.findByIdIn(userIds);
-        var res = new ArrayList<UserVo>();
+        var res = new ArrayList<GroupMemberVo>();
         for (var po : userPos)
-            res.add(new UserVo(po.getId(), po.getUsername(), po.getPwdMd5()));
+            res.add(new GroupMemberVo(po.getId(), po.getUsername(), mapList.get(po.getId())));
         return res;
     }
 

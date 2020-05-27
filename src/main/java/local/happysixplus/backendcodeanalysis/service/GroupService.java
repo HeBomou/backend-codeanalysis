@@ -2,9 +2,9 @@ package local.happysixplus.backendcodeanalysis.service;
 
 import java.util.List;
 
+import local.happysixplus.backendcodeanalysis.vo.GroupMemberVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupNoticeVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupVo;
-import local.happysixplus.backendcodeanalysis.vo.UserVo;
 
 public interface GroupService {
 
@@ -71,7 +71,7 @@ public interface GroupService {
      * @param groupId
      * @return
      */
-    List<UserVo> getMembers(Long groupId);
+    List<GroupMemberVo> getMembers(Long groupId);
 
     /**
      * 添加公告

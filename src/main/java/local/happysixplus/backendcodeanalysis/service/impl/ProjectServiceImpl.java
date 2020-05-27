@@ -498,8 +498,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void updateConnectiveDomainAllVertex(Long projectId, Long subgraphId, Long connectiveDomainId, float relativeX,
-            float relativeY) {
+    public void updateConnectiveDomainAllVertex(Long projectId, Long subgraphId, Long connectiveDomainId,
+            float relativeX, float relativeY) {
         var pVertexPo = vertexPositionDynamicData.findBySubgraphId(subgraphId);
         var cVertexIds = new HashSet<>(connectiveDomainData.findById(connectiveDomainId).orElse(null).getVertexIds());
         var vPos = new ArrayList<VertexPositionDynamicPo>();
@@ -594,11 +594,12 @@ public class ProjectServiceImpl implements ProjectService {
         return new VertexDynamicVo(po.getId(), po.getAnotation());
     }
 
-    private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
-        if (po == null)
-            return null;
-        return new VertexPositionDynamicVo(po.getVertexId(), po.getSubgraphId(), po.getX(), po.getY());
-    }
+    // private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
+    // if (po == null)
+    // return null;
+    // return new VertexPositionDynamicVo(po.getVertexId(), po.getSubgraphId(),
+    // po.getX(), po.getY());
+    // }
 
     private static EdgeDynamicVo dPoTodVo(EdgeDynamicPo po) {
         if (po == null)
