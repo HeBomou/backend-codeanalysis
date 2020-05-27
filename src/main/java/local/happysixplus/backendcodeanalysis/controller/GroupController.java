@@ -3,7 +3,7 @@ package local.happysixplus.backendcodeanalysis.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import local.happysixplus.backendcodeanalysis.vo.GroupVo;
-import local.happysixplus.backendcodeanalysis.vo.UserVo;
+import local.happysixplus.backendcodeanalysis.vo.GroupMemberVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupNoticeVo;
 
 import local.happysixplus.backendcodeanalysis.service.GroupService;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @RestController
 @RequestMapping(value = "/group")
 public class GroupController {
@@ -30,7 +29,7 @@ public class GroupController {
 
     //添加新的小组
     @PostMapping
-    public void postGroup(@RequestBody GroupVo vo) throws Exception{
+    public void postGroup(@RequestBody GroupVo vo) throws Exception {
         service.addGroup(vo);
     }
 
@@ -40,7 +39,7 @@ public class GroupController {
         service.removeGroup(id);
     }
 
-    //更新xiao zu xin xi
+    //更新小组信息
     @PutMapping(value="/{groupId}")
     public void putGroup(@PathVariable Long groupId,@RequestBody GroupVo vo){
         vo.setId(groupId);
@@ -49,7 +48,7 @@ public class GroupController {
 
     //获取某用户小组列表
     @GetMapping(value = "/getgroup/{userId}")
-    public List<GroupVo> getAllGroup(@PathVariable Long userId){
+    public List<GroupVo> getAllGroup(@PathVariable Long userId) {
         return service.getAllGroup(userId);
     }
 
@@ -79,7 +78,7 @@ public class GroupController {
 
     //获取小组成员列表
     @GetMapping(value="/getuser/{groupId}")
-    public List<UserVo> getMembers(@PathVariable Long groupId){
+    public List<GroupMemberVo> getMembers(@PathVariable Long groupId){
         return service.getMembers(groupId);
     }
 
@@ -108,5 +107,4 @@ public class GroupController {
         return service.getNotice(groupId);
     }
 
-    
 }
