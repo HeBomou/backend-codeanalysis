@@ -22,22 +22,26 @@ public class MessageController {
     @Autowired
     MessageService service;
 
+    //添加消息
     @PostMapping
     public void postMessage(@RequestBody MessageVo vo) {
         service.addMessage(vo);
     }
 
+    //删除消息
     @DeleteMapping(value = "/{id}")
     public void deleteMessage(@PathVariable Long id) {
         service.removeMessage(id);
     }
 
+    //更新消息
     @PutMapping(value = "/{id}")
     public void putMessage(@PathVariable Long id, @RequestBody MessageVo vo) {
         vo.setId(id);
         service.updateMessage(vo);
     }
 
+    //获取消息
     @GetMapping
     public List<MessageVo> getMessage(@RequestParam Long senderId, @RequestParam Long receiverId) {
         return service.getMessage(senderId, receiverId);
