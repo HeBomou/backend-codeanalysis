@@ -26,83 +26,84 @@ public class GroupController {
     @Autowired
     GroupService service;
 
+
+    //添加新的小组
     @PostMapping
     public void postGroup(@RequestBody GroupVo vo) throws Exception {
         service.addGroup(vo);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public void deleteGroup(@PathVariable Long id) {
+    //删除小组
+    @DeleteMapping(value="/{id}")
+    public void deleteGroup(@PathVariable Long id){
         service.removeGroup(id);
     }
 
-    @PutMapping(value = "/{groupId}")
-    public void putGroup(@PathVariable Long groupId, @RequestBody GroupVo vo) {
+    //更新小组信息
+    @PutMapping(value="/{groupId}")
+    public void putGroup(@PathVariable Long groupId,@RequestBody GroupVo vo){
         vo.setId(groupId);
         service.updateGroup(vo);
     }
 
+    //获取某用户小组列表
     @GetMapping(value = "/getgroup/{userId}")
     public List<GroupVo> getAllGroup(@PathVariable Long userId) {
         return service.getAllGroup(userId);
     }
 
-    @PostMapping(value = "/{groupId}/add/{userId}")
-    public void postMember(@PathVariable Long groupId, @PathVariable Long userId, @RequestParam String inviteCode) {
+    //添加新的小组成员
+    @PostMapping(value="/{groupId}/add/{userId}")
+    public void postMember(@PathVariable Long groupId, @PathVariable Long userId, @RequestParam String inviteCode){
         service.addMember(groupId, inviteCode, userId);
     }
 
-    @DeleteMapping(value = "/{groupId}/remove/{userId}")
-    public void deleteMember(@PathVariable Long groupId, @PathVariable Long userId) {
+    //删除小组成员
+    @DeleteMapping(value="/{groupId}/remove/{userId}")
+    public void deleteMember(@PathVariable Long groupId,@PathVariable Long userId){
         service.removeMember(groupId, userId);
     }
 
-    /**
-     * 用于更新权限，权限分为leader组长、manager管理员、member普通组员
-     * 
-     * @param groupId
-     * @param userId
-     * @param level
-     */
-    @PutMapping(value = "/{groupId}/authority/{userId}")
-    public void putMember(@PathVariable Long groupId, @PathVariable Long userId, @RequestParam String level) {
+    //修改组员权限
+    @PutMapping(value="/{groupId}/authority/{userId}")
+    public void putMember(@PathVariable Long groupId,@PathVariable Long userId,@RequestParam String level){
         service.updateMember(groupId, userId, level);
     }
 
-    @GetMapping(value = "/{groupId}/authority/{userId}")
-    public String getAuthorityLevel(@PathVariable Long groupId, @PathVariable Long userId) {
+    //获取组员等级，判断是否有权限进行操作
+    @GetMapping(value="/{groupId}/authority/{userId}")
+    public String getAuthorityLevel(@PathVariable Long groupId,@PathVariable Long userId){
         return service.getMemberLevel(groupId, userId);
     }
 
-    /**
-     * 获取组员信息，包括用户id，用户名和用户的组内身份（leader、manager、member）
-     * 
-     * @param groupId
-     * @return
-     */
-    @GetMapping(value = "/getuser/{groupId}")
-    public List<GroupMemberVo> getMembers(@PathVariable Long groupId) {
+    //获取小组成员列表
+    @GetMapping(value="/getuser/{groupId}")
+    public List<GroupMemberVo> getMembers(@PathVariable Long groupId){
         return service.getMembers(groupId);
     }
 
-    @PostMapping(value = "/notice")
-    public void postNotice(@RequestBody GroupNoticeVo vo) {
+    //添加公告
+    @PostMapping(value="/notice")
+    public void postNotice(@RequestBody GroupNoticeVo vo){
         service.addNotice(vo);
     }
 
-    @DeleteMapping(value = "/notice/{id}")
-    public void deleteNotice(@PathVariable Long id) {
+    //删除公告
+    @DeleteMapping(value="/notice/{id}")
+    public void deleteNotice(@PathVariable Long id){
         service.removeNotice(id);
     }
 
-    @PutMapping(value = "/notice/{id}")
-    public void putNotice(@PathVariable Long id, @RequestBody GroupNoticeVo vo) {
+    //修改公告
+    @PutMapping(value="/notice/{id}")
+    public void putNotice(@PathVariable Long id,@RequestBody GroupNoticeVo vo){
         vo.setId(id);
         service.updateNotice(vo);
     }
 
-    @GetMapping(value = "/notice/{groupId}")
-    public List<GroupNoticeVo> getNotice(@PathVariable Long groupId) {
+    //获取小组公告
+    @GetMapping(value="/notice/{groupId}")
+    public List<GroupNoticeVo> getNotice(@PathVariable Long groupId){
         return service.getNotice(groupId);
     }
 
