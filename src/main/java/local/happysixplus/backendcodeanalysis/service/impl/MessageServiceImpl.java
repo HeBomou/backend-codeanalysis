@@ -1,6 +1,7 @@
 package local.happysixplus.backendcodeanalysis.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +10,24 @@ import org.springframework.stereotype.Service;
 import local.happysixplus.backendcodeanalysis.data.MessageData;
 import local.happysixplus.backendcodeanalysis.po.MessagePo;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
+import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
+import local.happysixplus.backendcodeanalysis.vo.UserVo;
 import lombok.var;
 
 @Service
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     MessageData messageData;
 
     @Override
-    public void addMessage(MessageVo vo) {
-        messageData.save(new MessagePo(null, vo.getSenderId(), vo.getReceiverId(), vo.getContent(), vo.getTime(),
-                vo.getIsRead()));
+    public Long addMessage(MessageVo vo) {
+        return messageData.save(new MessagePo(null, vo.getSenderId(), vo.getReceiverId(), vo.getContent(), vo.getTime(),
+                vo.getIsRead())).getId();
     }
 
     @Override
@@ -42,7 +48,23 @@ public class MessageServiceImpl implements MessageService {
         for (var po : pos)
             res.add(new MessageVo(po.getId(), po.getSenderId(), po.getReceiverId(), po.getContent(), po.getTime(),
                     po.getIsRead()));
+        pos = messageData.findBySenderIdAndReceiverId(receiverId, senderId);
+        for (var po : pos)
+            res.add(new MessageVo(po.getId(), po.getSenderId(), po.getReceiverId(), po.getContent(), po.getTime(),
+                    po.getIsRead()));
+        res.sort((a, b) -> a.getTime().compareTo(b.getTime()));
         return res;
     }
 
+    @Override
+    public List<UserVo> getContacts(Long userId) {
+        var pos = messageData.findBySenderId(userId);
+        var idSet = new HashSet<Long>();
+        for (var po : pos)
+            idSet.add(po.getReceiverId());
+        var res = new ArrayList<UserVo>();
+        for (var id : idSet)
+            res.add(userService.getUser(id));
+        return res;
+    }
 }

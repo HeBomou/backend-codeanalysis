@@ -10,4 +10,5 @@ public interface MessageData extends JpaRepository<MessagePo, Long> {
 
     List<MessagePo> findBySenderIdAndReceiverId(Long senderId, Long receiverId);
 
+    List<MessagePo> findBySenderId(Long senderId);
 }

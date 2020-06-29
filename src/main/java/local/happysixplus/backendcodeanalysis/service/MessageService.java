@@ -3,6 +3,7 @@ package local.happysixplus.backendcodeanalysis.service;
 import java.util.List;
 
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
+import local.happysixplus.backendcodeanalysis.vo.UserVo;
 
 public interface MessageService {
 
@@ -11,7 +12,7 @@ public interface MessageService {
      * 
      * @param vo
      */
-    void addMessage(MessageVo vo);
+    Long addMessage(MessageVo vo);
 
     /**
      * 删除私信
@@ -34,4 +35,11 @@ public interface MessageService {
      */
     List<MessageVo> getMessage(Long senderId, Long receiverId);
 
+    /**
+     * 获取联系人列表
+     * 
+     * @param userId
+     * @return
+     */
+    List<UserVo> getContacts(Long userId);
 }
