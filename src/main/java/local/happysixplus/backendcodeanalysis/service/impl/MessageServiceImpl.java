@@ -1,7 +1,6 @@
 package local.happysixplus.backendcodeanalysis.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import local.happysixplus.backendcodeanalysis.po.MessagePo;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
 import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
-import local.happysixplus.backendcodeanalysis.vo.UserVo;
 import lombok.var;
 
 @Service
@@ -56,15 +54,4 @@ public class MessageServiceImpl implements MessageService {
         return res;
     }
 
-    @Override
-    public List<UserVo> getContacts(Long userId) {
-        var pos = messageData.findBySenderId(userId);
-        var idSet = new HashSet<Long>();
-        for (var po : pos)
-            idSet.add(po.getReceiverId());
-        var res = new ArrayList<UserVo>();
-        for (var id : idSet)
-            res.add(userService.getUser(id));
-        return res;
-    }
 }

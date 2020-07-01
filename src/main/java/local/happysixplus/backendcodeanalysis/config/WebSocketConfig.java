@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import local.happysixplus.backendcodeanalysis.entry.ChatEntry;
+import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
 
 @Configuration
@@ -16,7 +17,8 @@ public class WebSocketConfig {
     }
 
     @Autowired
-    public void setMessageService(MessageService messageService) {
+    public void setMessageService(MessageService messageService, ContactService contactService) {
         ChatEntry.messageService = messageService;
+        ChatEntry.contactService = contactService;
     }
 }
