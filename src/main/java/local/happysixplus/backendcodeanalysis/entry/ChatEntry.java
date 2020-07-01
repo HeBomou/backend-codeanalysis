@@ -1,7 +1,6 @@
 package local.happysixplus.backendcodeanalysis.entry;
 
 import java.io.IOException;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
+import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
 import lombok.var;
 
@@ -32,6 +32,8 @@ public class ChatEntry {
     public static MessageService messageService;
 
     public static ContactService contactService;
+
+    public static UserService userService;
 
     private Session session;
     private Long userId = null;
@@ -54,11 +56,11 @@ public class ChatEntry {
     @OnMessage
     public void onMessage(String msg, Session session) {
         System.out.println("msg come: " + msg);
-        if (msg.contains(",")) {
+        if (msg.charAt(0) == 'm') {
             // 发送信息
             if (userId == null || userId.equals(0L))
                 return;
-            String[] strs = msg.split(",", 2);
+            String[] strs = msg.substring(1).split(",", 2);
             Long toUserId = Long.parseLong(strs[0]);
             String m = strs[1];
             String timeStr = sdf.format(new Date());
@@ -66,7 +68,7 @@ public class ChatEntry {
             // 发给自己
             try {
                 session.getBasicRemote()
-                        .sendText(JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
+                        .sendText("m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -81,16 +83,30 @@ public class ChatEntry {
                     try {
                         entry.session.getBasicRemote().sendText(
                                 "m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
-                        if (needAddContact)
-                            entry.session.getBasicRemote().sendText("c" + userId);
+                        if (needAddContact) {
+                            var user = userService.getUser(userId);
+                            entry.session.getBasicRemote().sendText("c" + JSON.toJSONString(user));
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     break;
                 }
-        } else
+        } else if (msg.charAt(0) == 'i')
             // 初始化用户id
-            userId = Long.parseLong(msg);
+            userId = Long.parseLong(msg.substring(1));
+        else if (msg.charAt(0) == 'c') {
+            Long toUserId = Long.parseLong(msg.substring(1));
+            if (!contactService.existContact(userId, toUserId)) {
+                contactService.addContact(userId, toUserId);
+                var toUser = userService.getUser(toUserId);
+                try {
+                    session.getBasicRemote().sendText("c" + JSON.toJSONString(toUser));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @OnError

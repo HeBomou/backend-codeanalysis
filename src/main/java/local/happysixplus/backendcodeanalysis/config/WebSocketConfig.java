@@ -8,6 +8,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 import local.happysixplus.backendcodeanalysis.entry.ChatEntry;
 import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
+import local.happysixplus.backendcodeanalysis.service.UserService;
 
 @Configuration
 public class WebSocketConfig {
@@ -17,8 +18,9 @@ public class WebSocketConfig {
     }
 
     @Autowired
-    public void setMessageService(MessageService messageService, ContactService contactService) {
+    public void setMessageService(MessageService messageService, ContactService contactService, UserService userService) {
         ChatEntry.messageService = messageService;
         ChatEntry.contactService = contactService;
+        ChatEntry.userService = userService;
     }
 }
