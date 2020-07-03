@@ -26,4 +26,5 @@ public class ContactPo {
 
     Long contactUserId;
 
+    Integer isRead;
 }

@@ -15,6 +15,8 @@ public interface ContactData extends JpaRepository<ContactPo, Long> {
 
     List<ContactPo> findByUserId(Long userId);
 
+    ContactPo findByUserIdAndContactUserId(Long userId, Long contactUserId);
+
     Boolean existsByUserIdAndContactUserId(Long userId, Long contactUserId);
 
     @Modifying

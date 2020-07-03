@@ -1,7 +1,7 @@
 package local.happysixplus.backendcodeanalysis.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import local.happysixplus.backendcodeanalysis.data.ContactData;
 import local.happysixplus.backendcodeanalysis.po.ContactPo;
 import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.UserService;
-import local.happysixplus.backendcodeanalysis.vo.UserVo;
+import local.happysixplus.backendcodeanalysis.vo.ContactVo;
 import lombok.var;
 
 @Service
@@ -23,9 +23,28 @@ public class ContactServiceImpl implements ContactService {
     ContactData data;
 
     @Override
-    public List<UserVo> getContactsByUserId(Long userId) {
+    public List<ContactVo> getContactsByUserId(Long userId) {
         var contacts = data.findByUserId(userId);
-        return contacts.stream().map(c -> userService.getUser(c.getContactUserId())).collect(Collectors.toList());
+        var res = new ArrayList<ContactVo>();
+        for (ContactPo c : contacts) {
+            var user = userService.getUser(c.getContactUserId());
+            res.add(new ContactVo(c.getId(), user.getId(), user.getUsername(), c.getIsRead()));
+        }
+        return res;
+    }
+
+    @Override
+    public ContactVo getContact(Long userId, Long contactUserId) {
+        var contact = data.findByUserIdAndContactUserId(userId, contactUserId);
+        var user = userService.getUser(contactUserId);
+        return new ContactVo(contact.getId(), user.getId(), user.getUsername(), contact.getIsRead());
+    }
+
+    @Override
+    public void updateContactRead(Long userId, Long contactUserId, Integer read) {
+        var po = data.findByUserIdAndContactUserId(userId, contactUserId);
+        po.setIsRead(read);
+        data.save(po);
     }
 
     @Override
@@ -34,8 +53,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void addContact(Long userId, Long contactUserId) {
-        var contact = new ContactPo(null, userId, contactUserId);
+    public void addContact(Long userId, Long contactUserId, Integer read) {
+        var contact = new ContactPo(null, userId, contactUserId, read);
         data.save(contact);
     }
 

@@ -21,6 +21,5 @@ public class WebSocketConfig {
     public void setMessageService(MessageService messageService, ContactService contactService, UserService userService) {
         ChatEntry.messageService = messageService;
         ChatEntry.contactService = contactService;
-        ChatEntry.userService = userService;
     }
 }

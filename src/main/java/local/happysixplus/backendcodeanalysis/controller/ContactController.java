@@ -1,7 +1,7 @@
 package local.happysixplus.backendcodeanalysis.controller;
 
 import local.happysixplus.backendcodeanalysis.service.ContactService;
-import local.happysixplus.backendcodeanalysis.vo.UserVo;
+import local.happysixplus.backendcodeanalysis.vo.ContactVo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +20,7 @@ public class ContactController {
 
     // 获取所有联系人
     @GetMapping(value = "/{userId}")
-    public List<UserVo> getContacts(@PathVariable Long userId) {
+    public List<ContactVo> getContacts(@PathVariable Long userId) {
         return service.getContactsByUserId(userId);
     }
 

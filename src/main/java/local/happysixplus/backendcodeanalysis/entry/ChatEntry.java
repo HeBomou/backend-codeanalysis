@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
-import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
 import lombok.var;
 
@@ -32,8 +31,6 @@ public class ChatEntry {
     public static MessageService messageService;
 
     public static ContactService contactService;
-
-    public static UserService userService;
 
     private Session session;
     private Long userId = null;
@@ -66,27 +63,24 @@ public class ChatEntry {
             String timeStr = sdf.format(new Date());
             Long msgId = messageService.addMessage(new MessageVo(0L, userId, toUserId, m, timeStr, 0));
             // 发给自己
-            try {
-                session.getBasicRemote()
-                        .sendText("m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            sendText("m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
             // 发送给目标并尝试为目标添加联系人
             boolean needAddContact = false;
             if (!contactService.existContact(toUserId, userId)) {
-                contactService.addContact(toUserId, userId);
+                contactService.addContact(toUserId, userId, 0);
                 needAddContact = true;
-            }
+            } else
+                contactService.updateContactRead(toUserId, userId, 0);
             for (var entry : webSocketSet)
                 if (entry.userId.equals(toUserId)) {
                     try {
+                        if (needAddContact) {
+                            var contact = contactService.getContact(toUserId, userId);
+                            entry.session.getBasicRemote().sendText("c" + JSON.toJSONString(contact));
+                        }
                         entry.session.getBasicRemote().sendText(
                                 "m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
-                        if (needAddContact) {
-                            var user = userService.getUser(userId);
-                            entry.session.getBasicRemote().sendText("c" + JSON.toJSONString(user));
-                        }
+                        entry.session.getBasicRemote().sendText("r0" + userId);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -98,14 +92,14 @@ public class ChatEntry {
         else if (msg.charAt(0) == 'c') {
             Long toUserId = Long.parseLong(msg.substring(1));
             if (!contactService.existContact(userId, toUserId)) {
-                contactService.addContact(userId, toUserId);
-                var toUser = userService.getUser(toUserId);
-                try {
-                    session.getBasicRemote().sendText("c" + JSON.toJSONString(toUser));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                contactService.addContact(userId, toUserId, 1);
+                var contact = contactService.getContact(userId, toUserId);
+                sendText("c" + JSON.toJSONString(contact));
             }
+        } else if (msg.charAt(0) == 'r') {
+            Long toUserId = Long.parseLong(msg.substring(1));
+            contactService.updateContactRead(userId, toUserId, 1);
+            sendText("r1" + toUserId);
         }
     }
 
@@ -117,5 +111,13 @@ public class ChatEntry {
 
     public static int GetOnlineCount() {
         return onlineCount;
+    }
+
+    private void sendText(String text) {
+        try {
+            session.getBasicRemote().sendText(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
