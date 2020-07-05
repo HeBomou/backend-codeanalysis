@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
+import local.happysixplus.backendcodeanalysis.service.UserService;
 import local.happysixplus.backendcodeanalysis.vo.MessageVo;
 import lombok.var;
 
@@ -31,6 +32,8 @@ public class ChatEntry {
     public static MessageService messageService;
 
     public static ContactService contactService;
+
+    public static UserService userService;
 
     private Session session;
     private Long userId = null;
@@ -57,6 +60,7 @@ public class ChatEntry {
             // 发送信息
             if (userId == null || userId.equals(0L))
                 return;
+            userService.getUser(userId);
             String[] strs = msg.substring(1).split(",", 2);
             Long toUserId = Long.parseLong(strs[0]);
             String m = strs[1];
@@ -86,10 +90,11 @@ public class ChatEntry {
                     }
                     break;
                 }
-        } else if (msg.charAt(0) == 'i')
+        } else if (msg.charAt(0) == 'i') {
             // 初始化用户id
             userId = Long.parseLong(msg.substring(1));
-        else if (msg.charAt(0) == 'c') {
+            userService.getUser(userId);
+        } else if (msg.charAt(0) == 'c') {
             Long toUserId = Long.parseLong(msg.substring(1));
             if (!contactService.existContact(userId, toUserId)) {
                 contactService.addContact(userId, toUserId, 1);
