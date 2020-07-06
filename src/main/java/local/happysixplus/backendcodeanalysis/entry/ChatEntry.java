@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 
 import org.springframework.stereotype.Component;
 
+import local.happysixplus.backendcodeanalysis.exception.MyRuntimeException;
 import local.happysixplus.backendcodeanalysis.service.ContactService;
 import local.happysixplus.backendcodeanalysis.service.MessageService;
 import local.happysixplus.backendcodeanalysis.service.UserService;
@@ -63,6 +64,9 @@ public class ChatEntry {
             userService.getUser(userId);
             String[] strs = msg.substring(1).split(",", 2);
             Long toUserId = Long.parseLong(strs[0]);
+            userService.getUser(toUserId);
+            if (userId.equals(toUserId))
+                throw new MyRuntimeException("不能发送给自己");
             String m = strs[1];
             String timeStr = sdf.format(new Date());
             Long msgId = messageService.addMessage(new MessageVo(0L, userId, toUserId, m, timeStr, 0));
