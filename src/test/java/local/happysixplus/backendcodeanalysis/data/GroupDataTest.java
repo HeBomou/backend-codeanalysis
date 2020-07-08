@@ -67,8 +67,8 @@ class GroupDataTest {
         groupPo = data.save(groupPo);
         GroupPo groupPo1 = data.save(new GroupPo(12345L, 1L,"SKT","otto"));
         GroupPo groupPo2 = data.save(new GroupPo(12346L, 2L, "RNG","Xiaohu"));
-        ArrayList<Long> ids=new ArrayList<>();
-        ids.add(12345L);ids.add(12346L);
+        List<Long> ids=new ArrayList<>();
+        ids.add(groupPo1.getId());ids.add(groupPo2.getId());
         List<GroupPo> list = data.findByIdIn(ids);
         list.sort((a, b) -> (int) (a.getId() - b.getId()));
         assertEquals(list.get(0).getId(), groupPo1.getId());
