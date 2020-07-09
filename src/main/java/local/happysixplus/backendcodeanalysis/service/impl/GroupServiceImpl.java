@@ -91,7 +91,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void addMember(Long groupId, String inviteCode, Long userId) {
-
+        if (groupUserRelData.findByGroupIdAndUserId(groupId, userId) != null) {
+            return;
+        }
         var po = groupData.findById(groupId).orElse(null);
         if (!inviteCode.equals(po.getInviteCode()))
             throw new MyRuntimeException("小组id或邀请码错误");
