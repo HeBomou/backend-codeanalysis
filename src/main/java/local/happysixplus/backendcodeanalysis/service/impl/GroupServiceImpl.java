@@ -133,9 +133,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void addNotice(GroupNoticeVo vo) {
+    public void addNotice(GroupNoticeVo vo) { 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        var po = new GroupNoticePo(null, vo.getGroupId(), vo.getTitle(), vo.getTime(), df.format(new Date()));
+        var po = new GroupNoticePo(null, vo.getGroupId(), vo.getTitle(), vo.getContent(), df.format(new Date()));
         groupNoticeData.save(po);
     }
 
