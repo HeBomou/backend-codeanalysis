@@ -91,9 +91,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void addMember(Long groupId, String inviteCode, Long userId) {
+
         var po = groupData.findById(groupId).orElse(null);
         if (!inviteCode.equals(po.getInviteCode()))
-            throw new MyRuntimeException("邀请码错误");
+            throw new MyRuntimeException("小组id或邀请码错误");
         groupUserRelData.save(new GroupUserRelPo(null, groupId, userId, "member"));
     }
 
@@ -133,7 +134,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void addNotice(GroupNoticeVo vo) { 
+    public void addNotice(GroupNoticeVo vo) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         var po = new GroupNoticePo(null, vo.getGroupId(), vo.getTitle(), vo.getContent(), df.format(new Date()));
         groupNoticeData.save(po);
