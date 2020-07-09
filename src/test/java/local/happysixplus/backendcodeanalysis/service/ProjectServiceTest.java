@@ -60,7 +60,7 @@ import local.happysixplus.backendcodeanalysis.vo.VertexAllVo;
 import local.happysixplus.backendcodeanalysis.vo.VertexDynamicVo;
 import lombok.var;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ProjectServiceTest {
     @MockBean
     VertexData vertexData;
