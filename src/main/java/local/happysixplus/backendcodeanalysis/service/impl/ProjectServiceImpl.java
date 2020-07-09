@@ -428,8 +428,10 @@ public class ProjectServiceImpl implements ProjectService {
                 .collect(Collectors.toMap(v -> v.getId(), v -> v));
         var sVos = new ArrayList<SubgraphAllVo>(sPos.size());
         // 获取子图vo
-        for (var sPo : sPos)
-            sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId())), cDPoMap, cCDPoMap));
+        for (var sPo : sPos) {
+            var vPPoInSs = vertexPositionDynamicData.findBySubgraphId(sPo.getId());
+            sVos.add(new Subgraph(sPo).getAllVo(dPoTodVo(sDPoMap.get(sPo.getId()), vPPoInSs), cDPoMap, cCDPoMap));
+        }
         // 返回
         return project.getAllVo(vDPoMap, eDPoMap, sVos, dVo);
     }
@@ -616,10 +618,15 @@ public class ProjectServiceImpl implements ProjectService {
         return res;
     }
 
-    private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po) {
+    private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
+        return new VertexPositionDynamicVo(po.getId(), po.getSubgraphId(), po.getX(), po.getY());
+    }
+
+    private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po, List<VertexPositionDynamicPo> vPos) {
         if (po == null)
             return null;
-        return new SubgraphDynamicVo(po.getId(), po.getName());
+        return new SubgraphDynamicVo(po.getId(), po.getName(),
+                vPos.stream().map(p -> dPoTodVo(p)).collect(Collectors.toList()));
     }
 
     private static ProjectDynamicVo dPoTodVo(ProjectDynamicPo po) {

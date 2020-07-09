@@ -41,6 +41,7 @@ import local.happysixplus.backendcodeanalysis.po.VertexPo;
 import local.happysixplus.backendcodeanalysis.po.VertexPositionDynamicPo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphAllVo;
 import local.happysixplus.backendcodeanalysis.vo.SubgraphDynamicVo;
+import local.happysixplus.backendcodeanalysis.vo.VertexPositionDynamicVo;
 import lombok.var;
 
 import local.happysixplus.backendcodeanalysis.service.impl.ProjectServiceImpl.Vertex;
@@ -253,7 +254,8 @@ public class AsyncForProjectServiceImpl {
 
         // 返回
         var subgraph = new Subgraph(newSPo);
-        return subgraph.getAllVo(dPoTodVo(sDPo), new HashMap<>(), cDPoMap);
+        var pPPoInSs = vertexPositionDynamicData.findBySubgraphId(newSPo.getId());
+        return subgraph.getAllVo(dPoTodVo(sDPo, pPPoInSs), new HashMap<>(), cDPoMap);
     }
 
     public SubgraphAllVo addSubgraph(Long projectId, Double threshold, String name) {
@@ -383,10 +385,15 @@ public class AsyncForProjectServiceImpl {
         return new Project(projPo, vertexPos, edgePos);
     }
 
-    private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po) {
+    private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
+        return new VertexPositionDynamicVo(po.getId(), po.getSubgraphId(), po.getX(), po.getY());
+    }
+
+    private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po, List<VertexPositionDynamicPo> vPos) {
         if (po == null)
             return null;
-        return new SubgraphDynamicVo(po.getId(), po.getName());
+        return new SubgraphDynamicVo(po.getId(), po.getName(),
+                vPos.stream().map(p -> dPoTodVo(p)).collect(Collectors.toList()));
     }
 
 }

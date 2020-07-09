@@ -1,5 +1,7 @@
 package local.happysixplus.backendcodeanalysis.vo;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +18,5 @@ public class SubgraphDynamicVo {
 
     String name = "";
 
+    List<VertexPositionDynamicVo> vertices;
 }

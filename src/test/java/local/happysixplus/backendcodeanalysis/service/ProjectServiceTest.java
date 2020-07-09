@@ -373,7 +373,7 @@ public class ProjectServiceTest {
         var expE1 = new EdgeAllVo(3L, 3L, 4L, 0.3d, new EdgeDynamicVo(3L, "abian 1"));
         var expC1 = new ConnectiveDomainAllVo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L),
                 new ConnectiveDomainDynamicVo(2L, "acd 1", "#CDBE70"));
-        var expS1 = new SubgraphAllVo(4L, 0d, Arrays.asList(expC1), new SubgraphDynamicVo(4L, "Default subgraph"));
+        var expS1 = new SubgraphAllVo(4L, 0d, Arrays.asList(expC1), new SubgraphDynamicVo(4L, "Default subgraph", null)); // TODO:
         var expP = new ProjectAllVo(2L, Arrays.asList(expV1, expV2), expPNode5, Arrays.asList(expE1),
                 Arrays.asList(expS1), new ProjectDynamicVo(2L, "projC"));
         // 验证
@@ -525,7 +525,7 @@ public class ProjectServiceTest {
         var connectiveDomainVo2 = new ConnectiveDomainAllVo(2L, Arrays.asList(5L, 4L), Arrays.asList(5L),
                 new ConnectiveDomainDynamicVo(2L, "", null));
         var connectiveDomainsVo = Arrays.asList(connectiveDomainVo1, connectiveDomainVo2);
-        var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new SubgraphDynamicVo(17L, "subgraphdd"));
+        var svo = new SubgraphAllVo(17L, 0.555d, connectiveDomainsVo, new SubgraphDynamicVo(17L, "subgraphdd", null)); // TODO:
         assertEquals(getHashCodeForSubgraphAllVo(svo), getHashCodeForSubgraphAllVo(res));
 
     }
@@ -539,7 +539,7 @@ public class ProjectServiceTest {
 
     @Test
     public void testUpdateSubgraphDynamic1() {
-        service.updateSubGraphDynamic(2L, new SubgraphDynamicVo(1L, "newName"));
+        service.updateSubGraphDynamic(2L, new SubgraphDynamicVo(1L, "newName", null)); // TODO:
         Mockito.verify(subgraphDynamicData).save(new SubgraphDynamicPo(1L, 2L, "newName"));
     }
 
