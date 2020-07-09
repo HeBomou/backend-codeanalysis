@@ -65,9 +65,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void removeGroup(Long id) {
         groupData.deleteById(id);
-        groupNoticeData.deleteById(id);
-        groupUserRelData.deleteById(id);
-        groupTaskData.deleteById(id);
+        groupNoticeData.deleteByGroupId(id);
+        groupUserRelData.deleteByGroupId(id);
+        groupTaskData.deleteByGroupId(id);
         taskUserRelData.deleteByGroupId(id);
     }
 
