@@ -13,6 +13,8 @@ public interface TaskUserRelData extends JpaRepository<TaskUserRelPo, Long> {
 
     List<TaskUserRelPo> findByGroupIdAndUserId(Long groupId, Long userId);
 
+    List<TaskUserRelPo> findByTaskId(Long taskId);
+
     @Modifying
     @Transactional
     void deleteByGroupId(Long groupId);
@@ -20,6 +22,10 @@ public interface TaskUserRelData extends JpaRepository<TaskUserRelPo, Long> {
     @Modifying
     @Transactional
     void deleteByUserIdAndGroupId(Long userId, Long groupId);
+
+    @Modifying
+    @Transactional
+    void deleteByTaskIdAndGroupId(Long taskId, Long groupId);
 
     @Modifying
     @Transactional

@@ -30,6 +30,23 @@ public interface TaskService {
     void assignTask(Long taskId, Long userId, Long groupId);
 
     /**
+     * 获取某个任务的全部执行者
+     * 
+     * @param taskId
+     * @return
+     */
+    List<Long> getAllExecutor(Long taskId);
+
+    /**
+     * 更改某个任务执行者
+     * 
+     * @param taskId
+     * @param groupId
+     * @param userIds
+     */
+    void updateExecutor(Long taskId, Long groupId, List<Long> userIds);
+
+    /**
      * 获取小组任务列表
      * 
      * @param groupId
