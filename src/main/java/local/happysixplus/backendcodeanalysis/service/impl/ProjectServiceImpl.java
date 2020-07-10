@@ -596,13 +596,6 @@ public class ProjectServiceImpl implements ProjectService {
         return new VertexDynamicVo(po.getId(), po.getAnotation());
     }
 
-    // private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
-    // if (po == null)
-    // return null;
-    // return new VertexPositionDynamicVo(po.getVertexId(), po.getSubgraphId(),
-    // po.getX(), po.getY());
-    // }
-
     private static EdgeDynamicVo dPoTodVo(EdgeDynamicPo po) {
         if (po == null)
             return null;
@@ -619,7 +612,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
-        return new VertexPositionDynamicVo(po.getId(), po.getSubgraphId(), po.getX(), po.getY());
+        return new VertexPositionDynamicVo(po.getVertexId(), po.getSubgraphId(), po.getX(), po.getY());
     }
 
     private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po, List<VertexPositionDynamicPo> vPos) {

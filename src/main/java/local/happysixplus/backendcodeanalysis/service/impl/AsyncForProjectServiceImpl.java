@@ -386,7 +386,7 @@ public class AsyncForProjectServiceImpl {
     }
 
     private static VertexPositionDynamicVo dPoTodVo(VertexPositionDynamicPo po) {
-        return new VertexPositionDynamicVo(po.getId(), po.getSubgraphId(), po.getX(), po.getY());
+        return new VertexPositionDynamicVo(po.getVertexId(), po.getSubgraphId(), po.getX(), po.getY());
     }
 
     private static SubgraphDynamicVo dPoTodVo(SubgraphDynamicPo po, List<VertexPositionDynamicPo> vPos) {
