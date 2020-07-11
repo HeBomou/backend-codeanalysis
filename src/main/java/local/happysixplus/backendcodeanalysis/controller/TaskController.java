@@ -25,7 +25,7 @@ public class TaskController {
     // 添加任务
     @PostMapping
     public void postTask(@RequestBody GroupTaskVo vo) {
-        service.updateTask(vo);
+        service.addTask(vo);
     }
 
     // 删除任务

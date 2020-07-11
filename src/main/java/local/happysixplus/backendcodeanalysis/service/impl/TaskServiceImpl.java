@@ -71,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
         for (var po : pos)
             res.add(new GroupTaskVo(po.getId(), po.getGroupId(), po.getName(), po.getInfo(), po.getDeadline(),
                     po.getIsFinished()));
-        return res;
+        return res; 
     }
 
     @Override
