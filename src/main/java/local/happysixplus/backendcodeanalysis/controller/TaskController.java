@@ -47,7 +47,7 @@ public class TaskController {
     }
 
     // 获取任务的所有执行者
-    @GetMapping(value = "/{taskId}")
+    @GetMapping(value = "/executor/{taskId}")
     public List<Long> getAllExecutor(@PathVariable Long taskId) {
         return service.getAllExecutor(taskId);
     }
