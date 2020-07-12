@@ -53,7 +53,7 @@ public class TaskController {
     }
 
     // 更新任务的执行者
-    @GetMapping(value = "/{groupId}/{taskId}")
+    @PostMapping(value = "/{groupId}/{taskId}")
     public void updateExecutor(@PathVariable Long groupId, @PathVariable Long taskId, @RequestBody List<Long> userIds) {
         service.updateExecutor(taskId, groupId, userIds);
     }
