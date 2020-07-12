@@ -65,7 +65,7 @@ public class TaskController {
     }
 
     // 获取小组内某组员任务
-    @GetMapping(value = "/{groupId}/{userId}")
+    @GetMapping(value = "/{groupId}/user/{userId}")
     public List<GroupTaskVo> getTask(@PathVariable Long groupId, @PathVariable Long userId) {
         return service.getTask(groupId, userId);
     }
