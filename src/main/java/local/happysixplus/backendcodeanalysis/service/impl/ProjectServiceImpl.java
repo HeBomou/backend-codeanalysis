@@ -348,7 +348,7 @@ public class ProjectServiceImpl implements ProjectService {
         po = projectData.save(po);
         var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）", groupId);
         dPo = projectDynamicData.save(dPo);
-        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1, -1l);
+        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1, groupId);
         sAPo = projectStaticAttributeData.save(sAPo);
         asyncForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId, groupId);
         return new ProjectAllVo(po.getId(), null, null, null, null,
