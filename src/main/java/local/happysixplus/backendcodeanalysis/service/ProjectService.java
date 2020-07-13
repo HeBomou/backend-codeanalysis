@@ -25,6 +25,11 @@ public interface ProjectService {
     ProjectAllVo addProject(String projectName, String url, long userId, long groupId);
 
     /**
+     * 获取一个小组的全部项目名称和id
+     */
+    List<ProjectDynamicVo> getGroupProject(long groupId);
+
+    /**
      * 移除项目
      */
     void removeProject(Long id);
@@ -106,7 +111,8 @@ public interface ProjectService {
     /**
      * 更新一个连通域内所有点的位置
      */
-    void updateConnectiveDomainAllVertex(Long projectId, Long subgraphId, Long connectiveDomainId, float relativeX, float relativeY);
+    void updateConnectiveDomainAllVertex(Long projectId, Long subgraphId, Long connectiveDomainId, float relativeX,
+            float relativeY);
 
     /**
      * 获取初始图中从start出发到end的所有路
