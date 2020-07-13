@@ -24,4 +24,10 @@ public class ContactController {
         return service.getContactsByUserId(userId);
     }
 
+    @GetMapping(value="/{userId}/new")
+    public Boolean getContactNew(@PathVariable Long userId) {
+        return service.getContactNew(userId);
+    }
+    
+
 }

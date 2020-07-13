@@ -8,6 +8,8 @@ public interface ContactService {
 
     List<ContactVo> getContactsByUserId(Long userId);
 
+    boolean getContactNew(Long userId);
+
     ContactVo getContact(Long userId, Long contactUserId);
 
     void updateContactRead(Long userId, Long contactUserId, Integer read);
