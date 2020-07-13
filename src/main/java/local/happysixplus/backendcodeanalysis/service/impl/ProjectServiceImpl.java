@@ -344,11 +344,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectAllVo addProject(String projectName, String url, long userId, long groupId) {
-        var po = new ProjectPo(null, userId, "", -1l);
+        var po = new ProjectPo(null, userId, "", groupId);
         po = projectData.save(po);
-        var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）", -1l);
+        var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）", groupId);
         dPo = projectDynamicData.save(dPo);
-        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1, -1l);
+        var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1, groupId);
         sAPo = projectStaticAttributeData.save(sAPo);
         asyncForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId, groupId);
         return new ProjectAllVo(po.getId(), null, null, null, null,
