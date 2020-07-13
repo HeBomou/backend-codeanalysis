@@ -53,7 +53,7 @@ public class TaskController {
     }
 
     // 更新任务的执行者
-    @GetMapping(value = "/{groupId}/{taskId}")
+    @PostMapping(value = "/{groupId}/{taskId}")
     public void updateExecutor(@PathVariable Long groupId, @PathVariable Long taskId, @RequestBody List<Long> userIds) {
         service.updateExecutor(taskId, groupId, userIds);
     }
@@ -65,7 +65,7 @@ public class TaskController {
     }
 
     // 获取小组内某组员任务
-    @GetMapping(value = "/{groupId}/{userId}")
+    @GetMapping(value = "/{groupId}/user/{userId}")
     public List<GroupTaskVo> getTask(@PathVariable Long groupId, @PathVariable Long userId) {
         return service.getTask(groupId, userId);
     }
