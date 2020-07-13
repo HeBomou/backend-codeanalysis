@@ -25,9 +25,10 @@ public class ProjectController {
      */
     @PostMapping
     public ProjectAllVo postProject(@RequestParam String projectName, @RequestParam String url,
-            @RequestParam long userId) {
-        System.out.println("Post Project: " + projectName + ", URL: " + url + ", UserId: " + userId);
-        return service.addProject(projectName, url, userId);
+            @RequestParam long userId, @RequestParam long groupId) {
+        System.out.println(
+                "Post Project: " + projectName + ", URL: " + url + ", UserId: " + userId + ", groupId: " + groupId);
+        return service.addProject(projectName, url, userId, groupId);
     }
 
     /**
@@ -111,8 +112,8 @@ public class ProjectController {
      * 更新连通域内所有顶点的位置信息
      */
     @PutMapping(value = "/{projectId}/subgraph/{subgraphId}/connectiveDomain/{connectiveDomainId}/position")
-    public void putConnectiveDomainPosition(@PathVariable Long projectId, @PathVariable Long subgraphId, @PathVariable Long connectiveDomainId,
-            @RequestParam float relativeX, @RequestParam float relativeY) {
+    public void putConnectiveDomainPosition(@PathVariable Long projectId, @PathVariable Long subgraphId,
+            @PathVariable Long connectiveDomainId, @RequestParam float relativeX, @RequestParam float relativeY) {
         service.updateConnectiveDomainAllVertex(projectId, subgraphId, connectiveDomainId, relativeX, relativeY);
     }
 
