@@ -32,6 +32,14 @@ public class ProjectController {
     }
 
     /**
+     * 获取一个小组的全部项目名称和id
+     */
+    @GetMapping(value = "/group/{groupId}")
+    public List<ProjectDynamicVo> getGroupProject(@PathVariable long groupId) {
+        return service.getGroupProject(groupId);
+    }
+
+    /**
      * 删除一个项目
      */
     @DeleteMapping(value = "/{id}")

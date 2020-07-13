@@ -25,6 +25,11 @@ public interface ProjectService {
     ProjectAllVo addProject(String projectName, String url, long userId, long groupId);
 
     /**
+     * 获取一个小组的全部项目名称和id
+     */
+    List<ProjectDynamicVo> getGroupProject(long groupId);
+
+    /**
      * 移除项目
      */
     void removeProject(Long id);

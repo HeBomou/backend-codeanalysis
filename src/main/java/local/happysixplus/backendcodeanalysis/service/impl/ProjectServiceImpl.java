@@ -356,6 +356,15 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     @Override
+    public List<ProjectDynamicVo> getGroupProject(long groupId) {
+        var pos = projectDynamicData.findByGroupId(groupId);
+        var vos = new ArrayList<ProjectDynamicVo>(pos.size());
+        for (var po : pos)
+            vos.add(new ProjectDynamicVo(po.getId(), po.getProjectName()));
+        return vos;
+    }
+
+    @Override
     public void removeProject(Long id) {
         boolean err = false;
         if (projectData.existsById(id))
