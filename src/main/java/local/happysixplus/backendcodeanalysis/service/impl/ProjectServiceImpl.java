@@ -375,7 +375,8 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProjectDynamic(Long projectId, ProjectDynamicVo vo) {
         vo.setId(projectId);
         var userId = projectDynamicData.findById(projectId).orElse(null).getUserId();
-        projectDynamicData.save(new ProjectDynamicPo(vo.getId(), userId, vo.getProjectName(), -1l));
+        var groupId = projectDynamicData.findById(projectId).orElse(null).getGroupId();
+        projectDynamicData.save(new ProjectDynamicPo(vo.getId(), userId, vo.getProjectName(), groupId));
     };
 
     @Override
