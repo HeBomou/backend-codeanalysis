@@ -22,7 +22,7 @@ public interface ProjectService {
      * @param url 项目代码的git仓库url
      * @return 返回新项目的id
      */
-    ProjectAllVo addProject(String projectName, String url, long userId);
+    ProjectAllVo addProject(String projectName, String url, long userId, long groupId);
 
     /**
      * 移除项目

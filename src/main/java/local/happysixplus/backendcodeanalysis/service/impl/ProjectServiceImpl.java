@@ -343,14 +343,14 @@ public class ProjectServiceImpl implements ProjectService {
     AsyncForProjectServiceImpl asyncForProjectServiceImpl;
 
     @Override
-    public ProjectAllVo addProject(String projectName, String url, long userId) {
+    public ProjectAllVo addProject(String projectName, String url, long userId, long groupId) {
         var po = new ProjectPo(null, userId, "", -1l);
         po = projectData.save(po);
         var dPo = new ProjectDynamicPo(po.getId(), userId, projectName + "（正在解析）", -1l);
         dPo = projectDynamicData.save(dPo);
         var sAPo = new ProjectStaticAttributePo(po.getId(), userId, -1, -1, -1, -1l);
         sAPo = projectStaticAttributeData.save(sAPo);
-        asyncForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId);
+        asyncForProjectServiceImpl.asyncAddProject(po.getId(), projectName, url, userId, groupId);
         return new ProjectAllVo(po.getId(), null, null, null, null,
                 new ProjectDynamicVo(po.getId(), projectName + "（正在解析）"));
     };
