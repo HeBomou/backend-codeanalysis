@@ -272,7 +272,7 @@ public class AsyncForProjectServiceImpl {
     }
 
     @Async("ProjectExecutor")
-    public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId) {
+    public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId, long groupId) {
         try {
             var projectInfoFuture = asyncCallGraphForProjectServiceImpl.asyncGitPull(url);
             var projectInfo = projectInfoFuture.get(300, TimeUnit.SECONDS);
@@ -300,7 +300,7 @@ public class AsyncForProjectServiceImpl {
             // projectDynamicData.save(new ProjectDynamicPo(projectId, userId, projectName +
             // "（数据库异常）"));
             // 生成并存入项目静态信息
-            var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId);
+            var project = initAndSaveProject(projectId, caller, callee, sourceCode, userId, groupId);
             // 可能projectId已经因为被用户删除而失效
             projectId = project.id;
             sourceCode = null;
@@ -324,7 +324,7 @@ public class AsyncForProjectServiceImpl {
     }
 
     Project initAndSaveProject(Long projectId, List<String> caller, List<String> callee, Map<String, String> sourceCode,
-            Long userId) {
+            Long userId, Long groupId) {
         List<EdgePo> edgePos = new ArrayList<EdgePo>();
         List<VertexPo> vertexPos = new ArrayList<VertexPo>();
         Map<String, VertexPo> vertexMap = new HashMap<String, VertexPo>();
@@ -332,7 +332,7 @@ public class AsyncForProjectServiceImpl {
         Map<String, Integer> indegree = new HashMap<String, Integer>();
 
         // 存入项目
-        var projPo = projectData.save(new ProjectPo(projectId, userId, "", -1l));
+        var projPo = projectData.save(new ProjectPo(projectId, userId, "", groupId));
         projectId = projPo.getId();
 
         // 去除重复点

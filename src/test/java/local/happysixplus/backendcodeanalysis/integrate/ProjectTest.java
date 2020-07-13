@@ -44,9 +44,8 @@ public class ProjectTest {
 
 	@Test // 新建项目，根据ID获取信息
 	public void Test1() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "2"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "2").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
@@ -72,9 +71,8 @@ public class ProjectTest {
 
 	@Test // 新建项目，根据UserID获取项目概要（动态信息）
 	public void Test2() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux2")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux2")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "3").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		MvcResult resGet;
 		for (int i = 0; i < 5; i++) {
@@ -99,9 +97,8 @@ public class ProjectTest {
 
 	@Test // 新建项目，更新
 	public void Test3() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux3")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux3")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
@@ -128,9 +125,8 @@ public class ProjectTest {
 
 	@Test // 新建项目 删除
 	public void Test4() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux4")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "5"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Linux4")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "5").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
@@ -147,22 +143,21 @@ public class ProjectTest {
 		}
 		mockMvc.perform(MockMvcRequestBuilders.delete("/project/{id}", projectId))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		boolean check=false;
-		try{
+		boolean check = false;
+		try {
 			mockMvc.perform(MockMvcRequestBuilders.get("/project/{id}", projectId))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-			check=true;
-		}catch(Throwable T){
+					.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+			check = true;
+		} catch (Throwable T) {
 			return;
 		}
-		assertEquals(check,true);
+		assertEquals(check, true);
 	}
 
 	@Test // 子图相关
 	public void Test5() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test5")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "55"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test5")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "55").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var allVo = JSONObject.parseObject(resAdd.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = allVo.getId();
@@ -227,9 +222,8 @@ public class ProjectTest {
 
 	@Test // 测试获取函数
 	public void Test6() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test6")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "66"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test6")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "66").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
@@ -260,9 +254,8 @@ public class ProjectTest {
 	@Test // 测试获取路径
 	public void Test7() throws Exception {
 
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "77").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
@@ -308,7 +301,7 @@ public class ProjectTest {
 	public void Test8() throws Exception {
 		// var res =
 		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "iTrust")
-				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324"))
+				.param("url", "https://gitee.com/forsakenspirit/Demo").param("userId", "6324").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 	}
 
@@ -316,8 +309,8 @@ public class ProjectTest {
 	public void Test9() throws Exception {
 		// var res =
 		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestEightDemo")
-				.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396"))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+				.param("url", "https://gitee.com/HeBomou/funnylayer.git").param("userId", "4396")
+				.param("groupId", "-1")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		// var vo = JSONObject.parseObject(res.getResponse().getContentAsString(),
 		// ProjectAllVo.class);
 		// assertNotEquals(vo.getId(), null);
@@ -331,7 +324,7 @@ public class ProjectTest {
 	public void Test10() throws Exception {
 		// var res =
 		mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestT Demo")
-				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396"))
+				.param("url", "https://gitee.com/HeBomou/itrust.git").param("userId", "4396").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		// var vo = JSONObject.parseObject(res.getResponse().getContentAsString(),
 		// ProjectAllVo.class);
@@ -344,9 +337,8 @@ public class ProjectTest {
 
 	@Test // 测试项目简介
 	public void Test11() throws Exception {
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "99"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "TestSeven")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "99").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
@@ -383,9 +375,8 @@ public class ProjectTest {
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var list1 = JSONObject.parseArray(result1.getResponse().getContentAsString());
 
-		MvcResult resAdd = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
-						.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396"))
+		MvcResult resAdd = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "LastOrder")
+				.param("url", "https://gitee.com/forsakenspirit/Linux").param("userId", "4396").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var v = resAdd.getResponse().getContentAsString();
 		var vo = (ProjectAllVo) JSONObject.parseObject(v, ProjectAllVo.class);
@@ -413,9 +404,8 @@ public class ProjectTest {
 
 	@Test // 测试依赖图有环
 	public void Test13() throws Exception {
-		var res = mockMvc
-				.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test Simple")
-						.param("url", "https://gitee.com/HeBomou/simple.git").param("userId", "4396"))
+		var res = mockMvc.perform(MockMvcRequestBuilders.post("/project").param("projectName", "Test Simple")
+				.param("url", "https://gitee.com/HeBomou/simple.git").param("userId", "4396").param("groupId", "-1"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 		var vo1 = JSONObject.parseObject(res.getResponse().getContentAsString(), ProjectAllVo.class);
 		long projectId = vo1.getId();
