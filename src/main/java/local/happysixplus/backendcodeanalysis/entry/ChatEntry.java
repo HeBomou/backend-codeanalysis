@@ -100,7 +100,7 @@ public class ChatEntry {
             userService.getUser(userId);
         } else if (msg.charAt(0) == 'c') {
             Long toUserId = Long.parseLong(msg.substring(1));
-            if (!contactService.existContact(userId, toUserId)) {
+            if (!contactService.existContact(userId, toUserId) && !userId.equals(toUserId)) {
                 contactService.addContact(userId, toUserId, 1);
                 var contact = contactService.getContact(userId, toUserId);
                 sendText("c" + JSON.toJSONString(contact));

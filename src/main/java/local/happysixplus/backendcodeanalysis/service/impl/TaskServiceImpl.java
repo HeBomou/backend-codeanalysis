@@ -47,13 +47,31 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<Long> getAllExecutor(Long taskId) {
+        var pos = taskUserRelData.findByTaskId(taskId);
+        List<Long> res = new ArrayList<Long>(pos.size());
+        for (var po : pos) {
+            res.add(po.getUserId());
+        }
+        return res;
+    }
+
+    @Override
+    public void updateExecutor(Long taskId, Long groupId, List<Long> userIds) {
+        taskUserRelData.deleteByTaskIdAndGroupId(taskId, groupId);
+        for (int i = 0; i < userIds.size(); i++) {
+            taskUserRelData.save(new TaskUserRelPo(null, taskId, userIds.get(i), groupId));
+        }
+    }
+
+    @Override
     public List<GroupTaskVo> getAllTask(Long groupId) {
         var pos = taskData.findAllByGroupId(groupId);
         var res = new ArrayList<GroupTaskVo>(pos.size());
         for (var po : pos)
             res.add(new GroupTaskVo(po.getId(), po.getGroupId(), po.getName(), po.getInfo(), po.getDeadline(),
                     po.getIsFinished()));
-        return res;
+        return res; 
     }
 
     @Override
