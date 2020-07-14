@@ -19,13 +19,6 @@ public interface MessageService {
     void removeMessage(Long id);
 
     /**
-     * 修改私信（已读/未读）
-     * 
-     * @param vo
-     */
-    void updateMessage(MessageVo vo);
-
-    /**
      * 获取私信列表
      * 
      * @param senderId

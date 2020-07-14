@@ -34,12 +34,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void updateMessage(MessageVo vo) {
-        messageData.save(new MessagePo(vo.getId(), vo.getSenderId(), vo.getReceiverId(), vo.getContent(), vo.getTime(),
-                vo.getIsRead()));
-    }
-
-    @Override
     public List<MessageVo> getMessage(Long senderId, Long receiverId) {
         var pos = messageData.findBySenderIdAndReceiverId(senderId, receiverId);
         var res = new ArrayList<MessageVo>(pos.size());

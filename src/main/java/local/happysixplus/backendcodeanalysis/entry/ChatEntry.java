@@ -28,7 +28,7 @@ import lombok.var;
 public class ChatEntry {
     private static int onlineCount = 0;
     private static CopyOnWriteArraySet<ChatEntry> webSocketSet = new CopyOnWriteArraySet<>();
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static MessageService messageService;
 
@@ -69,9 +69,9 @@ public class ChatEntry {
                 throw new MyRuntimeException("不能发送给自己");
             String m = strs[1];
             String timeStr = sdf.format(new Date());
-            Long msgId = messageService.addMessage(new MessageVo(0L, userId, toUserId, m, timeStr, 0));
+            Long msgId = messageService.addMessage(new MessageVo(0L, userId, toUserId, m, timeStr));
             // 发给自己
-            sendText("m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
+            sendText("m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr)));
             // 发送给目标并尝试为目标添加联系人
             boolean needAddContact = false;
             if (!contactService.existContact(toUserId, userId)) {
@@ -87,7 +87,7 @@ public class ChatEntry {
                             entry.session.getBasicRemote().sendText("c" + JSON.toJSONString(contact));
                         }
                         entry.session.getBasicRemote().sendText(
-                                "m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr, 0)));
+                                "m" + JSON.toJSONString(new MessageVo(msgId, userId, toUserId, m, timeStr)));
                         entry.session.getBasicRemote().sendText("r0" + userId);
                     } catch (IOException e) {
                         e.printStackTrace();

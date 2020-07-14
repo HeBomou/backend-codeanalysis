@@ -19,6 +19,4 @@ public class MessageVo {
 
     String time;
 
-    int isRead;
-
 }
