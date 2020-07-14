@@ -39,7 +39,7 @@ public interface ProjectService {
      * 
      * @param userId 添加用户id的筛选条件
      */
-    List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId);
+    List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId, Long groupId);
 
     /**
      * 返回项目的点数边数等概要信息

@@ -8,4 +8,5 @@ import local.happysixplus.backendcodeanalysis.po.ProjectStaticAttributePo;
 
 public interface ProjectStaticAttributeData extends JpaRepository<ProjectStaticAttributePo, Long> {
     List<ProjectStaticAttributePo> findByUserId(Long userId);
+    List<ProjectStaticAttributePo> findByGroupId(Long groupId);
 }
