@@ -24,8 +24,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Long addMessage(MessageVo vo) {
-        return messageData.save(new MessagePo(null, vo.getSenderId(), vo.getReceiverId(), vo.getContent(), vo.getTime(),
-                vo.getIsRead())).getId();
+        return messageData.save(new MessagePo(null, vo.getSenderId(), vo.getReceiverId(), vo.getContent(), vo.getTime())).getId();
     }
 
     @Override
@@ -38,12 +37,10 @@ public class MessageServiceImpl implements MessageService {
         var pos = messageData.findBySenderIdAndReceiverId(senderId, receiverId);
         var res = new ArrayList<MessageVo>(pos.size());
         for (var po : pos)
-            res.add(new MessageVo(po.getId(), po.getSenderId(), po.getReceiverId(), po.getContent(), po.getTime(),
-                    po.getIsRead()));
+            res.add(new MessageVo(po.getId(), po.getSenderId(), po.getReceiverId(), po.getContent(), po.getTime()));
         pos = messageData.findBySenderIdAndReceiverId(receiverId, senderId);
         for (var po : pos)
-            res.add(new MessageVo(po.getId(), po.getSenderId(), po.getReceiverId(), po.getContent(), po.getTime(),
-                    po.getIsRead()));
+            res.add(new MessageVo(po.getId(), po.getSenderId(), po.getReceiverId(), po.getContent(), po.getTime()));
         res.sort((a, b) -> a.getTime().compareTo(b.getTime()));
         return res;
     }

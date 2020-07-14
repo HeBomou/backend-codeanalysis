@@ -30,6 +30,4 @@ public class MessagePo {
 
     String time;
 
-    int isRead;
-
 }
