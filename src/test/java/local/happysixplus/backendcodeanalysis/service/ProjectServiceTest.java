@@ -400,7 +400,7 @@ public class ProjectServiceTest {
         var vo3 = new ProjectBasicAttributeVo(10002L, "Three project", 2, 1, 1);
         var vos = Arrays.asList(vo1, vo2, vo3);
         // 执行
-        var res = service.getProjectBasicAttribute(55555L);
+        var res = service.getProjectBasicAttribute(55555L, -1L);
         // 测试
         Mockito.verify(projectDynamicData).findByUserId(55555L);
         Mockito.verify(projectStaticAttributeData).findByUserId(55555L);
