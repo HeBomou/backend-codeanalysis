@@ -308,16 +308,16 @@ public class AsyncForProjectServiceImpl {
             var subgAllVo = addSubgraph(projectId, project, 0D, "Default subgraph");
             // 存入项目静态属性信息
             var projSAPo = new ProjectStaticAttributePo(project.id, userId, project.vIdMap.size(),
-                    project.eIdMap.size(), subgAllVo.getConnectiveDomains().size(), -1l);
+                    project.eIdMap.size(), subgAllVo.getConnectiveDomains().size(), groupId);
             projSAPo = projectStaticAttributeData.save(projSAPo);
             // 存入项目动态信息
-            var projDPo = new ProjectDynamicPo(project.id, userId, projectName, -1l);
+            var projDPo = new ProjectDynamicPo(project.id, userId, projectName, groupId);
             projDPo = projectDynamicData.save(projDPo);
         } catch (TimeoutException timeout) {
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目Clone超时）", -1l);
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目Clone超时）", groupId);
             projectDynamicData.save(failedDPo);
         } catch (Exception e) {
-            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目无法解析）", -1l);
+            var failedDPo = new ProjectDynamicPo(projectId, userId, projectName + "（项目无法解析）", groupId);
             projectDynamicData.save(failedDPo);
         }
         return CompletableFuture.completedFuture("Finished");
