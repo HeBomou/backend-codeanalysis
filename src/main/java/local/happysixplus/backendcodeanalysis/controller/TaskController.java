@@ -25,7 +25,7 @@ public class TaskController {
     // 添加任务
     @PostMapping
     public void postTask(@RequestBody GroupTaskVo vo) {
-        service.updateTask(vo);
+        service.addTask(vo);
     }
 
     // 删除任务
@@ -47,13 +47,13 @@ public class TaskController {
     }
 
     // 获取任务的所有执行者
-    @GetMapping(value = "/{taskId}")
+    @GetMapping(value = "/executor/{taskId}")
     public List<Long> getAllExecutor(@PathVariable Long taskId) {
         return service.getAllExecutor(taskId);
     }
 
     // 更新任务的执行者
-    @GetMapping(value = "/{groupId}/{taskId}")
+    @PostMapping(value = "/{groupId}/{taskId}")
     public void updateExecutor(@PathVariable Long groupId, @PathVariable Long taskId, @RequestBody List<Long> userIds) {
         service.updateExecutor(taskId, groupId, userIds);
     }
@@ -65,7 +65,7 @@ public class TaskController {
     }
 
     // 获取小组内某组员任务
-    @GetMapping(value = "/{groupId}/{userId}")
+    @GetMapping(value = "/{groupId}/user/{userId}")
     public List<GroupTaskVo> getTask(@PathVariable Long groupId, @PathVariable Long userId) {
         return service.getTask(groupId, userId);
     }

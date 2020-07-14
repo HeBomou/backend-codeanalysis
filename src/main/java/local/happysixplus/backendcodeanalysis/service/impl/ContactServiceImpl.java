@@ -34,6 +34,15 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public boolean getContactNew(Long userId) {
+        var contacts = data.findByUserId(userId);
+        for (ContactPo po : contacts)
+            if (po.getIsRead() == 0)
+                return true;
+        return false;
+    }
+
+    @Override
     public ContactVo getContact(Long userId, Long contactUserId) {
         var contact = data.findByUserIdAndContactUserId(userId, contactUserId);
         var user = userService.getUser(contactUserId);

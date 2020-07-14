@@ -219,7 +219,7 @@ public class ProjectServiceTest {
                 });
 
         // 执行
-        service.addProject("Test Faker", "https://gitee.com/HeBomou/simple", 2L);
+        service.addProject("Test Faker", "https://gitee.com/HeBomou/simple", 2L, -1L);
 
         // 测试
         try {
