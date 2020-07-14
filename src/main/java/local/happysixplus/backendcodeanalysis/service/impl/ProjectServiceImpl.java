@@ -379,17 +379,21 @@ public class ProjectServiceImpl implements ProjectService {
     };
 
     @Override
-    public List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId) {
+    public List<ProjectBasicAttributeVo> getProjectBasicAttribute(Long userId, Long groupId) {
         List<ProjectDynamicPo> pDPos;
-        if (userId == null)
+        if (userId.equals(-1L) && groupId.equals(-1L))
             pDPos = projectDynamicData.findAll();
-        else
+        else if (groupId.equals(-1L))
             pDPos = projectDynamicData.findByUserId(userId);
-        List<ProjectStaticAttributePo> pSAPos;
-        if (userId == null)
-            pSAPos = projectStaticAttributeData.findAll();
         else
+            pDPos = projectDynamicData.findByGroupId(groupId);
+        List<ProjectStaticAttributePo> pSAPos;
+        if (userId.equals(-1L) && groupId.equals(-1L))
+            pSAPos = projectStaticAttributeData.findAll();
+        else if (groupId.equals(-1L))
             pSAPos = projectStaticAttributeData.findByUserId(userId);
+        else
+            pSAPos = projectStaticAttributeData.findByGroupId(groupId);
         var pSAPoMap = pSAPos.stream().collect(Collectors.toMap(ProjectStaticAttributePo::getId, po -> po));
         var vos = new ArrayList<ProjectBasicAttributeVo>(pDPos.size());
         for (var pDPo : pDPos) {
