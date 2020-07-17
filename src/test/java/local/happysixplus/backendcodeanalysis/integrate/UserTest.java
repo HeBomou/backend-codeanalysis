@@ -18,7 +18,7 @@ import local.happysixplus.backendcodeanalysis.vo.SessionVo;
 import local.happysixplus.backendcodeanalysis.vo.UserVo;
 import lombok.var;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment =SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 public class UserTest {
 
