@@ -455,6 +455,7 @@ public class ProjectServiceTest {
         service.updateProjectDynamic(256L, vo);
         // 验证
         Mockito.verify(projectDynamicData).findById(256L);
+        Mockito.verify(projectDynamicData).findById(256L);
         Mockito.verify(projectDynamicData).save(dPoToSave);
     }
 
