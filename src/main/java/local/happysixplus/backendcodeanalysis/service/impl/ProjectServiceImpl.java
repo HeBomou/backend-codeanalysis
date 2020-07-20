@@ -523,7 +523,7 @@ public class ProjectServiceImpl implements ProjectService {
         var cVertexIds = new HashSet<>(connectiveDomainData.findById(connectiveDomainId).orElse(null).getVertexIds());
         var vPos = new ArrayList<VertexPositionDynamicPo>();
         for (var vpo : pVertexPo) {
-            if (cVertexIds.contains(vpo.getId())) {
+            if (cVertexIds.contains(vpo.getVertexId())) {
                 vpo.setX(vpo.getX() + relativeX);
                 vpo.setY(vpo.getY() + relativeY);
                 vPos.add(vpo);
