@@ -4,6 +4,7 @@ import java.util.List;
 
 import local.happysixplus.backendcodeanalysis.vo.GroupMemberVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupNoticeVo;
+import local.happysixplus.backendcodeanalysis.vo.GroupProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupVo;
 
 public interface GroupService {
@@ -101,5 +102,11 @@ public interface GroupService {
      * @return
      */
     List<GroupNoticeVo> getNotice(Long groupId);
+
+    /**
+     * 获取小组统计信息
+     * @return
+     */
+    List<GroupProfileVo> getStatistic();
 
 }

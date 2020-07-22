@@ -23,6 +23,7 @@ import local.happysixplus.backendcodeanalysis.po.GroupUserRelPo;
 import local.happysixplus.backendcodeanalysis.service.GroupService;
 import local.happysixplus.backendcodeanalysis.vo.GroupMemberVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupNoticeVo;
+import local.happysixplus.backendcodeanalysis.vo.GroupProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupVo;
 import lombok.var;
 
@@ -161,6 +162,40 @@ public class GroupServiceImpl implements GroupService {
         var res = new ArrayList<GroupNoticeVo>();
         for (var po : pos)
             res.add(new GroupNoticeVo(po.getId(), po.getGroupId(), po.getTitle(), po.getContent(), po.getTime()));
+        return res;
+    }
+
+    @Override
+    public List<GroupProfileVo> getStatistic() {
+        var groupPos = groupData.findAll();
+        var res = new ArrayList<GroupProfileVo>(groupPos.size());
+        var memberMap = new HashMap<Long, Integer>(groupPos.size());
+        var taskMap = new HashMap<Long, Integer>(groupPos.size());
+        var noticeMap = new HashMap<Long, Integer>(groupPos.size());
+        var memberPos = groupUserRelData.findAll();
+        var taskPos = groupTaskData.findAll();
+        var noticePos = groupNoticeData.findAll();
+        for (var po : memberPos) {
+            if (memberMap.containsKey(po.getId()))
+                memberMap.put(po.getId(), memberMap.get(po.getId()) + 1);
+            else
+                memberMap.put(po.getId(), 1);
+        }
+        for (var po : noticePos) {
+            if (noticeMap.containsKey(po.getId()))
+                noticeMap.put(po.getId(), noticeMap.get(po.getId()) + 1);
+            else
+                noticeMap.put(po.getId(), 1);
+        }
+        for (var po : taskPos) {
+            if (taskMap.containsKey(po.getId()))
+                taskMap.put(po.getId(), taskMap.get(po.getId()) + 1);
+            else
+                taskMap.put(po.getId(), 1);
+        }
+        for (var po : groupPos)
+            res.add(new GroupProfileVo(po.getId(), po.getName(), noticeMap.get(po.getId()), taskMap.get(po.getId()),
+                    memberMap.get(po.getId())));
         return res;
     }
 
