@@ -175,24 +175,20 @@ public class GroupServiceImpl implements GroupService {
         var memberPos = groupUserRelData.findAll();
         var taskPos = groupTaskData.findAll();
         var noticePos = groupNoticeData.findAll();
-        for (var po : memberPos) {
-            if (memberMap.containsKey(po.getId()))
-                memberMap.put(po.getId(), memberMap.get(po.getId()) + 1);
-            else
-                memberMap.put(po.getId(), 1);
+        for (var po : groupPos) {
+            memberMap.put(po.getId(), 0);
+            taskMap.put(po.getId(), 0);
+            noticeMap.put(po.getId(), 0);
         }
-        for (var po : noticePos) {
-            if (noticeMap.containsKey(po.getId()))
-                noticeMap.put(po.getId(), noticeMap.get(po.getId()) + 1);
-            else
-                noticeMap.put(po.getId(), 1);
-        }
-        for (var po : taskPos) {
-            if (taskMap.containsKey(po.getId()))
-                taskMap.put(po.getId(), taskMap.get(po.getId()) + 1);
-            else
-                taskMap.put(po.getId(), 1);
-        }
+        for (var po : memberPos)
+            memberMap.put(po.getId(), memberMap.get(po.getId()) + 1);
+
+        for (var po : noticePos)
+            noticeMap.put(po.getId(), noticeMap.get(po.getId()) + 1);
+
+        for (var po : taskPos)
+            taskMap.put(po.getId(), taskMap.get(po.getId()) + 1);
+
         for (var po : groupPos)
             res.add(new GroupProfileVo(po.getId(), po.getName(), noticeMap.get(po.getId()), taskMap.get(po.getId()),
                     memberMap.get(po.getId())));
