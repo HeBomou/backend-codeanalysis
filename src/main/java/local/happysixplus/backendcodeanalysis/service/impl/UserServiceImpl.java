@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
             throw new MyRuntimeException("该用户不存在");
         return new UserVo(po.getId(), po.getUsername(), null);
     }
+
+    @Override
+    public boolean existUser(Long id) {
+        return userData.existsById(id);
+    }
 }

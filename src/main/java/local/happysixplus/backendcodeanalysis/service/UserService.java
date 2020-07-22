@@ -35,4 +35,6 @@ public interface UserService {
      * 获取单个用户
      */
     UserVo getUser(Long id);
+
+    boolean existUser(Long id);
 }
