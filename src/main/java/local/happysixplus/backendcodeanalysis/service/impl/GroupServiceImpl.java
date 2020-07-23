@@ -181,13 +181,13 @@ public class GroupServiceImpl implements GroupService {
             noticeMap.put(po.getId(), 0);
         }
         for (var po : memberPos)
-            memberMap.put(po.getId(), memberMap.get(po.getId()) + 1);
+            memberMap.put(po.getGroupId(), memberMap.get(po.getGroupId()) + 1);
 
         for (var po : noticePos)
-            noticeMap.put(po.getId(), noticeMap.get(po.getId()) + 1);
+            noticeMap.put(po.getGroupId(), noticeMap.get(po.getGroupId()) + 1);
 
         for (var po : taskPos)
-            taskMap.put(po.getId(), taskMap.get(po.getId()) + 1);
+            taskMap.put(po.getGroupId(), taskMap.get(po.getGroupId()) + 1);
 
         for (var po : groupPos)
             res.add(new GroupProfileVo(po.getId(), po.getName(), noticeMap.get(po.getId()), taskMap.get(po.getId()),
