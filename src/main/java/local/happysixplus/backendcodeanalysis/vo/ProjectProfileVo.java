@@ -17,6 +17,11 @@ public class ProjectProfileVo {
     String projectName;
 
     /**
+     * 项目类型
+     */
+    Integer isGroupId;
+
+    /**
      * 初始图点数
      */
     Integer vertexNum;
