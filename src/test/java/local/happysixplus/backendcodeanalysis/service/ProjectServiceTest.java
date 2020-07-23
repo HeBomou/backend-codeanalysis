@@ -336,8 +336,8 @@ public class ProjectServiceTest {
         // Dynamic Pos
         var dV1 = new VertexDynamicPo(3L, 2L, "a1");
         var dV2 = new VertexDynamicPo(4L, 2L, "a2");
-        var pDV1 = new VertexPositionDynamicPo(3L,3L, 2L,4L, 0f, 0f);
-        var pDV2 = new VertexPositionDynamicPo(4L,4L, 2L,4L, 0f, 0f);
+        var pDV1 = new VertexPositionDynamicPo(3L, 3L, 2L, 4L, 0f, 0f);
+        var pDV2 = new VertexPositionDynamicPo(4L, 4L, 2L, 4L, 0f, 0f);
         var dE1 = new EdgeDynamicPo(3L, 2L, "abian 1");
         var dConnectiveDomain1 = new ConnectiveDomainDynamicPo(2L, 2L, "acd 1");
         var dConnectiveDomainColor1 = new ConnectiveDomainColorDynamicPo(2L, 2L, "#CDBE70");
@@ -362,9 +362,9 @@ public class ProjectServiceTest {
         var resVo = service.getProjectAll(2L);
         // 验证数据生成
         var expV1 = new VertexAllVo(3L, "edu.itrust.BeanBuilder:v1(java.util.Map,java.lang.Object)", "dian1()",
-                new VertexDynamicVo(3L,"a1"));
+                new VertexDynamicVo(3L, "a1"));
         var expV2 = new VertexAllVo(4L, "edu.itrust.BeanSBer:v2(java.util.Map,java.lang.Object)", "dian2()",
-                new VertexDynamicVo(4L,"a2"));
+                new VertexDynamicVo(4L, "a2"));
         var expPNode1 = new PackageNodeVo("BeanBuilder", new ArrayList<>(), Arrays.asList(3L));
         var expPNode2 = new PackageNodeVo("BeanSBer", new ArrayList<>(), Arrays.asList(4L));
         var expPNode3 = new PackageNodeVo("itrust", Arrays.asList(expPNode1, expPNode2), new ArrayList<>());
@@ -373,7 +373,8 @@ public class ProjectServiceTest {
         var expE1 = new EdgeAllVo(3L, 3L, 4L, 0.3d, new EdgeDynamicVo(3L, "abian 1"));
         var expC1 = new ConnectiveDomainAllVo(2L, Arrays.asList(3L, 4L), Arrays.asList(3L),
                 new ConnectiveDomainDynamicVo(2L, "acd 1", "#CDBE70"));
-        var expS1 = new SubgraphAllVo(4L, 0d, Arrays.asList(expC1), new SubgraphDynamicVo(4L, "Default subgraph", null)); // TOD:
+        var expS1 = new SubgraphAllVo(4L, 0d, Arrays.asList(expC1),
+                new SubgraphDynamicVo(4L, "Default subgraph", null)); // TOD:
         var expP = new ProjectAllVo(2L, Arrays.asList(expV1, expV2), expPNode5, Arrays.asList(expE1),
                 Arrays.asList(expS1), new ProjectDynamicVo(2L, "projC"));
         // 验证
@@ -421,7 +422,7 @@ public class ProjectServiceTest {
         Mockito.when(edgeDynamicData.countByProjectId(10000L)).thenReturn(20);
         Mockito.when(connectiveDomainDynamicData.countByProjectId(10000L)).thenReturn(0);
         // 验证数据
-        var vo = new ProjectProfileVo(10000L, "One project", 34, 56, 4, 2020, 20, 20, 0);
+        var vo = new ProjectProfileVo(10000L, "One project", 0, 34, 56, 4, 2020, 20, 20, 0);
         // 执行
         var res = service.getProjectProfile(10000L);
         // 测试
@@ -561,26 +562,27 @@ public class ProjectServiceTest {
     public void testUpdateVertexDynamic1() {
         service.updateVertexDynamic(27L, new VertexDynamicVo(456L, "this is a vertex"));
         Mockito.verify(vertexDynamicData).save(new VertexDynamicPo(456L, 27L, "this is a vertex"));
-        // Mockito.verify(vertexPositionDynamicData).save(new VertexPositionDynamicPo(456L, 27L, 45.5f, 92.2f));
+        // Mockito.verify(vertexPositionDynamicData).save(new
+        // VertexPositionDynamicPo(456L, 27L, 45.5f, 92.2f));
     }
 
     @Test
     public void testUpdateConnectiveDomainAllVertex() {
 
         // 打桩数据
-        var vpPo1 = new VertexPositionDynamicPo(1L,1L, 2L,3L, 34.56f, 76.12f);
-        var vpPo2 = new VertexPositionDynamicPo(2L,2L, 2L,3L, -34.56f, -76.12f);
-        var vpPo3 = new VertexPositionDynamicPo(3L,3L, 2L,3L, 0f, -10f);
+        var vpPo1 = new VertexPositionDynamicPo(1L, 1L, 2L, 3L, 34.56f, 76.12f);
+        var vpPo2 = new VertexPositionDynamicPo(2L, 2L, 2L, 3L, -34.56f, -76.12f);
+        var vpPo3 = new VertexPositionDynamicPo(3L, 3L, 2L, 3L, 0f, -10f);
         var vPos = Arrays.asList(vpPo1, vpPo2, vpPo3);
         var cPo = new ConnectiveDomainPo(10L, Arrays.asList(1L, 3L), Arrays.asList(1L, 2L));
         // 打桩
         Mockito.when(vertexPositionDynamicData.findBySubgraphId(3L)).thenReturn(vPos);
         Mockito.when(connectiveDomainData.findById(10L)).thenReturn(Optional.of(cPo));
         // 执行
-        service.updateConnectiveDomainAllVertex(2L, 3L,10L, 56.7f, -10.71f);
+        service.updateConnectiveDomainAllVertex(2L, 3L, 10L, 56.7f, -10.71f);
         // 测试数据
-        var vpPo4 = new VertexPositionDynamicPo(1L,1L, 2L,3L, 91.26f, 65.41f);
-        var vpPo5 = new VertexPositionDynamicPo(3L,3L, 2L,3L, 56.7f, -20.71f);
+        var vpPo4 = new VertexPositionDynamicPo(1L, 1L, 2L, 3L, 91.26f, 65.41f);
+        var vpPo5 = new VertexPositionDynamicPo(3L, 3L, 2L, 3L, 56.7f, -20.71f);
         // 测试
         Mockito.verify(vertexPositionDynamicData).findBySubgraphId(3L);
         Mockito.verify(connectiveDomainData).findById(10L);
