@@ -160,7 +160,8 @@ public class AsyncForProjectServiceImpl {
             }
 
             int dfs(Vertex p) {
-                if (wMap.containsKey(p.id)) return wMap.get(p.id);
+                if (wMap.containsKey(p.id))
+                    return wMap.get(p.id);
                 if (vstSet.contains(p.id))
                     return Integer.MAX_VALUE;
                 vstSet.add(p.id);
@@ -210,8 +211,10 @@ public class AsyncForProjectServiceImpl {
                     float x = wColStart[rw] + wCnts[rw] / maxRowNum;
                     float y = wCnts[rw] % maxRowNum;
                     wCnts[rw]++;
-                    resMap.put(id, new VertexPositionDynamicPo(null, id, projectId, subgraphId, leftUpX + x * colWidth,
-                            leftUpY + y * rowHeight));
+                    float randOffsetX = (float)(Math.random() * 10);
+                    float randOffsetY = (float)(Math.random() * 50);
+                    resMap.put(id, new VertexPositionDynamicPo(null, id, projectId, subgraphId, leftUpX + x * colWidth + randOffsetX,
+                            leftUpY + y * rowHeight + randOffsetY));
                 }
                 wMap.clear();
             }
@@ -273,7 +276,8 @@ public class AsyncForProjectServiceImpl {
     }
 
     @Async("ProjectExecutor")
-    public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId, long groupId) {
+    public CompletableFuture<String> asyncAddProject(Long projectId, String projectName, String url, long userId,
+            long groupId) {
         try {
             var projectInfoFuture = asyncCallGraphForProjectServiceImpl.asyncGitPull(url);
             var projectInfo = projectInfoFuture.get(300, TimeUnit.SECONDS);
