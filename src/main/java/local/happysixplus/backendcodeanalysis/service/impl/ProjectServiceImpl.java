@@ -183,8 +183,11 @@ public class ProjectServiceImpl implements ProjectService {
             userId = po.getUserId();
             for (var vPo : vPos)
                 vIdMap.put(vPo.getId(), new Vertex(vPo));
-            for (var ePo : ePos)
-                eIdMap.put(ePo.getId(), new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId())));
+            for (var ePo : ePos) {
+                var e = new Edge(ePo, vIdMap.get(ePo.getFromId()), vIdMap.get(ePo.getToId()));
+                eIdMap.put(ePo.getId(), e);
+                vIdMap.get(ePo.getFromId()).edges.add(e);
+            }
             packageStructureJSON = po.getPackageStructure();
         }
 

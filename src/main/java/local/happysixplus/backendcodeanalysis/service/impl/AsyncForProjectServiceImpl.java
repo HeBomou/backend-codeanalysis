@@ -180,7 +180,9 @@ public class AsyncForProjectServiceImpl {
                 int maxW = Integer.MIN_VALUE;
                 // 获取权
                 for (var v : vs) {
-                    minW = Math.min(minW, dfs(v));
+                    if (!wMap.containsKey(v.id))
+                        dfs(v);
+                    minW = Math.min(minW, wMap.get(v.id));
                     maxW = Math.max(maxW, wMap.get(v.id));
                 }
                 vstSet.clear();
