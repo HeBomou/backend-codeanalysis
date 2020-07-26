@@ -160,6 +160,7 @@ public class AsyncForProjectServiceImpl {
             }
 
             int dfs(Vertex p) {
+                if (wMap.containsKey(p.id)) return wMap.get(p.id);
                 if (vstSet.contains(p.id))
                     return Integer.MAX_VALUE;
                 vstSet.add(p.id);
@@ -180,9 +181,7 @@ public class AsyncForProjectServiceImpl {
                 int maxW = Integer.MIN_VALUE;
                 // 获取权
                 for (var v : vs) {
-                    if (!wMap.containsKey(v.id))
-                        dfs(v);
-                    minW = Math.min(minW, wMap.get(v.id));
+                    minW = Math.min(minW, dfs(v));
                     maxW = Math.max(maxW, wMap.get(v.id));
                 }
                 vstSet.clear();
