@@ -23,6 +23,7 @@ import local.happysixplus.backendcodeanalysis.po.GroupUserRelPo;
 import local.happysixplus.backendcodeanalysis.service.GroupService;
 import local.happysixplus.backendcodeanalysis.vo.GroupMemberVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupNoticeVo;
+import local.happysixplus.backendcodeanalysis.vo.GroupProfileVo;
 import local.happysixplus.backendcodeanalysis.vo.GroupVo;
 import lombok.var;
 
@@ -161,6 +162,36 @@ public class GroupServiceImpl implements GroupService {
         var res = new ArrayList<GroupNoticeVo>();
         for (var po : pos)
             res.add(new GroupNoticeVo(po.getId(), po.getGroupId(), po.getTitle(), po.getContent(), po.getTime()));
+        return res;
+    }
+
+    @Override
+    public List<GroupProfileVo> getStatistic() {
+        var groupPos = groupData.findAll();
+        var res = new ArrayList<GroupProfileVo>(groupPos.size());
+        var memberMap = new HashMap<Long, Integer>(groupPos.size());
+        var taskMap = new HashMap<Long, Integer>(groupPos.size());
+        var noticeMap = new HashMap<Long, Integer>(groupPos.size());
+        var memberPos = groupUserRelData.findAll();
+        var taskPos = groupTaskData.findAll();
+        var noticePos = groupNoticeData.findAll();
+        for (var po : groupPos) {
+            memberMap.put(po.getId(), 0);
+            taskMap.put(po.getId(), 0);
+            noticeMap.put(po.getId(), 0);
+        }
+        for (var po : memberPos)
+            memberMap.put(po.getGroupId(), memberMap.get(po.getGroupId()) + 1);
+
+        for (var po : noticePos)
+            noticeMap.put(po.getGroupId(), noticeMap.get(po.getGroupId()) + 1);
+
+        for (var po : taskPos)
+            taskMap.put(po.getGroupId(), taskMap.get(po.getGroupId()) + 1);
+
+        for (var po : groupPos)
+            res.add(new GroupProfileVo(po.getId(), po.getName(), noticeMap.get(po.getId()), taskMap.get(po.getId()),
+                    memberMap.get(po.getId())));
         return res;
     }
 
