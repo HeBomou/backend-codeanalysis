@@ -387,10 +387,11 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProjectDynamic(Long projectId, ProjectDynamicVo vo) {
         vo.setId(projectId);
         // var userId = projectDynamicData.findById(projectId).orElse(null).getUserId();
-        // var groupId = projectDynamicData.findById(projectId).orElse(null).getGroupId();
-        var projectDynamicPo=projectDynamicData.findById(projectId).orElse(null);
-        var userId=projectDynamicPo.getUserId();
-        var groupId=projectDynamicPo.getGroupId();
+        // var groupId =
+        // projectDynamicData.findById(projectId).orElse(null).getGroupId();
+        var projectDynamicPo = projectDynamicData.findById(projectId).orElse(null);
+        var userId = projectDynamicPo.getUserId();
+        var groupId = projectDynamicPo.getGroupId();
         projectDynamicData.save(new ProjectDynamicPo(vo.getId(), userId, vo.getProjectName(), groupId));
     };
 
@@ -464,6 +465,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new MyRuntimeException("项目不存在");
         if (pSAPo == null)
             throw new MyRuntimeException("项目正在解析或解析失败");
+        Integer isGroup = (pDPo.getGroupId().equals(-1L) ? 0 : 1);
         String projectName = pDPo.getProjectName();
         Integer vertexNum = pSAPo.getVertexNum();
         Integer edgeNum = pSAPo.getEdgeNum();
@@ -472,7 +474,7 @@ public class ProjectServiceImpl implements ProjectService {
         Integer vertexAnotationNum = vertexDynamicData.countByProjectId(id);
         Integer edgeAnotationNum = edgeDynamicData.countByProjectId(id);
         Integer connectiveDomainAnotationNum = connectiveDomainDynamicData.countByProjectId(id);
-        return new ProjectProfileVo(id, projectName, vertexNum, edgeNum, connectiveDomainNum, subgraphNum,
+        return new ProjectProfileVo(id, projectName, isGroup, vertexNum, edgeNum, connectiveDomainNum, subgraphNum,
                 vertexAnotationNum, edgeAnotationNum, connectiveDomainAnotationNum);
     }
 
